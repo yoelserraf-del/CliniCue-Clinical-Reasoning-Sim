@@ -1,0 +1,927 @@
+[
+  {
+    "id": "case-001",
+    "title": "Simple Pneumonia",
+    "difficulty": "student",
+    "patientProfile": {
+      "name": "John Smith",
+      "age": 65,
+      "sex": "Male",
+      "pastMedicalHistory": [
+        "Hypertension",
+        "Type 2 Diabetes Mellitus (well controlled)",
+        "Smoking history: 20 pack-years, quit 5 years ago"
+      ],
+      "chiefComplaint": "Cough and fever for 3 days, shortness of breath worsening",
+      "presentingSymptoms": [
+        "Productive cough with green sputum",
+        "Fever up to 38.5°C",
+        "Shortness of breath on exertion",
+        "Fatigue and malaise"
+      ]
+    },
+    "initialVitals": {
+      "hr": 98,
+      "bp": "145/88",
+      "rr": 22,
+      "spo2": 94,
+      "temp": 38.3
+    },
+    "initialNursingNotes": "Patient appears uncomfortable, using accessory muscles for breathing. Oxygen saturation drops to 92% with minimal exertion. Lung auscultation reveals crackles in right lower lobe.",
+    "investigations": [
+      {
+        "id": "cbc",
+        "name": "Complete Blood Count",
+        "timeCost": 30,
+        "result": {
+          "wbc": "12,500 /μL (elevated)",
+          "neutrophils": "78% (elevated)",
+          "lymphocytes": "15%",
+          "hemoglobin": "13.2 g/dL",
+          "platelets": "250,000 /μL"
+        },
+        "interpretation": "Leukocytosis with neutrophilia suggests bacterial infection"
+      },
+      {
+        "id": "chest-xray",
+        "name": "Chest X-Ray",
+        "timeCost": 45,
+        "result": "Consolidation in right lower lobe with air bronchograms. No pleural effusion.",
+        "interpretation": "Consolidation pattern consistent with pneumonia"
+      },
+      {
+        "id": "blood-culture",
+        "name": "Blood Cultures",
+        "timeCost": 120,
+        "result": "Sent to lab (results pending - typically 48-72 hours)",
+        "interpretation": "Useful for identifying causative organism, but treatment should not be delayed"
+      },
+      {
+        "id": "sputum-culture",
+        "name": "Sputum Culture & Gram Stain",
+        "timeCost": 60,
+        "result": "Gram-positive diplococci seen. Culture growing Streptococcus pneumoniae (pending sensitivity).",
+        "interpretation": "Streptococcus pneumoniae is the most common cause of community-acquired pneumonia"
+      }
+    ],
+    "correctTreatment": {
+      "sequence": [
+        {
+          "action": "start_oxygen",
+          "description": "Start supplemental oxygen therapy"
+        },
+        {
+          "action": "start_antibiotics",
+          "medication": "Ceftriaxone 1g IV + Azithromycin 500mg IV",
+          "description": "Start empiric antibiotic therapy for community-acquired pneumonia"
+        },
+        {
+          "action": "monitor",
+          "description": "Monitor vitals and response to treatment"
+        }
+      ],
+      "expectedOutcome": "Patient should show improvement within 24-48 hours with resolution of fever and improved oxygenation"
+    },
+    "scienceBridge": {
+      "pathophysiology": "Community-acquired pneumonia (CAP) is typically caused by Streptococcus pneumoniae, a gram-positive bacterium. The pathophysiology involves:\n\n1. **Invasion**: Bacteria enter the lower respiratory tract, bypassing host defenses\n2. **Inflammatory Response**: The body's immune system responds with:\n   - Neutrophil recruitment (explains elevated WBC and neutrophilia)\n   - Release of cytokines (IL-1, IL-6, TNF-α) causing fever\n   - Increased vascular permeability leading to exudate formation\n\n3. **Gas Exchange Impairment**: Consolidation fills alveoli with fluid and inflammatory cells:\n   $$V/Q = \\frac{Ventilation}{Perfusion}$$\n   When alveoli are filled (V=0), V/Q ratio approaches 0, leading to shunt physiology and hypoxemia.\n\n4. **Cardiac Compensation**: Heart rate increases to maintain cardiac output:\n   $$CO = HR \\times SV$$\n   Where CO is cardiac output, HR is heart rate, and SV is stroke volume. Tachycardia compensates for decreased stroke volume due to hypoxemia.\n\n5. **Treatment Mechanism**: Beta-lactam antibiotics (ceftriaxone) target bacterial cell wall synthesis, while macrolides (azithromycin) inhibit protein synthesis, providing broad coverage and synergy.",
+      "keyLearningPoints": [
+        "Pneumonia causes V/Q mismatch leading to hypoxemia",
+        "Leukocytosis with neutrophilia is a classic sign of bacterial infection",
+        "Early antibiotic initiation improves outcomes in pneumonia",
+        "Empiric therapy should cover the most common pathogens (S. pneumoniae)"
+      ]
+    }
+  },
+  {
+    "id": "case-002",
+    "title": "Pulmonary Embolism",
+    "difficulty": "resident",
+    "patientProfile": {
+      "name": "Sarah Johnson",
+      "age": 42,
+      "sex": "Female",
+      "pastMedicalHistory": [
+        "Recent surgery: Total knee replacement 2 weeks ago",
+        "Oral contraceptive use",
+        "Family history of DVT",
+        "Currently on prophylactic enoxaparin (non-compliant with dosing)"
+      ],
+      "chiefComplaint": "Sudden onset chest pain and shortness of breath",
+      "presentingSymptoms": [
+        "Sharp, pleuritic chest pain",
+        "Acute dyspnea",
+        "Lightheadedness",
+        "Mild cough (no sputum production)"
+      ]
+    },
+    "initialVitals": {
+      "hr": 112,
+      "bp": "138/82",
+      "rr": 24,
+      "spo2": 91,
+      "temp": 37.1
+    },
+    "initialNursingNotes": "Patient appears anxious and dyspneic. Heart rate is elevated. No focal findings on lung exam. Right calf appears slightly swollen compared to left.",
+    "investigations": [
+      {
+        "id": "d-dimer",
+        "name": "D-Dimer",
+        "timeCost": 60,
+        "result": "850 ng/mL (elevated - normal < 500 ng/mL)",
+        "interpretation": "Elevated D-dimer suggests thrombotic process, but is non-specific (can be elevated in many conditions)"
+      },
+      {
+        "id": "cbc",
+        "name": "Complete Blood Count",
+        "timeCost": 30,
+        "result": {
+          "wbc": "8,200 /μL (normal)",
+          "neutrophils": "62% (normal)",
+          "lymphocytes": "30%",
+          "hemoglobin": "12.8 g/dL",
+          "platelets": "220,000 /μL"
+        },
+        "interpretation": "Normal CBC - differentiates from infectious process like pneumonia"
+      },
+      {
+        "id": "chest-xray",
+        "name": "Chest X-Ray",
+        "timeCost": 45,
+        "result": "Clear lung fields bilaterally. No consolidation or effusion. Subtle elevation of right hemidiaphragm.",
+        "interpretation": "X-ray is often normal in PE, but can show non-specific findings like elevated hemidiaphragm"
+      },
+      {
+        "id": "ctpa",
+        "name": "CT Pulmonary Angiogram",
+        "timeCost": 120,
+        "result": "Large filling defect in right main pulmonary artery extending into upper and lower lobe branches. No evidence of consolidation.",
+        "interpretation": "Diagnostic for pulmonary embolism. This is the gold standard test for PE."
+      },
+      {
+        "id": "ecg",
+        "name": "12-Lead ECG",
+        "timeCost": 15,
+        "result": "Sinus tachycardia. S1Q3T3 pattern present (classic but not always present in PE).",
+        "interpretation": "ECG changes in PE are non-specific. S1Q3T3 pattern (deep S in lead I, Q wave and T wave inversion in lead III) is classic but only present in ~20% of cases"
+      }
+    ],
+    "correctTreatment": {
+      "sequence": [
+        {
+          "action": "start_oxygen",
+          "description": "Start supplemental oxygen therapy to improve oxygenation"
+        },
+        {
+          "action": "start_anticoagulation",
+          "medication": "Enoxaparin 1 mg/kg SC BID OR Apixaban 10mg BID x 7 days then 5mg BID",
+          "description": "Start immediate anticoagulation therapy - DO NOT delay for imaging if high clinical suspicion"
+        },
+        {
+          "action": "confirm_diagnosis",
+          "description": "Confirm with CTPA or V/Q scan"
+        },
+        {
+          "action": "monitor",
+          "description": "Monitor for hemodynamic instability and signs of RV strain"
+        }
+      ],
+      "expectedOutcome": "With prompt anticoagulation, most patients stabilize. Risk of recurrent PE is reduced by 80-90% with appropriate anticoagulation."
+    },
+    "scienceBridge": {
+      "pathophysiology": "Pulmonary embolism (PE) occurs when a thrombus (usually from deep veins) embolizes to the pulmonary circulation. The pathophysiology involves:\n\n1. **Virchow's Triad**: The three factors contributing to thrombosis:\n   - Stasis (post-operative immobility)\n   - Endothelial injury (surgery)\n   - Hypercoagulability (OCP use, genetic factors)\n\n2. **Hemodynamic Consequences**: \n   - Mechanical obstruction of pulmonary arteries increases pulmonary vascular resistance (PVR)\n   - This increases right ventricular afterload:\n     $$RV \\text{ Pressure } = PVR \\times CO$$\n   - Right ventricular dilation and dysfunction can occur\n\n3. **V/Q Mismatch**: \n   - PE creates dead space (ventilated but not perfused alveoli)\n   - V/Q ratio approaches infinity in affected regions\n   - Compensation occurs through vasoconstriction in unaffected areas\n\n4. **Gas Exchange**: Hypoxemia results from:\n   - V/Q mismatch\n   - Shunt through patent foramen ovale if RV pressure exceeds LA pressure\n   - Low mixed venous oxygen saturation due to low cardiac output\n\n5. **Treatment Mechanism**: Anticoagulation prevents propagation and recurrence by:\n   - Inhibiting thrombin (heparins/LMWH) or factor Xa (DOACs)\n   - Allowing endogenous fibrinolytic system to dissolve existing clots\n   - Preventing new thrombus formation\n\n**Key Differentiation from Pneumonia**: PE typically presents with normal WBC, no fever, clear chest X-ray, and pleuritic pain. The Wells score and PERC criteria help risk-stratify patients before imaging.",
+      "keyLearningPoints": [
+        "PE can present similarly to pneumonia but has different investigation findings",
+        "Normal CBC and clear CXR should raise suspicion for PE in the right clinical context",
+        "Early anticoagulation is critical - don't delay for imaging if clinical suspicion is high",
+        "V/Q mismatch in PE is different from pneumonia (dead space vs. shunt)",
+        "Risk factors (surgery, immobility, hypercoagulable states) are crucial for diagnosis"
+      ]
+    }
+  },
+  {
+    "id": "case-003",
+    "title": "Common Cold",
+    "difficulty": "highschool",
+    "patientProfile": {
+      "name": "Emily Chen",
+      "age": 18,
+      "sex": "Female",
+      "pastMedicalHistory": [
+        "No significant past medical history",
+        "Healthy, active teenager"
+      ],
+      "chiefComplaint": "Runny nose, sneezing, and mild cough for 2 days",
+      "presentingSymptoms": [
+        "Clear nasal discharge",
+        "Sneezing",
+        "Mild dry cough",
+        "Slight fatigue",
+        "No fever"
+      ]
+    },
+    "initialVitals": {
+      "hr": 72,
+      "bp": "110/70",
+      "rr": 16,
+      "spo2": 98,
+      "temp": 36.8
+    },
+    "initialNursingNotes": "Patient appears well, in no distress. Nose is runny with clear discharge. Throat appears slightly red but no exudate. Lungs clear to auscultation.",
+    "investigations": [
+      {
+        "id": "vitals-check",
+        "name": "Vital Signs Check",
+        "timeCost": 5,
+        "result": "All vitals within normal limits",
+        "interpretation": "Normal vital signs suggest mild, self-limited illness"
+      },
+      {
+        "id": "rapid-flu",
+        "name": "Rapid Influenza Test",
+        "timeCost": 15,
+        "result": "Negative for influenza A and B",
+        "interpretation": "Rules out influenza, likely common cold virus (rhinovirus, coronavirus, etc.)"
+      }
+    ],
+    "correctTreatment": {
+      "sequence": [
+        {
+          "action": "symptomatic_care",
+          "description": "Provide symptomatic care: rest, fluids, and over-the-counter medications for comfort"
+        },
+        {
+          "action": "education",
+          "description": "Educate patient that this is a viral infection that will resolve on its own in 7-10 days"
+        }
+      ],
+      "expectedOutcome": "Symptoms should resolve within 7-10 days with supportive care. No antibiotics needed."
+    },
+    "scienceBridge": {
+      "pathophysiology": "The common cold is caused by viruses, most commonly rhinoviruses. Here's what happens:\n\n1. **Virus Entry**: Viruses enter through the nose or mouth and attach to cells in the upper respiratory tract\n\n2. **Immune Response**: The body's immune system recognizes the virus and:\n   - Releases chemicals that cause inflammation\n   - Increases mucus production (explains runny nose)\n   - Causes sneezing to expel the virus\n\n3. **Why No Antibiotics?**: Antibiotics only work against bacteria, not viruses. The common cold is viral, so antibiotics won't help and can cause side effects.\n\n4. **Recovery**: The immune system fights off the virus, usually within 7-10 days. Rest and fluids help the body recover faster.",
+      "keyLearningPoints": [
+        "Common cold is caused by viruses, not bacteria",
+        "Antibiotics don't work for viral infections",
+        "Most colds resolve on their own with rest and fluids",
+        "Normal vital signs indicate the illness is mild"
+      ]
+    }
+  },
+  {
+    "id": "case-004",
+    "title": "Strep Throat",
+    "difficulty": "highschool",
+    "patientProfile": {
+      "name": "Michael Rodriguez",
+      "age": 15,
+      "sex": "Male",
+      "pastMedicalHistory": [
+        "No significant past medical history"
+      ],
+      "chiefComplaint": "Sore throat and fever for 1 day",
+      "presentingSymptoms": [
+        "Severe sore throat, worse when swallowing",
+        "Fever 38.9°C",
+        "Headache",
+        "No cough or runny nose"
+      ]
+    },
+    "initialVitals": {
+      "hr": 88,
+      "bp": "118/72",
+      "rr": 18,
+      "spo2": 98,
+      "temp": 38.9
+    },
+    "initialNursingNotes": "Patient appears uncomfortable. Throat is very red with white patches (exudate) on tonsils. Swollen lymph nodes in neck. No cough present.",
+    "investigations": [
+      {
+        "id": "rapid-strep",
+        "name": "Rapid Strep Test",
+        "timeCost": 10,
+        "result": "Positive for Group A Streptococcus",
+        "interpretation": "Confirms bacterial infection requiring antibiotics"
+      },
+      {
+        "id": "cbc",
+        "name": "Complete Blood Count",
+        "timeCost": 30,
+        "result": {
+          "wbc": "11,000 /μL (slightly elevated)",
+          "neutrophils": "70% (elevated)",
+          "lymphocytes": "25%",
+          "hemoglobin": "14.5 g/dL",
+          "platelets": "280,000 /μL"
+        },
+        "interpretation": "Elevated white blood cells suggest bacterial infection"
+      }
+    ],
+    "correctTreatment": {
+      "sequence": [
+        {
+          "action": "start_antibiotics",
+          "medication": "Penicillin V 500mg PO BID x 10 days OR Amoxicillin 500mg PO TID x 10 days",
+          "description": "Start antibiotics to treat bacterial infection and prevent complications"
+        },
+        {
+          "action": "symptomatic_care",
+          "description": "Provide pain relief (acetaminophen or ibuprofen) and encourage fluids"
+        },
+        {
+          "action": "education",
+          "description": "Complete full course of antibiotics even if feeling better"
+        }
+      ],
+      "expectedOutcome": "Symptoms should improve within 24-48 hours of starting antibiotics. Full recovery expected within 7-10 days."
+    },
+    "scienceBridge": {
+      "pathophysiology": "Strep throat is caused by Group A Streptococcus bacteria. Here's what happens:\n\n1. **Bacterial Infection**: Streptococcus bacteria infect the throat and tonsils\n\n2. **Immune Response**: The body responds by:\n   - Sending white blood cells to fight the infection (explains elevated WBC)\n   - Causing inflammation (red, swollen throat)\n   - Producing pus (white patches on tonsils)\n   - Activating fever to help fight the infection\n\n3. **Why Antibiotics?**: Unlike the common cold (viral), strep throat is bacterial, so antibiotics are needed to:\n   - Kill the bacteria\n   - Prevent serious complications (like rheumatic fever)\n   - Reduce contagiousness\n\n4. **Treatment**: Penicillin works by preventing bacteria from building their cell walls, causing them to die.",
+      "keyLearningPoints": [
+        "Strep throat is bacterial, so antibiotics are needed",
+        "Rapid strep test helps confirm the diagnosis",
+        "Elevated white blood cells suggest bacterial infection",
+        "Complete antibiotic course is important to prevent complications"
+      ]
+    }
+  },
+  {
+    "id": "case-005",
+    "title": "Asthma Exacerbation",
+    "difficulty": "premed",
+    "patientProfile": {
+      "name": "David Kim",
+      "age": 22,
+      "sex": "Male",
+      "pastMedicalHistory": [
+        "Asthma (diagnosed in childhood)",
+        "Uses albuterol inhaler as needed",
+        "No recent asthma attacks"
+      ],
+      "chiefComplaint": "Shortness of breath and wheezing after exercise",
+      "presentingSymptoms": [
+        "Chest tightness",
+        "Wheezing",
+        "Shortness of breath",
+        "Cough",
+        "Triggered by exercise"
+      ]
+    },
+    "initialVitals": {
+      "hr": 100,
+      "bp": "125/80",
+      "rr": 24,
+      "spo2": 94,
+      "temp": 36.9
+    },
+    "initialNursingNotes": "Patient appears anxious and dyspneic. Audible wheezing on expiration. Using accessory muscles to breathe. Oxygen saturation improves to 96% with rest.",
+    "investigations": [
+      {
+        "id": "peak-flow",
+        "name": "Peak Flow Measurement",
+        "timeCost": 5,
+        "result": "280 L/min (patient's baseline is 450 L/min - 62% of baseline)",
+        "interpretation": "Significantly reduced peak flow indicates airway obstruction"
+      },
+      {
+        "id": "chest-xray",
+        "name": "Chest X-Ray",
+        "timeCost": 45,
+        "result": "Hyperinflated lungs bilaterally. No consolidation or pneumothorax.",
+        "interpretation": "Hyperinflation is characteristic of asthma due to air trapping"
+      },
+      {
+        "id": "pulse-ox",
+        "name": "Pulse Oximetry",
+        "timeCost": 2,
+        "result": "94% on room air, improves to 98% with supplemental oxygen",
+        "interpretation": "Mild hypoxemia due to ventilation-perfusion mismatch"
+      }
+    ],
+    "correctTreatment": {
+      "sequence": [
+        {
+          "action": "start_oxygen",
+          "description": "Provide supplemental oxygen to maintain SpO2 > 94%"
+        },
+        {
+          "action": "bronchodilator",
+          "medication": "Albuterol 2.5mg via nebulizer (or 2-4 puffs via MDI with spacer) every 20 minutes x 3 doses",
+          "description": "Give bronchodilator to relax airway muscles and open airways"
+        },
+        {
+          "action": "steroid",
+          "medication": "Prednisone 40-60mg PO daily x 5-7 days OR Methylprednisolone 40-60mg IV",
+          "description": "Start systemic corticosteroids to reduce airway inflammation"
+        },
+        {
+          "action": "monitor",
+          "description": "Monitor peak flow and symptoms. Consider admission if no improvement"
+        }
+      ],
+      "expectedOutcome": "Patient should show improvement within 1-2 hours. Peak flow should return to baseline. Discharge with oral steroids and follow-up."
+    },
+    "scienceBridge": {
+      "pathophysiology": "Asthma is a chronic inflammatory condition of the airways. During an exacerbation:\n\n1. **Airway Inflammation**: \n   - Inflammatory cells (eosinophils, mast cells) release mediators\n   - Causes swelling of airway walls\n   - Increases mucus production\n\n2. **Bronchoconstriction**: \n   - Smooth muscle around airways contracts\n   - Airways narrow significantly\n   - This is reversible with bronchodilators\n\n3. **Airway Obstruction**: \n   - Narrowed airways increase resistance to airflow\n   - Air gets trapped in lungs (hyperinflation)\n   - Expiration becomes difficult (wheezing)\n\n4. **Gas Exchange**: \n   - V/Q mismatch occurs (some areas ventilated but not perfused well)\n   - Leads to mild hypoxemia\n   - CO2 retention can occur in severe cases\n\n5. **Treatment Mechanism**: \n   - **Bronchodilators (albuterol)**: Stimulate beta-2 receptors, causing smooth muscle relaxation\n   - **Corticosteroids**: Reduce inflammation by inhibiting inflammatory mediators\n\n**Peak Flow**: Measures how fast air can be expelled. Reduced peak flow = airway obstruction.",
+      "keyLearningPoints": [
+        "Asthma involves both inflammation and bronchoconstriction",
+        "Bronchodilators provide immediate relief by relaxing smooth muscle",
+        "Corticosteroids treat the underlying inflammation",
+        "Peak flow measurement helps assess severity and response to treatment",
+        "Hyperinflation on CXR is characteristic of asthma"
+      ]
+    }
+  },
+  {
+    "id": "case-006",
+    "title": "Diabetic Ketoacidosis",
+    "difficulty": "premed",
+    "patientProfile": {
+      "name": "Jessica Martinez",
+      "age": 19,
+      "sex": "Female",
+      "pastMedicalHistory": [
+        "Type 1 Diabetes Mellitus (diagnosed 2 years ago)",
+        "Recently started college, stress with classes",
+        "Admitted to forgetting insulin doses recently"
+      ],
+      "chiefComplaint": "Nausea, vomiting, and increased urination for 2 days",
+      "presentingSymptoms": [
+        "Nausea and vomiting",
+        "Increased thirst and urination",
+        "Abdominal pain",
+        "Confusion and fatigue",
+        "Fruity-smelling breath"
+      ]
+    },
+    "initialVitals": {
+      "hr": 120,
+      "bp": "95/60",
+      "rr": 28,
+      "spo2": 98,
+      "temp": 37.2
+    },
+    "initialNursingNotes": "Patient appears dehydrated and confused. Deep, rapid breathing (Kussmaul respirations). Fruity odor to breath. Skin is warm and dry.",
+    "investigations": [
+      {
+        "id": "glucose",
+        "name": "Blood Glucose",
+        "timeCost": 5,
+        "result": "580 mg/dL (severely elevated - normal 70-100 mg/dL)",
+        "interpretation": "Severe hyperglycemia indicates uncontrolled diabetes"
+      },
+      {
+        "id": "abg",
+        "name": "Arterial Blood Gas",
+        "timeCost": 15,
+        "result": "pH 7.15, pCO2 25 mmHg, HCO3- 8 mEq/L, Anion gap 24",
+        "interpretation": "Metabolic acidosis with high anion gap indicates ketoacidosis"
+      },
+      {
+        "id": "ketones",
+        "name": "Serum Ketones",
+        "timeCost": 10,
+        "result": "Beta-hydroxybutyrate 5.2 mmol/L (elevated - normal < 0.6)",
+        "interpretation": "Elevated ketones confirm diabetic ketoacidosis"
+      },
+      {
+        "id": "bmp",
+        "name": "Basic Metabolic Panel",
+        "timeCost": 30,
+        "result": {
+          "sodium": "132 mEq/L (low)",
+          "potassium": "5.2 mEq/L (elevated)",
+          "chloride": "98 mEq/L",
+          "bicarbonate": "8 mEq/L (low)",
+          "bun": "28 mg/dL (elevated)",
+          "creatinine": "1.4 mg/dL (elevated)"
+        },
+        "interpretation": "Metabolic acidosis, electrolyte imbalances, and dehydration"
+      }
+    ],
+    "correctTreatment": {
+      "sequence": [
+        {
+          "action": "start_iv_fluids",
+          "description": "Start IV fluids (normal saline) to correct dehydration - 1-2 L in first hour"
+        },
+        {
+          "action": "start_insulin",
+          "medication": "Regular insulin IV drip: 0.1 units/kg/hour (or weight-based protocol)",
+          "description": "Start continuous insulin infusion to lower glucose and stop ketone production"
+        },
+        {
+          "action": "monitor_electrolytes",
+          "description": "Monitor potassium closely - will drop as insulin drives it into cells. Replace as needed."
+        },
+        {
+          "action": "monitor",
+          "description": "Monitor glucose, pH, and electrolytes every 1-2 hours. Switch to SC insulin when stable."
+        }
+      ],
+      "expectedOutcome": "Glucose should decrease by 50-75 mg/dL per hour. pH should normalize. Patient should improve over 24-48 hours."
+    },
+    "scienceBridge": {
+      "pathophysiology": "Diabetic Ketoacidosis (DKA) occurs when there's insufficient insulin. Here's the cascade:\n\n1. **Insulin Deficiency**: Without insulin, cells can't use glucose for energy\n\n2. **Hyperglycemia**: \n   - Glucose builds up in blood (can't enter cells)\n   - Kidneys try to excrete excess glucose (osmotic diuresis)\n   - Causes dehydration and electrolyte loss\n\n3. **Ketone Production**: \n   - Body breaks down fat for energy instead\n   - Produces ketones (acids) as byproduct\n   - Ketones accumulate in blood, causing acidosis\n\n4. **Metabolic Acidosis**: \n   - Ketones are acids, lowering blood pH\n   - Body tries to compensate with deep breathing (Kussmaul respirations)\n   - High anion gap: unmeasured anions (ketones) in blood\n\n5. **Treatment**: \n   - **IV Fluids**: Correct dehydration\n   - **Insulin**: Allows glucose into cells, stops ketone production\n   - **Electrolytes**: Replace losses (especially potassium)\n\n**Anion Gap** = Na - (Cl + HCO3). Normal < 12. High gap = unmeasured acids (ketones).",
+      "keyLearningPoints": [
+        "DKA is caused by insulin deficiency, leading to hyperglycemia and ketosis",
+        "High anion gap metabolic acidosis is characteristic of DKA",
+        "Treatment requires IV fluids, insulin, and electrolyte replacement",
+        "Kussmaul respirations are the body's attempt to compensate for acidosis",
+        "Potassium will drop as insulin drives it into cells - must monitor closely"
+      ]
+    }
+  },
+  {
+    "id": "case-007",
+    "title": "Acute Myocardial Infarction",
+    "difficulty": "premed",
+    "patientProfile": {
+      "name": "Robert Thompson",
+      "age": 58,
+      "sex": "Male",
+      "pastMedicalHistory": [
+        "Hypertension",
+        "Hyperlipidemia",
+        "Type 2 Diabetes",
+        "Smoking: 30 pack-years, current smoker",
+        "Family history of heart disease"
+      ],
+      "chiefComplaint": "Severe chest pain for 30 minutes",
+      "presentingSymptoms": [
+        "Crushing substernal chest pain",
+        "Pain radiates to left arm and jaw",
+        "Nausea and diaphoresis",
+        "Shortness of breath",
+        "Pain started at rest"
+      ]
+    },
+    "initialVitals": {
+      "hr": 95,
+      "bp": "150/90",
+      "rr": 20,
+      "spo2": 96,
+      "temp": 37.0
+    },
+    "initialNursingNotes": "Patient appears anxious and diaphoretic. Describes chest pain as 'pressure' and 'crushing'. Pain started at rest, not with exertion. ECG shows ST elevation in leads II, III, aVF.",
+    "investigations": [
+      {
+        "id": "ecg",
+        "name": "12-Lead ECG",
+        "timeCost": 5,
+        "result": "ST elevation in leads II, III, aVF. Q waves developing. Sinus rhythm.",
+        "interpretation": "ST elevation myocardial infarction (STEMI) - inferior wall MI"
+      },
+      {
+        "id": "troponin",
+        "name": "Troponin I",
+        "timeCost": 30,
+        "result": "8.5 ng/mL (markedly elevated - normal < 0.04 ng/mL)",
+        "interpretation": "Highly elevated troponin confirms myocardial injury"
+      },
+      {
+        "id": "ck-mb",
+        "name": "CK-MB",
+        "timeCost": 30,
+        "result": "45 ng/mL (elevated)",
+        "interpretation": "Elevated CK-MB further confirms myocardial necrosis"
+      },
+      {
+        "id": "cbc",
+        "name": "Complete Blood Count",
+        "timeCost": 30,
+        "result": {
+          "wbc": "9,500 /μL",
+          "hemoglobin": "14.8 g/dL",
+          "platelets": "280,000 /μL"
+        },
+        "interpretation": "Normal CBC"
+      }
+    ],
+    "correctTreatment": {
+      "sequence": [
+        {
+          "action": "aspirin",
+          "medication": "Aspirin 325mg chewed immediately",
+          "description": "Aspirin prevents further platelet aggregation"
+        },
+        {
+          "action": "dual_antiplatelet",
+          "medication": "Clopidogrel 600mg loading dose OR Ticagrelor 180mg loading dose",
+          "description": "Dual antiplatelet therapy prevents clot formation"
+        },
+        {
+          "action": "anticoagulation",
+          "medication": "Heparin IV drip (weight-based)",
+          "description": "Anticoagulation prevents further thrombosis"
+        },
+        {
+          "action": "reperfusion",
+          "description": "Urgent reperfusion: Primary PCI (angioplasty/stent) within 90 minutes OR Thrombolytics if PCI unavailable"
+        },
+        {
+          "action": "beta_blocker",
+          "medication": "Metoprolol 25-50mg PO BID (if hemodynamically stable)",
+          "description": "Beta-blocker reduces heart rate and oxygen demand"
+        },
+        {
+          "action": "statin",
+          "medication": "Atorvastatin 80mg PO daily",
+          "description": "High-dose statin stabilizes plaque and reduces inflammation"
+        }
+      ],
+      "expectedOutcome": "With prompt reperfusion, patient should have resolution of chest pain and ST elevation. Long-term prognosis depends on extent of damage and time to treatment."
+    },
+    "scienceBridge": {
+      "pathophysiology": "Myocardial infarction (heart attack) occurs when blood flow to heart muscle is blocked:\n\n1. **Atherosclerosis**: \n   - Plaque builds up in coronary arteries over years\n   - Risk factors: diabetes, hypertension, smoking, high cholesterol\n\n2. **Plaque Rupture**: \n   - Plaque suddenly breaks open\n   - Triggers blood clot formation (thrombosis)\n   - Clot blocks coronary artery\n\n3. **Ischemia and Necrosis**: \n   - Heart muscle downstream loses blood supply\n   - Cells die if blood flow not restored quickly\n   - Dead cells release troponin (cardiac-specific protein)\n\n4. **ECG Changes**: \n   - ST elevation = acute injury (cells dying)\n   - Q waves = completed infarction (cells dead)\n   - Location of changes indicates which artery is blocked\n\n5. **Treatment Goals**: \n   - **Reperfusion**: Restore blood flow ASAP (PCI or thrombolytics)\n   - **Prevent further clotting**: Aspirin, clopidogrel, heparin\n   - **Reduce oxygen demand**: Beta-blockers\n   - **Stabilize plaque**: Statins\n\n**Time is Muscle**: Every minute counts. Goal is door-to-balloon time < 90 minutes.",
+      "keyLearningPoints": [
+        "STEMI requires urgent reperfusion (PCI or thrombolytics)",
+        "ST elevation on ECG indicates acute injury",
+        "Troponin is the gold standard marker for myocardial injury",
+        "Dual antiplatelet therapy prevents further clot formation",
+        "Time to treatment is critical - 'time is muscle'"
+      ]
+    }
+  },
+  {
+    "id": "case-008",
+    "title": "Appendicitis",
+    "difficulty": "student",
+    "patientProfile": {
+      "name": "Alex Johnson",
+      "age": 24,
+      "sex": "Male",
+      "pastMedicalHistory": [
+        "No significant past medical history",
+        "Healthy young adult"
+      ],
+      "chiefComplaint": "Abdominal pain for 12 hours, starting around belly button, now in right lower quadrant",
+      "presentingSymptoms": [
+        "Abdominal pain that migrated from periumbilical to RLQ",
+        "Pain worsened with movement",
+        "Nausea and vomiting",
+        "Loss of appetite",
+        "Low-grade fever"
+      ]
+    },
+    "initialVitals": {
+      "hr": 88,
+      "bp": "125/80",
+      "rr": 18,
+      "spo2": 98,
+      "temp": 37.8
+    },
+    "initialNursingNotes": "Patient appears uncomfortable, guarding right lower quadrant. Pain worse with palpation (McBurney's point). Rebound tenderness present. Positive psoas sign.",
+    "investigations": [
+      {
+        "id": "cbc",
+        "name": "Complete Blood Count",
+        "timeCost": 30,
+        "result": {
+          "wbc": "13,500 /μL (elevated)",
+          "neutrophils": "82% (elevated)",
+          "lymphocytes": "12%",
+          "hemoglobin": "14.2 g/dL",
+          "platelets": "250,000 /μL"
+        },
+        "interpretation": "Leukocytosis with neutrophilia suggests bacterial infection/inflammation"
+      },
+      {
+        "id": "ct-abdomen",
+        "name": "CT Abdomen/Pelvis with Contrast",
+        "timeCost": 90,
+        "result": "Enlarged, fluid-filled appendix (diameter 1.2 cm, normal < 6mm). Periappendiceal fat stranding. No free air or abscess.",
+        "interpretation": "Findings consistent with acute appendicitis"
+      },
+      {
+        "id": "urinalysis",
+        "name": "Urinalysis",
+        "timeCost": 15,
+        "result": "Normal - no infection",
+        "interpretation": "Rules out urinary tract infection as cause of pain"
+      }
+    ],
+    "correctTreatment": {
+      "sequence": [
+        {
+          "action": "iv_fluids",
+          "description": "Start IV fluids and keep patient NPO (nothing by mouth)"
+        },
+        {
+          "action": "antibiotics",
+          "medication": "Cefazolin 1g IV + Metronidazole 500mg IV",
+          "description": "Pre-operative antibiotics to cover bowel flora"
+        },
+        {
+          "action": "surgery",
+          "description": "Urgent appendectomy (surgical removal of appendix) - can be laparoscopic or open"
+        },
+        {
+          "action": "monitor",
+          "description": "Post-operative monitoring for complications"
+        }
+      ],
+      "expectedOutcome": "With prompt appendectomy, patient should recover well. Risk of rupture decreases with early intervention."
+    },
+    "scienceBridge": {
+      "pathophysiology": "Appendicitis is inflammation of the appendix, a small pouch attached to the large intestine:\n\n1. **Obstruction**: \n   - Appendix gets blocked (by stool, lymphoid tissue, or foreign body)\n   - Mucus builds up inside, increasing pressure\n\n2. **Bacterial Overgrowth**: \n   - Normal bacteria in appendix multiply\n   - Can't drain due to obstruction\n\n3. **Inflammation**: \n   - Appendix swells and becomes inflamed\n   - Blood supply can be compromised\n   - If untreated, appendix can rupture (perforate)\n\n4. **Pain Pattern**: \n   - Starts as vague periumbilical pain (referred pain)\n   - Moves to right lower quadrant (localized inflammation)\n   - Classic migration pattern is diagnostic\n\n5. **Treatment**: \n   - Surgical removal (appendectomy) is definitive treatment\n   - Antibiotics prevent infection\n   - Early surgery prevents rupture\n\n**McBurney's Point**: Location 1/3 of the way from anterior superior iliac spine to umbilicus - classic location of appendicitis pain.",
+      "keyLearningPoints": [
+        "Appendicitis classically presents with migrating pain (periumbilical → RLQ)",
+        "Leukocytosis suggests bacterial infection/inflammation",
+        "CT scan is highly sensitive for diagnosing appendicitis",
+        "Urgent appendectomy prevents rupture and complications",
+        "Early intervention is key to prevent perforation"
+      ]
+    }
+  },
+  {
+    "id": "case-009",
+    "title": "Urinary Tract Infection",
+    "difficulty": "highschool",
+    "patientProfile": {
+      "name": "Sophie Anderson",
+      "age": 25,
+      "sex": "Female",
+      "pastMedicalHistory": [
+        "History of recurrent UTIs",
+        "Otherwise healthy"
+      ],
+      "chiefComplaint": "Painful urination and frequent urination for 2 days",
+      "presentingSymptoms": [
+        "Burning with urination (dysuria)",
+        "Frequent urination (frequency)",
+        "Urgency to urinate",
+        "Lower abdominal discomfort",
+        "No fever or back pain"
+      ]
+    },
+    "initialVitals": {
+      "hr": 78,
+      "bp": "118/75",
+      "rr": 16,
+      "spo2": 98,
+      "temp": 36.9
+    },
+    "initialNursingNotes": "Patient appears comfortable. No costovertebral angle (CVA) tenderness. Lower abdomen slightly tender. No signs of systemic infection.",
+    "investigations": [
+      {
+        "id": "urinalysis",
+        "name": "Urinalysis",
+        "timeCost": 15,
+        "result": "Positive for leukocyte esterase, nitrites, and WBCs. Many bacteria seen.",
+        "interpretation": "Findings consistent with urinary tract infection"
+      },
+      {
+        "id": "urine-culture",
+        "name": "Urine Culture",
+        "timeCost": 72,
+        "result": "E. coli > 100,000 CFU/mL (results available in 48-72 hours)",
+        "interpretation": "E. coli is the most common cause of UTIs. Culture confirms diagnosis and guides antibiotic choice."
+      }
+    ],
+    "correctTreatment": {
+      "sequence": [
+        {
+          "action": "antibiotics",
+          "medication": "Nitrofurantoin 100mg PO BID x 5 days OR Trimethoprim-sulfamethoxazole 160/800mg PO BID x 3 days",
+          "description": "Start antibiotics to treat bacterial infection"
+        },
+        {
+          "action": "symptomatic_care",
+          "description": "Encourage increased fluid intake and provide pain relief if needed"
+        },
+        {
+          "action": "education",
+          "description": "Educate about prevention: wipe front to back, urinate after intercourse, stay hydrated"
+        }
+      ],
+      "expectedOutcome": "Symptoms should improve within 24-48 hours. Complete antibiotic course to prevent recurrence."
+    },
+    "scienceBridge": {
+      "pathophysiology": "Urinary tract infections (UTIs) occur when bacteria enter and multiply in the urinary system:\n\n1. **Bacterial Entry**: \n   - Most commonly, bacteria from the gut (E. coli) enter the urethra\n   - More common in women (shorter urethra)\n   - Can ascend to bladder (cystitis) or kidneys (pyelonephritis)\n\n2. **Infection**: \n   - Bacteria multiply in urine\n   - Cause inflammation of bladder wall\n   - Leads to symptoms: pain, frequency, urgency\n\n3. **Immune Response**: \n   - White blood cells enter urine to fight infection\n   - Detected as leukocytes in urinalysis\n   - Some bacteria convert nitrates to nitrites (detected on dipstick)\n\n4. **Why Antibiotics?**: \n   - UTIs are bacterial infections\n   - Antibiotics kill the bacteria\n   - Without treatment, infection can spread to kidneys\n\n5. **Treatment**: \n   - Antibiotics target common UTI bacteria (E. coli)\n   - Increased fluids help flush bacteria out\n   - Complete course prevents recurrence",
+      "keyLearningPoints": [
+        "UTIs are caused by bacteria, most commonly E. coli",
+        "Urinalysis shows leukocytes, nitrites, and bacteria",
+        "Antibiotics are needed to treat the infection",
+        "Symptoms improve quickly with appropriate treatment",
+        "Prevention includes good hygiene and staying hydrated"
+      ]
+    }
+  },
+  {
+    "id": "case-010",
+    "title": "Sepsis from Pneumonia",
+    "difficulty": "student",
+    "patientProfile": {
+      "name": "Margaret O'Brien",
+      "age": 72,
+      "sex": "Female",
+      "pastMedicalHistory": [
+        "COPD",
+        "Heart failure",
+        "Recent hospitalization for pneumonia (2 weeks ago)"
+      ],
+      "chiefComplaint": "Confusion, fever, and rapid breathing",
+      "presentingSymptoms": [
+        "Altered mental status",
+        "High fever 39.2°C",
+        "Rapid breathing",
+        "Low blood pressure",
+        "Weakness"
+      ]
+    },
+    "initialVitals": {
+      "hr": 125,
+      "bp": "85/50",
+      "rr": 28,
+      "spo2": 88,
+      "temp": 39.2
+    },
+    "initialNursingNotes": "Patient appears very ill, confused, and lethargic. Hypotensive. Tachypneic. Lung exam reveals crackles bilaterally. Skin is warm and flushed.",
+    "investigations": [
+      {
+        "id": "cbc",
+        "name": "Complete Blood Count",
+        "timeCost": 30,
+        "result": {
+          "wbc": "18,500 /μL (markedly elevated)",
+          "neutrophils": "85% (elevated with left shift)",
+          "lymphocytes": "8%",
+          "hemoglobin": "11.5 g/dL (low)",
+          "platelets": "95,000 /μL (low)"
+        },
+        "interpretation": "Marked leukocytosis suggests severe infection. Low platelets may indicate DIC or sepsis."
+      },
+      {
+        "id": "lactate",
+        "name": "Lactate Level",
+        "timeCost": 15,
+        "result": "4.8 mmol/L (elevated - normal < 2.0)",
+        "interpretation": "Elevated lactate indicates tissue hypoperfusion and sepsis"
+      },
+      {
+        "id": "blood-culture",
+        "name": "Blood Cultures",
+        "timeCost": 120,
+        "result": "Sent to lab (results pending)",
+        "interpretation": "Critical for identifying causative organism"
+      },
+      {
+        "id": "chest-xray",
+        "name": "Chest X-Ray",
+        "timeCost": 45,
+        "result": "Bilateral lower lobe infiltrates. No pleural effusion.",
+        "interpretation": "Pneumonia with bilateral involvement"
+      },
+      {
+        "id": "bmp",
+        "name": "Basic Metabolic Panel",
+        "timeCost": 30,
+        "result": {
+          "sodium": "138 mEq/L",
+          "potassium": "4.2 mEq/L",
+          "chloride": "105 mEq/L",
+          "bicarbonate": "18 mEq/L (low - metabolic acidosis)",
+          "bun": "35 mg/dL (elevated)",
+          "creatinine": "1.8 mg/dL (elevated)"
+        },
+        "interpretation": "Metabolic acidosis and acute kidney injury suggest severe sepsis"
+      }
+    ],
+    "correctTreatment": {
+      "sequence": [
+        {
+          "action": "iv_fluids",
+          "description": "Aggressive IV fluid resuscitation (30 mL/kg) - start with 1-2 L normal saline"
+        },
+        {
+          "action": "antibiotics",
+          "medication": "Vancomycin 15-20 mg/kg IV + Piperacillin-tazobactam 4.5g IV (or similar broad-spectrum)",
+          "description": "Start broad-spectrum antibiotics immediately - do not delay"
+        },
+        {
+          "action": "vasopressors",
+          "medication": "Norepinephrine IV drip (if BP remains low after fluids)",
+          "description": "Vasopressors to maintain blood pressure and organ perfusion"
+        },
+        {
+          "action": "oxygen",
+          "description": "Supplemental oxygen or mechanical ventilation if needed"
+        },
+        {
+          "action": "source_control",
+          "description": "Identify and treat source of infection (pneumonia in this case)"
+        }
+      ],
+      "expectedOutcome": "With prompt treatment, patient should stabilize. Sepsis bundle (fluids, antibiotics, source control) within 1 hour improves outcomes significantly."
+    },
+    "scienceBridge": {
+      "pathophysiology": "Sepsis is a life-threatening condition where infection triggers a systemic inflammatory response:\n\n1. **Infection**: \n   - Bacteria enter bloodstream or cause severe local infection\n   - Triggers massive immune response\n\n2. **Systemic Inflammation**: \n   - Inflammatory mediators released throughout body\n   - Causes widespread vasodilation\n   - Leads to low blood pressure (shock)\n\n3. **Organ Dysfunction**: \n   - Low blood pressure → poor organ perfusion\n   - Kidneys: acute kidney injury (elevated creatinine)\n   - Lungs: respiratory failure\n   - Brain: confusion (altered mental status)\n   - Elevated lactate indicates tissue hypoxia\n\n4. **Compensation**: \n   - Heart rate increases to maintain cardiac output\n   - Breathing increases to compensate for low oxygen\n   - But compensation fails as sepsis worsens\n\n5. **Treatment (Sepsis Bundle)**: \n   - **Fluids**: Restore blood volume\n   - **Antibiotics**: Kill the infection (within 1 hour)\n   - **Vasopressors**: Support blood pressure\n   - **Source Control**: Remove/treat source of infection\n\n**Sepsis is a medical emergency**. Every hour delay in antibiotics increases mortality by 7-8%.",
+      "keyLearningPoints": [
+        "Sepsis is infection + systemic inflammatory response + organ dysfunction",
+        "Early recognition is critical - look for infection + hypotension + altered mental status",
+        "Sepsis bundle must be started within 1 hour (fluids, antibiotics, source control)",
+        "Elevated lactate indicates tissue hypoperfusion",
+        "Broad-spectrum antibiotics are needed until organism is identified"
+      ]
+    }
+  }
+]

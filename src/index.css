@@ -1,0 +1,39 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    background-color: #111827; /* bg-gray-900 */
+    color: #f3f4f6; /* text-gray-100 */
+  }
+}
+
+@layer utilities {
+  .ecg-line {
+    background: linear-gradient(90deg, 
+      transparent 0%, 
+      #00ff41 25%, 
+      #00ff41 26%, 
+      transparent 27%,
+      transparent 48%,
+      #00ff41 49%,
+      #00ff41 51%,
+      transparent 52%,
+      transparent 73%,
+      #00ff41 74%,
+      #00ff41 76%,
+      transparent 77%,
+      transparent 100%
+    );
+    background-size: 40px 100%;
+    animation: ecgLine 1.5s linear infinite;
+  }
+  
+  @keyframes ecgLine {
+    0% {
+      background-position: 0 0;
+    }
+    100% {
+      background-position: 40px 0;
+    }
+  }
+}
