@@ -7,7 +7,8 @@ const ActionMenu = ({
   onConsultSpecialist,
   orderedTests,
   givenTreatments,
-  currentState 
+  currentState,
+  availableTreatments = []
 }) => {
   const isTestOrdered = (testId) => {
     return orderedTests.some(t => t.id === testId);
@@ -68,38 +69,27 @@ const ActionMenu = ({
         <div className="p-4 border-b border-gray-700">
           <div className="flex items-center gap-2 mb-4">
             <Pill className="w-5 h-5 text-green-400" />
-            <h3 className="font-semibold text-white">Treatment</h3>
+            <h3 className="font-semibold text-white">Treatment Options</h3>
           </div>
-          <div className="space-y-2">
-            <ActionButton
-              label="Start Oxygen Therapy"
-              action="start_oxygen"
-              icon={<Stethoscope className="w-4 h-4" />}
-              onClick={() => onGiveMedication('start_oxygen')}
-              completed={isTreatmentGiven('start_oxygen')}
-            />
-            <ActionButton
-              label="Start Antibiotics"
-              action="start_antibiotics"
-              icon={<Pill className="w-4 h-4" />}
-              onClick={() => onGiveMedication('start_antibiotics')}
-              completed={isTreatmentGiven('start_antibiotics')}
-            />
-            <ActionButton
-              label="Start Anticoagulation"
-              action="start_anticoagulation"
-              icon={<Pill className="w-4 h-4" />}
-              onClick={() => onGiveMedication('start_anticoagulation')}
-              completed={isTreatmentGiven('start_anticoagulation')}
-            />
-            <ActionButton
-              label="Monitor Patient"
-              action="monitor"
-              icon={<CheckCircle className="w-4 h-4" />}
-              onClick={() => onGiveMedication('monitor')}
-              completed={isTreatmentGiven('monitor')}
-            />
-          </div>
+          {availableTreatments.length > 0 ? (
+            <div className="space-y-2">
+              {availableTreatments.map((treatment) => (
+                <ActionButton
+                  key={treatment.action}
+                  label={treatment.label || treatment.description}
+                  action={treatment.action}
+                  icon={treatment.icon || <Pill className="w-4 h-4" />}
+                  onClick={() => onGiveMedication(treatment.action)}
+                  completed={isTreatmentGiven(treatment.action)}
+                  medication={treatment.medication}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="text-gray-400 text-sm">
+              No treatment options available. Check case configuration.
+            </div>
+          )}
         </div>
       )}
 
@@ -120,7 +110,7 @@ const ActionMenu = ({
   );
 };
 
-const ActionButton = ({ label, icon, onClick, completed }) => (
+const ActionButton = ({ label, icon, onClick, completed, medication }) => (
   <button
     onClick={onClick}
     disabled={completed}
@@ -131,11 +121,16 @@ const ActionButton = ({ label, icon, onClick, completed }) => (
     }`}
   >
     <div className="flex items-center justify-between">
-      <div className="flex items-center gap-2">
-        {icon}
-        <span className="text-white text-sm font-medium">{label}</span>
+      <div className="flex-1">
+        <div className="flex items-center gap-2">
+          {icon}
+          <span className="text-white text-sm font-medium">{label}</span>
+        </div>
+        {medication && (
+          <div className="text-xs text-gray-400 mt-1 ml-6">{medication}</div>
+        )}
       </div>
-      {completed && <CheckCircle className="w-5 h-5 text-green-400" />}
+      {completed && <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0" />}
     </div>
   </button>
 );

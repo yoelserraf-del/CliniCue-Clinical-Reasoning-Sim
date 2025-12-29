@@ -1,8 +1,49 @@
 [
   {
     "id": "case-001",
-    "title": "Simple Pneumonia",
+    "title": "Case 1: Respiratory Distress",
     "difficulty": "student",
+    "caseLevel": 1,
+    "possibleDiagnoses": [
+      "Community-Acquired Pneumonia",
+      "Acute Bronchitis",
+      "Pulmonary Embolism",
+      "Heart Failure",
+      "Asthma Exacerbation"
+    ],
+    "correctDiagnosis": "Community-Acquired Pneumonia",
+    "availableTreatments": [
+      {
+        "action": "start_oxygen",
+        "label": "Start Oxygen Therapy",
+        "description": "Provide supplemental oxygen",
+        "medication": null
+      },
+      {
+        "action": "start_antibiotics",
+        "label": "Start Antibiotics",
+        "description": "Empiric antibiotic therapy",
+        "medication": "Ceftriaxone 1g IV + Azithromycin 500mg IV"
+      },
+      {
+        "action": "start_bronchodilator",
+        "label": "Start Bronchodilator",
+        "description": "Albuterol nebulizer",
+        "medication": "Albuterol 2.5mg via nebulizer"
+      },
+      {
+        "action": "start_anticoagulation",
+        "label": "Start Anticoagulation",
+        "description": "Heparin or DOAC",
+        "medication": "Enoxaparin 1 mg/kg SC BID"
+      },
+      {
+        "action": "monitor",
+        "label": "Monitor Patient",
+        "description": "Continue monitoring",
+        "medication": null
+      }
+    ],
     "patientProfile": {
       "name": "John Smith",
       "age": 65,
@@ -94,8 +135,49 @@
   },
   {
     "id": "case-002",
-    "title": "Pulmonary Embolism",
+    "title": "Case 1: Acute Chest Pain",
     "difficulty": "resident",
+    "caseLevel": 1,
+    "possibleDiagnoses": [
+      "Pulmonary Embolism",
+      "Acute Myocardial Infarction",
+      "Pneumonia",
+      "Aortic Dissection",
+      "Pneumothorax"
+    ],
+    "correctDiagnosis": "Pulmonary Embolism",
+    "availableTreatments": [
+      {
+        "action": "start_oxygen",
+        "label": "Start Oxygen Therapy",
+        "description": "Provide supplemental oxygen",
+        "medication": null
+      },
+      {
+        "action": "start_anticoagulation",
+        "label": "Start Anticoagulation",
+        "description": "Immediate anticoagulation",
+        "medication": "Enoxaparin 1 mg/kg SC BID OR Apixaban 10mg BID"
+      },
+      {
+        "action": "start_antibiotics",
+        "label": "Start Antibiotics",
+        "description": "Empiric antibiotic therapy",
+        "medication": "Ceftriaxone 1g IV + Azithromycin 500mg IV"
+      },
+      {
+        "action": "thrombolytics",
+        "label": "Administer Thrombolytics",
+        "description": "For massive PE with hemodynamic instability",
+        "medication": "Alteplase 100mg IV over 2 hours"
+      },
+      {
+        "action": "monitor",
+        "label": "Monitor Patient",
+        "description": "Continue monitoring",
+        "medication": null
+      }
+    ],
     "patientProfile": {
       "name": "Sarah Johnson",
       "age": 42,
@@ -200,8 +282,49 @@
   },
   {
     "id": "case-003",
-    "title": "Common Cold",
+    "title": "Case 6: Runny Nose and Sneezing",
     "difficulty": "highschool",
+    "caseLevel": 6,
+    "possibleDiagnoses": [
+      "Common Cold (Viral URI)",
+      "Allergic Rhinitis",
+      "Influenza",
+      "Sinusitis",
+      "COVID-19"
+    ],
+    "correctDiagnosis": "Common Cold (Viral URI)",
+    "availableTreatments": [
+      {
+        "action": "symptomatic_care",
+        "label": "Symptomatic Care",
+        "description": "Rest, fluids, OTC medications",
+        "medication": "Acetaminophen, decongestants"
+      },
+      {
+        "action": "antihistamine",
+        "label": "Give Antihistamine",
+        "description": "For allergies",
+        "medication": "Loratadine 10mg PO daily"
+      },
+      {
+        "action": "antiviral",
+        "label": "Start Antiviral",
+        "description": "For influenza",
+        "medication": "Oseltamivir 75mg PO BID"
+      },
+      {
+        "action": "start_antibiotics",
+        "label": "Start Antibiotics",
+        "description": "For bacterial infection",
+        "medication": "Amoxicillin 500mg PO TID"
+      },
+      {
+        "action": "monitor",
+        "label": "Monitor Patient",
+        "description": "Continue monitoring",
+        "medication": null
+      }
+    ],
     "patientProfile": {
       "name": "Emily Chen",
       "age": 18,
@@ -268,8 +391,49 @@
   },
   {
     "id": "case-004",
-    "title": "Strep Throat",
+    "title": "Case 7: Severe Sore Throat",
     "difficulty": "highschool",
+    "caseLevel": 7,
+    "possibleDiagnoses": [
+      "Strep Throat",
+      "Viral Pharyngitis",
+      "Tonsillitis",
+      "Mononucleosis",
+      "Peritonsillar Abscess"
+    ],
+    "correctDiagnosis": "Strep Throat",
+    "availableTreatments": [
+      {
+        "action": "start_antibiotics",
+        "label": "Start Antibiotics",
+        "description": "Penicillin or Amoxicillin",
+        "medication": "Penicillin V 500mg PO BID x 10 days"
+      },
+      {
+        "action": "symptomatic_care",
+        "label": "Symptomatic Care Only",
+        "description": "Rest, fluids, pain relief",
+        "medication": "Acetaminophen or Ibuprofen"
+      },
+      {
+        "action": "steroid",
+        "label": "Give Steroid",
+        "description": "For severe inflammation",
+        "medication": "Dexamethasone 10mg IV"
+      },
+      {
+        "action": "drainage",
+        "label": "Drainage Procedure",
+        "description": "For abscess",
+        "medication": null
+      },
+      {
+        "action": "monitor",
+        "label": "Monitor Patient",
+        "description": "Continue monitoring",
+        "medication": null
+      }
+    ],
     "patientProfile": {
       "name": "Michael Rodriguez",
       "age": 15,
@@ -345,8 +509,49 @@
   },
   {
     "id": "case-005",
-    "title": "Asthma Exacerbation",
+    "title": "Case 2: Exercise-Induced Breathing Difficulty",
     "difficulty": "premed",
+    "caseLevel": 2,
+    "possibleDiagnoses": [
+      "Asthma Exacerbation",
+      "Exercise-Induced Bronchospasm",
+      "Anxiety Attack",
+      "Pneumonia",
+      "Pulmonary Embolism"
+    ],
+    "correctDiagnosis": "Asthma Exacerbation",
+    "availableTreatments": [
+      {
+        "action": "start_oxygen",
+        "label": "Start Oxygen Therapy",
+        "description": "Supplemental oxygen",
+        "medication": null
+      },
+      {
+        "action": "bronchodilator",
+        "label": "Give Bronchodilator",
+        "description": "Albuterol nebulizer",
+        "medication": "Albuterol 2.5mg via nebulizer every 20 min x 3"
+      },
+      {
+        "action": "steroid",
+        "label": "Start Corticosteroids",
+        "description": "Systemic steroids",
+        "medication": "Prednisone 40-60mg PO daily x 5-7 days"
+      },
+      {
+        "action": "anxiolytic",
+        "label": "Give Anti-anxiety Medication",
+        "description": "For anxiety",
+        "medication": "Lorazepam 0.5mg PO"
+      },
+      {
+        "action": "start_antibiotics",
+        "label": "Start Antibiotics",
+        "description": "For infection",
+        "medication": "Ceftriaxone 1g IV"
+      }
+    ],
     "patientProfile": {
       "name": "David Kim",
       "age": 22,
@@ -432,8 +637,49 @@
   },
   {
     "id": "case-006",
-    "title": "Diabetic Ketoacidosis",
+    "title": "Case 3: Nausea and Confusion",
     "difficulty": "premed",
+    "caseLevel": 3,
+    "possibleDiagnoses": [
+      "Diabetic Ketoacidosis",
+      "Hyperglycemic Hyperosmolar State",
+      "Sepsis",
+      "Drug Overdose",
+      "Dehydration"
+    ],
+    "correctDiagnosis": "Diabetic Ketoacidosis",
+    "availableTreatments": [
+      {
+        "action": "iv_fluids",
+        "label": "Start IV Fluids",
+        "description": "Aggressive hydration",
+        "medication": "Normal saline 1-2L"
+      },
+      {
+        "action": "start_insulin",
+        "label": "Start Insulin Drip",
+        "description": "Continuous insulin infusion",
+        "medication": "Regular insulin 0.1 units/kg/hour IV"
+      },
+      {
+        "action": "antibiotics",
+        "label": "Start Antibiotics",
+        "description": "For infection",
+        "medication": "Broad-spectrum antibiotics"
+      },
+      {
+        "action": "naloxone",
+        "label": "Give Naloxone",
+        "description": "For opioid overdose",
+        "medication": "Naloxone 0.4mg IV"
+      },
+      {
+        "action": "monitor",
+        "label": "Monitor Electrolytes",
+        "description": "Monitor potassium closely",
+        "medication": null
+      }
+    ],
     "patientProfile": {
       "name": "Jessica Martinez",
       "age": 19,
@@ -532,8 +778,49 @@
   },
   {
     "id": "case-007",
-    "title": "Acute Myocardial Infarction",
+    "title": "Case 4: Crushing Chest Pain",
     "difficulty": "premed",
+    "caseLevel": 4,
+    "possibleDiagnoses": [
+      "Acute Myocardial Infarction",
+      "Unstable Angina",
+      "Aortic Dissection",
+      "Pulmonary Embolism",
+      "Pericarditis"
+    ],
+    "correctDiagnosis": "Acute Myocardial Infarction",
+    "availableTreatments": [
+      {
+        "action": "aspirin",
+        "label": "Give Aspirin",
+        "description": "Chew 325mg immediately",
+        "medication": "Aspirin 325mg chewed"
+      },
+      {
+        "action": "dual_antiplatelet",
+        "label": "Dual Antiplatelet Therapy",
+        "description": "Clopidogrel or Ticagrelor",
+        "medication": "Clopidogrel 600mg loading dose"
+      },
+      {
+        "action": "anticoagulation",
+        "label": "Start Anticoagulation",
+        "description": "Heparin IV",
+        "medication": "Heparin IV drip (weight-based)"
+      },
+      {
+        "action": "reperfusion",
+        "label": "Urgent Reperfusion",
+        "description": "Primary PCI or thrombolytics",
+        "medication": null
+      },
+      {
+        "action": "beta_blocker",
+        "label": "Start Beta-Blocker",
+        "description": "If hemodynamically stable",
+        "medication": "Metoprolol 25-50mg PO BID"
+      }
+    ],
     "patientProfile": {
       "name": "Robert Thompson",
       "age": 58,
@@ -643,8 +930,49 @@
   },
   {
     "id": "case-008",
-    "title": "Appendicitis",
+    "title": "Case 2: Migrating Abdominal Pain",
     "difficulty": "student",
+    "caseLevel": 2,
+    "possibleDiagnoses": [
+      "Appendicitis",
+      "Gastroenteritis",
+      "Urinary Tract Infection",
+      "Constipation",
+      "Ovarian Cyst (if female)"
+    ],
+    "correctDiagnosis": "Appendicitis",
+    "availableTreatments": [
+      {
+        "action": "iv_fluids",
+        "label": "Start IV Fluids",
+        "description": "Hydration and NPO",
+        "medication": null
+      },
+      {
+        "action": "antibiotics",
+        "label": "Start Antibiotics",
+        "description": "Pre-operative antibiotics",
+        "medication": "Cefazolin 1g IV + Metronidazole 500mg IV"
+      },
+      {
+        "action": "surgery",
+        "label": "Appendectomy",
+        "description": "Surgical removal",
+        "medication": null
+      },
+      {
+        "action": "antiemetic",
+        "label": "Give Antiemetic",
+        "description": "For nausea",
+        "medication": "Ondansetron 4mg IV"
+      },
+      {
+        "action": "laxative",
+        "label": "Give Laxative",
+        "description": "For constipation",
+        "medication": "Polyethylene glycol"
+      }
+    ],
     "patientProfile": {
       "name": "Alex Johnson",
       "age": 24,
@@ -734,8 +1062,49 @@
   },
   {
     "id": "case-009",
-    "title": "Urinary Tract Infection",
+    "title": "Case 8: Painful Urination",
     "difficulty": "highschool",
+    "caseLevel": 8,
+    "possibleDiagnoses": [
+      "Urinary Tract Infection",
+      "Vaginitis",
+      "Sexually Transmitted Infection",
+      "Kidney Stone",
+      "Interstitial Cystitis"
+    ],
+    "correctDiagnosis": "Urinary Tract Infection",
+    "availableTreatments": [
+      {
+        "action": "start_antibiotics",
+        "label": "Start Antibiotics",
+        "description": "For UTI",
+        "medication": "Nitrofurantoin 100mg PO BID x 5 days"
+      },
+      {
+        "action": "antifungal",
+        "label": "Give Antifungal",
+        "description": "For yeast infection",
+        "medication": "Fluconazole 150mg PO"
+      },
+      {
+        "action": "antiviral",
+        "label": "Start Antiviral",
+        "description": "For STI",
+        "medication": "Acyclovir (if indicated)"
+      },
+      {
+        "action": "pain_medication",
+        "label": "Give Pain Medication",
+        "description": "For kidney stone",
+        "medication": "Ketorolac 30mg IV"
+      },
+      {
+        "action": "symptomatic_care",
+        "label": "Symptomatic Care",
+        "description": "Supportive care",
+        "medication": "Increased fluids"
+      }
+    ],
     "patientProfile": {
       "name": "Sophie Anderson",
       "age": 25,
@@ -808,8 +1177,49 @@
   },
   {
     "id": "case-010",
-    "title": "Sepsis from Pneumonia",
+    "title": "Case 3: Severe Infection with Shock",
     "difficulty": "student",
+    "caseLevel": 3,
+    "possibleDiagnoses": [
+      "Sepsis from Pneumonia",
+      "Septic Shock",
+      "Cardiogenic Shock",
+      "Hypovolemic Shock",
+      "Anaphylactic Shock"
+    ],
+    "correctDiagnosis": "Sepsis from Pneumonia",
+    "availableTreatments": [
+      {
+        "action": "iv_fluids",
+        "label": "Aggressive IV Fluids",
+        "description": "30 mL/kg fluid resuscitation",
+        "medication": "Normal saline 1-2L"
+      },
+      {
+        "action": "antibiotics",
+        "label": "Broad-Spectrum Antibiotics",
+        "description": "Start immediately",
+        "medication": "Vancomycin 15-20 mg/kg IV + Piperacillin-tazobactam 4.5g IV"
+      },
+      {
+        "action": "vasopressors",
+        "label": "Start Vasopressors",
+        "description": "If BP remains low",
+        "medication": "Norepinephrine IV drip"
+      },
+      {
+        "action": "epinephrine",
+        "label": "Give Epinephrine",
+        "description": "For anaphylaxis",
+        "medication": "Epinephrine 0.3-0.5mg IM"
+      },
+      {
+        "action": "source_control",
+        "label": "Source Control",
+        "description": "Identify and treat source",
+        "medication": null
+      }
+    ],
     "patientProfile": {
       "name": "Margaret O'Brien",
       "age": 72,
@@ -921,6 +1331,1723 @@
         "Sepsis bundle must be started within 1 hour (fluids, antibiotics, source control)",
         "Elevated lactate indicates tissue hypoperfusion",
         "Broad-spectrum antibiotics are needed until organism is identified"
+      ]
+    }
+  },
+  {
+    "id": "case-hs-001",
+    "title": "Case 1: Sore Throat",
+    "difficulty": "highschool",
+    "caseLevel": 1,
+    "possibleDiagnoses": [
+      "Strep Throat",
+      "Viral Pharyngitis",
+      "Tonsillitis",
+      "Allergic Reaction",
+      "Common Cold"
+    ],
+    "correctDiagnosis": "Strep Throat",
+    "availableTreatments": [
+      {
+        "action": "start_antibiotics",
+        "label": "Start Antibiotics",
+        "description": "Penicillin or Amoxicillin",
+        "medication": "Penicillin V 500mg PO BID x 10 days"
+      },
+      {
+        "action": "symptomatic_care",
+        "label": "Symptomatic Care Only",
+        "description": "Rest, fluids, pain relief",
+        "medication": "Acetaminophen or Ibuprofen"
+      },
+      {
+        "action": "antihistamine",
+        "label": "Give Antihistamine",
+        "description": "For allergic reaction",
+        "medication": "Diphenhydramine 25mg PO"
+      },
+      {
+        "action": "monitor",
+        "label": "Monitor Patient",
+        "description": "Continue monitoring",
+        "medication": null
+      }
+    ],
+    "patientProfile": {
+      "name": "Michael Rodriguez",
+      "age": 15,
+      "sex": "Male",
+      "pastMedicalHistory": ["No significant past medical history"],
+      "chiefComplaint": "Sore throat and fever for 1 day",
+      "presentingSymptoms": [
+        "Severe sore throat, worse when swallowing",
+        "Fever 38.9°C",
+        "Headache",
+        "No cough or runny nose"
+      ]
+    },
+    "initialVitals": {
+      "hr": 88,
+      "bp": "118/72",
+      "rr": 18,
+      "spo2": 98,
+      "temp": 38.9
+    },
+    "initialNursingNotes": "Patient appears uncomfortable. Throat is very red with white patches (exudate) on tonsils. Swollen lymph nodes in neck. No cough present.",
+    "investigations": [
+      {
+        "id": "rapid-strep",
+        "name": "Rapid Strep Test",
+        "timeCost": 10,
+        "result": "Positive for Group A Streptococcus",
+        "interpretation": "Confirms bacterial infection requiring antibiotics"
+      },
+      {
+        "id": "cbc",
+        "name": "Complete Blood Count",
+        "timeCost": 30,
+        "result": {
+          "wbc": "11,000 /μL (slightly elevated)",
+          "neutrophils": "70% (elevated)",
+          "lymphocytes": "25%",
+          "hemoglobin": "14.5 g/dL",
+          "platelets": "280,000 /μL"
+        },
+        "interpretation": "Elevated white blood cells suggest bacterial infection"
+      }
+    ],
+    "correctTreatment": {
+      "sequence": [
+        {
+          "action": "start_antibiotics",
+          "description": "Start antibiotics to treat bacterial infection"
+        },
+        {
+          "action": "symptomatic_care",
+          "description": "Provide pain relief and encourage fluids"
+        }
+      ],
+      "expectedOutcome": "Symptoms should improve within 24-48 hours of starting antibiotics."
+    },
+    "scienceBridge": {
+      "pathophysiology": "Strep throat is caused by Group A Streptococcus bacteria. The body responds by sending white blood cells to fight the infection, causing inflammation (red, swollen throat) and producing pus (white patches). Unlike viral infections, bacterial infections require antibiotics to kill the bacteria and prevent complications.",
+      "keyLearningPoints": [
+        "Strep throat is bacterial, so antibiotics are needed",
+        "Rapid strep test helps confirm the diagnosis",
+        "Elevated white blood cells suggest bacterial infection",
+        "Complete antibiotic course is important"
+      ]
+    }
+  },
+  {
+    "id": "case-hs-002",
+    "title": "Case 2: Fever and Rash",
+    "difficulty": "highschool",
+    "caseLevel": 2,
+    "possibleDiagnoses": [
+      "Scarlet Fever",
+      "Measles",
+      "Allergic Reaction",
+      "Chickenpox",
+      "Roseola"
+    ],
+    "correctDiagnosis": "Scarlet Fever",
+    "availableTreatments": [
+      {
+        "action": "start_antibiotics",
+        "label": "Start Antibiotics",
+        "description": "Penicillin for strep infection",
+        "medication": "Penicillin V 500mg PO BID x 10 days"
+      },
+      {
+        "action": "antihistamine",
+        "label": "Give Antihistamine",
+        "description": "For allergic reaction",
+        "medication": "Diphenhydramine 25mg PO"
+      },
+      {
+        "action": "antiviral",
+        "label": "Start Antiviral",
+        "description": "For viral infection",
+        "medication": "Acyclovir (if indicated)"
+      },
+      {
+        "action": "symptomatic_care",
+        "label": "Symptomatic Care Only",
+        "description": "Supportive care",
+        "medication": "Acetaminophen for fever"
+      }
+    ],
+    "patientProfile": {
+      "name": "Emma Wilson",
+      "age": 8,
+      "sex": "Female",
+      "pastMedicalHistory": ["No significant past medical history"],
+      "chiefComplaint": "Fever and rash for 2 days",
+      "presentingSymptoms": [
+        "High fever 39.5°C",
+        "Sandpaper-like rash on trunk and extremities",
+        "Strawberry tongue",
+        "Sore throat",
+        "Headache"
+      ]
+    },
+    "initialVitals": {
+      "hr": 95,
+      "bp": "110/70",
+      "rr": 20,
+      "spo2": 98,
+      "temp": 39.5
+    },
+    "initialNursingNotes": "Patient appears unwell. Bright red, sandpaper-like rash covering trunk and extremities. Tongue appears red with white coating (strawberry tongue). Throat is red with exudate.",
+    "investigations": [
+      {
+        "id": "rapid-strep",
+        "name": "Rapid Strep Test",
+        "timeCost": 10,
+        "result": "Positive for Group A Streptococcus",
+        "interpretation": "Confirms strep infection, which can cause scarlet fever"
+      },
+      {
+        "id": "cbc",
+        "name": "Complete Blood Count",
+        "timeCost": 30,
+        "result": {
+          "wbc": "13,500 /μL (elevated)",
+          "neutrophils": "75% (elevated)",
+          "lymphocytes": "20%",
+          "hemoglobin": "13.0 g/dL",
+          "platelets": "300,000 /μL"
+        },
+        "interpretation": "Elevated white blood cells consistent with bacterial infection"
+      }
+    ],
+    "correctTreatment": {
+      "sequence": [
+        {
+          "action": "start_antibiotics",
+          "description": "Start antibiotics for strep infection"
+        },
+        {
+          "action": "symptomatic_care",
+          "description": "Fever control and comfort measures"
+        }
+      ],
+      "expectedOutcome": "Rash and symptoms should improve with antibiotic treatment."
+    },
+    "scienceBridge": {
+      "pathophysiology": "Scarlet fever is caused by Group A Streptococcus bacteria that produce a toxin. The toxin causes the characteristic sandpaper rash and strawberry tongue. The rash is a result of the body's inflammatory response to the bacterial toxin.",
+      "keyLearningPoints": [
+        "Scarlet fever is a complication of strep throat",
+        "The rash is caused by a bacterial toxin",
+        "Antibiotics are essential to treat the infection",
+        "Early treatment prevents complications"
+      ]
+    }
+  },
+  {
+    "id": "case-hs-003",
+    "title": "Case 3: Abdominal Pain",
+    "difficulty": "highschool",
+    "caseLevel": 3,
+    "possibleDiagnoses": [
+      "Appendicitis",
+      "Gastroenteritis",
+      "Urinary Tract Infection",
+      "Constipation",
+      "Food Poisoning"
+    ],
+    "correctDiagnosis": "Appendicitis",
+    "availableTreatments": [
+      {
+        "action": "iv_fluids",
+        "label": "Start IV Fluids",
+        "description": "Hydration and NPO",
+        "medication": null
+      },
+      {
+        "action": "antibiotics",
+        "label": "Start Antibiotics",
+        "description": "Pre-operative antibiotics",
+        "medication": "Cefazolin 1g IV + Metronidazole 500mg IV"
+      },
+      {
+        "action": "surgery",
+        "label": "Appendectomy",
+        "description": "Surgical removal of appendix",
+        "medication": null
+      },
+      {
+        "action": "antiemetic",
+        "label": "Give Antiemetic",
+        "description": "For nausea/vomiting",
+        "medication": "Ondansetron 4mg IV"
+      },
+      {
+        "action": "laxative",
+        "label": "Give Laxative",
+        "description": "For constipation",
+        "medication": "Polyethylene glycol"
+      }
+    ],
+    "patientProfile": {
+      "name": "Alex Johnson",
+      "age": 24,
+      "sex": "Male",
+      "pastMedicalHistory": ["No significant past medical history"],
+      "chiefComplaint": "Abdominal pain for 12 hours, starting around belly button, now in right lower quadrant",
+      "presentingSymptoms": [
+        "Abdominal pain that migrated from periumbilical to RLQ",
+        "Pain worsened with movement",
+        "Nausea and vomiting",
+        "Loss of appetite",
+        "Low-grade fever"
+      ]
+    },
+    "initialVitals": {
+      "hr": 88,
+      "bp": "125/80",
+      "rr": 18,
+      "spo2": 98,
+      "temp": 37.8
+    },
+    "initialNursingNotes": "Patient appears uncomfortable, guarding right lower quadrant. Pain worse with palpation (McBurney's point). Rebound tenderness present.",
+    "investigations": [
+      {
+        "id": "cbc",
+        "name": "Complete Blood Count",
+        "timeCost": 30,
+        "result": {
+          "wbc": "13,500 /μL (elevated)",
+          "neutrophils": "82% (elevated)",
+          "lymphocytes": "12%",
+          "hemoglobin": "14.2 g/dL",
+          "platelets": "250,000 /μL"
+        },
+        "interpretation": "Leukocytosis with neutrophilia suggests bacterial infection/inflammation"
+      },
+      {
+        "id": "ct-abdomen",
+        "name": "CT Abdomen/Pelvis",
+        "timeCost": 90,
+        "result": "Enlarged, fluid-filled appendix (diameter 1.2 cm). Periappendiceal fat stranding.",
+        "interpretation": "Findings consistent with acute appendicitis"
+      }
+    ],
+    "correctTreatment": {
+      "sequence": [
+        {
+          "action": "iv_fluids",
+          "description": "Start IV fluids and keep patient NPO"
+        },
+        {
+          "action": "antibiotics",
+          "description": "Pre-operative antibiotics"
+        },
+        {
+          "action": "surgery",
+          "description": "Urgent appendectomy"
+        }
+      ],
+      "expectedOutcome": "With prompt appendectomy, patient should recover well."
+    },
+    "scienceBridge": {
+      "pathophysiology": "Appendicitis occurs when the appendix gets blocked, causing mucus to build up and bacteria to multiply. This leads to inflammation and swelling. If untreated, the appendix can rupture, which is dangerous.",
+      "keyLearningPoints": [
+        "Appendicitis classically presents with migrating pain",
+        "Leukocytosis suggests infection/inflammation",
+        "Urgent surgery prevents rupture",
+        "Early intervention is key"
+      ]
+    }
+  },
+  {
+    "id": "case-hs-004",
+    "title": "Case 4: Difficulty Breathing",
+    "difficulty": "highschool",
+    "caseLevel": 4,
+    "possibleDiagnoses": [
+      "Asthma",
+      "Pneumonia",
+      "Anxiety Attack",
+      "Allergic Reaction",
+      "Heart Problem"
+    ],
+    "correctDiagnosis": "Asthma",
+    "availableTreatments": [
+      {
+        "action": "start_oxygen",
+        "label": "Start Oxygen Therapy",
+        "description": "Supplemental oxygen",
+        "medication": null
+      },
+      {
+        "action": "bronchodilator",
+        "label": "Give Bronchodilator",
+        "description": "Albuterol to open airways",
+        "medication": "Albuterol 2.5mg via nebulizer"
+      },
+      {
+        "action": "start_antibiotics",
+        "label": "Start Antibiotics",
+        "description": "For bacterial infection",
+        "medication": "Ceftriaxone 1g IV"
+      },
+      {
+        "action": "antihistamine",
+        "label": "Give Antihistamine",
+        "description": "For allergic reaction",
+        "medication": "Diphenhydramine 25mg PO"
+      },
+      {
+        "action": "anxiolytic",
+        "label": "Give Anti-anxiety Medication",
+        "description": "For anxiety",
+        "medication": "Lorazepam 0.5mg PO"
+      }
+    ],
+    "patientProfile": {
+      "name": "David Kim",
+      "age": 22,
+      "sex": "Male",
+      "pastMedicalHistory": [
+        "Asthma (diagnosed in childhood)",
+        "Uses albuterol inhaler as needed"
+      ],
+      "chiefComplaint": "Shortness of breath and wheezing after exercise",
+      "presentingSymptoms": [
+        "Chest tightness",
+        "Wheezing",
+        "Shortness of breath",
+        "Cough",
+        "Triggered by exercise"
+      ]
+    },
+    "initialVitals": {
+      "hr": 100,
+      "bp": "125/80",
+      "rr": 24,
+      "spo2": 94,
+      "temp": 36.9
+    },
+    "initialNursingNotes": "Patient appears anxious and dyspneic. Audible wheezing on expiration. Using accessory muscles to breathe. Oxygen saturation improves to 96% with rest.",
+    "investigations": [
+      {
+        "id": "peak-flow",
+        "name": "Peak Flow Measurement",
+        "timeCost": 5,
+        "result": "280 L/min (patient's baseline is 450 L/min - 62% of baseline)",
+        "interpretation": "Significantly reduced peak flow indicates airway obstruction"
+      },
+      {
+        "id": "chest-xray",
+        "name": "Chest X-Ray",
+        "timeCost": 45,
+        "result": "Hyperinflated lungs bilaterally. No consolidation.",
+        "interpretation": "Hyperinflation is characteristic of asthma"
+      }
+    ],
+    "correctTreatment": {
+      "sequence": [
+        {
+          "action": "start_oxygen",
+          "description": "Provide supplemental oxygen"
+        },
+        {
+          "action": "bronchodilator",
+          "description": "Give bronchodilator to open airways"
+        }
+      ],
+      "expectedOutcome": "Patient should show improvement within 1-2 hours."
+    },
+    "scienceBridge": {
+      "pathophysiology": "Asthma is a condition where the airways become narrow due to inflammation and muscle tightening. This makes it hard to breathe out, causing wheezing. Bronchodilators relax the airway muscles to open them up.",
+      "keyLearningPoints": [
+        "Asthma involves airway narrowing",
+        "Bronchodilators provide immediate relief",
+        "Peak flow measurement helps assess severity",
+        "Hyperinflation on CXR is characteristic"
+      ]
+    }
+  },
+  {
+    "id": "case-hs-005",
+    "title": "Case 5: High Fever and Confusion",
+    "difficulty": "highschool",
+    "caseLevel": 5,
+    "possibleDiagnoses": [
+      "Meningitis",
+      "Severe Infection",
+      "Heat Stroke",
+      "Drug Overdose",
+      "Encephalitis"
+    ],
+    "correctDiagnosis": "Meningitis",
+    "availableTreatments": [
+      {
+        "action": "iv_fluids",
+        "label": "Start IV Fluids",
+        "description": "Aggressive hydration",
+        "medication": null
+      },
+      {
+        "action": "antibiotics",
+        "label": "Start Antibiotics Immediately",
+        "description": "Empiric antibiotics for meningitis",
+        "medication": "Ceftriaxone 2g IV + Vancomycin 15-20 mg/kg IV"
+      },
+      {
+        "action": "antiviral",
+        "label": "Start Antiviral",
+        "description": "For viral meningitis",
+        "medication": "Acyclovir 10mg/kg IV"
+      },
+      {
+        "action": "cooling",
+        "label": "Cooling Measures",
+        "description": "For heat stroke",
+        "medication": null
+      },
+      {
+        "action": "naloxone",
+        "label": "Give Naloxone",
+        "description": "For opioid overdose",
+        "medication": "Naloxone 0.4mg IV"
+      }
+    ],
+    "patientProfile": {
+      "name": "James Miller",
+      "age": 18,
+      "sex": "Male",
+      "pastMedicalHistory": ["No significant past medical history"],
+      "chiefComplaint": "High fever, severe headache, and confusion",
+      "presentingSymptoms": [
+        "Fever 40.1°C",
+        "Severe headache",
+        "Neck stiffness",
+        "Confusion and disorientation",
+        "Photophobia (sensitivity to light)",
+        "Nausea and vomiting"
+      ]
+    },
+    "initialVitals": {
+      "hr": 110,
+      "bp": "130/85",
+      "rr": 22,
+      "spo2": 96,
+      "temp": 40.1
+    },
+    "initialNursingNotes": "Patient appears very ill and confused. Neck is stiff and painful to move. Positive Kernig's sign (pain when straightening leg). Photophobic. Rash not present initially.",
+    "investigations": [
+      {
+        "id": "cbc",
+        "name": "Complete Blood Count",
+        "timeCost": 30,
+        "result": {
+          "wbc": "15,000 /μL (markedly elevated)",
+          "neutrophils": "85% (elevated)",
+          "lymphocytes": "10%",
+          "hemoglobin": "14.0 g/dL",
+          "platelets": "200,000 /μL"
+        },
+        "interpretation": "Marked leukocytosis suggests severe infection"
+      },
+      {
+        "id": "lumbar-puncture",
+        "name": "Lumbar Puncture (Spinal Tap)",
+        "timeCost": 60,
+        "result": "CSF: WBC 2,500/μL (elevated), protein 150 mg/dL (elevated), glucose 30 mg/dL (low), Gram stain shows gram-negative diplococci",
+        "interpretation": "Findings consistent with bacterial meningitis. Gram stain suggests Neisseria meningitidis."
+      },
+      {
+        "id": "blood-culture",
+        "name": "Blood Cultures",
+        "timeCost": 120,
+        "result": "Sent to lab (results pending)",
+        "interpretation": "Critical for identifying causative organism"
+      }
+    ],
+    "correctTreatment": {
+      "sequence": [
+        {
+          "action": "antibiotics",
+          "description": "Start empiric antibiotics immediately - DO NOT delay"
+        },
+        {
+          "action": "iv_fluids",
+          "description": "IV fluids for hydration"
+        }
+      ],
+      "expectedOutcome": "With prompt antibiotic treatment, patient should stabilize. Early treatment is critical."
+    },
+    "scienceBridge": {
+      "pathophysiology": "Meningitis is inflammation of the membranes covering the brain and spinal cord. Bacteria enter the bloodstream and cross into the cerebrospinal fluid, causing inflammation. This leads to increased pressure in the brain, causing headache, neck stiffness, and confusion. Without prompt treatment, it can be fatal.",
+      "keyLearningPoints": [
+        "Meningitis is a medical emergency",
+        "Antibiotics must be started immediately",
+        "Neck stiffness and photophobia are classic signs",
+        "CSF analysis confirms the diagnosis",
+        "Early treatment saves lives"
+      ]
+    }
+  },
+  {
+    "id": "case-pm-001",
+    "title": "Case 1: Diabetic Emergency",
+    "difficulty": "premed",
+    "caseLevel": 1,
+    "possibleDiagnoses": [
+      "Diabetic Ketoacidosis",
+      "Hyperglycemic Hyperosmolar State",
+      "Hypoglycemia",
+      "Sepsis",
+      "Dehydration"
+    ],
+    "correctDiagnosis": "Diabetic Ketoacidosis",
+    "availableTreatments": [
+      {
+        "action": "iv_fluids",
+        "label": "Start IV Fluids",
+        "description": "Aggressive hydration - 1-2L normal saline",
+        "medication": null
+      },
+      {
+        "action": "start_insulin",
+        "label": "Start Insulin Drip",
+        "description": "Continuous insulin infusion",
+        "medication": "Regular insulin 0.1 units/kg/hour IV"
+      },
+      {
+        "action": "glucose",
+        "label": "Give Glucose",
+        "description": "For hypoglycemia",
+        "medication": "D50W 50mL IV"
+      },
+      {
+        "action": "antibiotics",
+        "label": "Start Antibiotics",
+        "description": "For infection",
+        "medication": "Broad-spectrum antibiotics"
+      },
+      {
+        "action": "monitor",
+        "label": "Monitor Electrolytes",
+        "description": "Monitor potassium closely",
+        "medication": null
+      }
+    ],
+    "patientProfile": {
+      "name": "Jessica Martinez",
+      "age": 19,
+      "sex": "Female",
+      "pastMedicalHistory": [
+        "Type 1 Diabetes Mellitus (diagnosed 2 years ago)",
+        "Recently started college, stress with classes",
+        "Admitted to forgetting insulin doses recently"
+      ],
+      "chiefComplaint": "Nausea, vomiting, and increased urination for 2 days",
+      "presentingSymptoms": [
+        "Nausea and vomiting",
+        "Increased thirst and urination",
+        "Abdominal pain",
+        "Confusion and fatigue",
+        "Fruity-smelling breath"
+      ]
+    },
+    "initialVitals": {
+      "hr": 120,
+      "bp": "95/60",
+      "rr": 28,
+      "spo2": 98,
+      "temp": 37.2
+    },
+    "initialNursingNotes": "Patient appears dehydrated and confused. Deep, rapid breathing (Kussmaul respirations). Fruity odor to breath. Skin is warm and dry.",
+    "investigations": [
+      {
+        "id": "glucose",
+        "name": "Blood Glucose",
+        "timeCost": 5,
+        "result": "580 mg/dL (severely elevated - normal 70-100 mg/dL)",
+        "interpretation": "Severe hyperglycemia indicates uncontrolled diabetes"
+      },
+      {
+        "id": "abg",
+        "name": "Arterial Blood Gas",
+        "timeCost": 15,
+        "result": "pH 7.15, pCO2 25 mmHg, HCO3- 8 mEq/L, Anion gap 24",
+        "interpretation": "Metabolic acidosis with high anion gap indicates ketoacidosis"
+      },
+      {
+        "id": "ketones",
+        "name": "Serum Ketones",
+        "timeCost": 10,
+        "result": "Beta-hydroxybutyrate 5.2 mmol/L (elevated - normal < 0.6)",
+        "interpretation": "Elevated ketones confirm diabetic ketoacidosis"
+      }
+    ],
+    "correctTreatment": {
+      "sequence": [
+        {
+          "action": "iv_fluids",
+          "description": "Start IV fluids to correct dehydration"
+        },
+        {
+          "action": "start_insulin",
+          "description": "Start continuous insulin infusion"
+        },
+        {
+          "action": "monitor",
+          "description": "Monitor potassium closely"
+        }
+      ],
+      "expectedOutcome": "Glucose should decrease by 50-75 mg/dL per hour. pH should normalize."
+    },
+    "scienceBridge": {
+      "pathophysiology": "Diabetic Ketoacidosis (DKA) occurs when there's insufficient insulin. Without insulin, cells can't use glucose, so it builds up in blood (hyperglycemia). The body breaks down fat for energy instead, producing ketones (acids) as byproduct. Ketones accumulate, causing acidosis. The body tries to compensate with deep breathing (Kussmaul respirations).",
+      "keyLearningPoints": [
+        "DKA is caused by insulin deficiency",
+        "High anion gap metabolic acidosis is characteristic",
+        "Treatment requires IV fluids, insulin, and electrolyte replacement",
+        "Kussmaul respirations compensate for acidosis",
+        "Potassium will drop as insulin drives it into cells"
+      ]
+    }
+  },
+  {
+    "id": "case-ms-001",
+    "title": "Case 1: Chest Pain and Sweating",
+    "difficulty": "student",
+    "caseLevel": 1,
+    "possibleDiagnoses": [
+      "Acute Myocardial Infarction",
+      "Unstable Angina",
+      "Aortic Dissection",
+      "Pulmonary Embolism",
+      "Pericarditis"
+    ],
+    "correctDiagnosis": "Acute Myocardial Infarction",
+    "availableTreatments": [
+      {
+        "action": "aspirin",
+        "label": "Give Aspirin",
+        "description": "Chew 325mg immediately",
+        "medication": "Aspirin 325mg chewed"
+      },
+      {
+        "action": "dual_antiplatelet",
+        "label": "Dual Antiplatelet Therapy",
+        "description": "Clopidogrel or Ticagrelor",
+        "medication": "Clopidogrel 600mg loading dose"
+      },
+      {
+        "action": "anticoagulation",
+        "label": "Start Anticoagulation",
+        "description": "Heparin IV",
+        "medication": "Heparin IV drip (weight-based)"
+      },
+      {
+        "action": "reperfusion",
+        "label": "Urgent Reperfusion",
+        "description": "Primary PCI or thrombolytics",
+        "medication": null
+      },
+      {
+        "action": "beta_blocker",
+        "label": "Start Beta-Blocker",
+        "description": "If hemodynamically stable",
+        "medication": "Metoprolol 25-50mg PO BID"
+      }
+    ],
+    "patientProfile": {
+      "name": "Robert Thompson",
+      "age": 58,
+      "sex": "Male",
+      "pastMedicalHistory": [
+        "Hypertension",
+        "Hyperlipidemia",
+        "Type 2 Diabetes",
+        "Smoking: 30 pack-years, current smoker"
+      ],
+      "chiefComplaint": "Severe chest pain for 30 minutes",
+      "presentingSymptoms": [
+        "Crushing substernal chest pain",
+        "Pain radiates to left arm and jaw",
+        "Nausea and diaphoresis",
+        "Shortness of breath",
+        "Pain started at rest"
+      ]
+    },
+    "initialVitals": {
+      "hr": 95,
+      "bp": "150/90",
+      "rr": 20,
+      "spo2": 96,
+      "temp": 37.0
+    },
+    "initialNursingNotes": "Patient appears anxious and diaphoretic. Describes chest pain as 'pressure' and 'crushing'. Pain started at rest. ECG shows ST elevation in leads II, III, aVF.",
+    "investigations": [
+      {
+        "id": "ecg",
+        "name": "12-Lead ECG",
+        "timeCost": 5,
+        "result": "ST elevation in leads II, III, aVF. Q waves developing.",
+        "interpretation": "ST elevation myocardial infarction (STEMI) - inferior wall MI"
+      },
+      {
+        "id": "troponin",
+        "name": "Troponin I",
+        "timeCost": 30,
+        "result": "8.5 ng/mL (markedly elevated - normal < 0.04 ng/mL)",
+        "interpretation": "Highly elevated troponin confirms myocardial injury"
+      }
+    ],
+    "correctTreatment": {
+      "sequence": [
+        {
+          "action": "aspirin",
+          "description": "Aspirin prevents further platelet aggregation"
+        },
+        {
+          "action": "dual_antiplatelet",
+          "description": "Dual antiplatelet therapy"
+        },
+        {
+          "action": "reperfusion",
+          "description": "Urgent reperfusion: Primary PCI within 90 minutes"
+        }
+      ],
+      "expectedOutcome": "With prompt reperfusion, patient should have resolution of chest pain."
+    },
+    "scienceBridge": {
+      "pathophysiology": "Myocardial infarction occurs when a blood clot blocks a coronary artery, cutting off blood supply to heart muscle. Cells downstream die if blood flow isn't restored quickly. Dead cells release troponin. ST elevation on ECG indicates acute injury. Time to treatment is critical - 'time is muscle'.",
+      "keyLearningPoints": [
+        "STEMI requires urgent reperfusion (PCI or thrombolytics)",
+        "ST elevation on ECG indicates acute injury",
+        "Troponin is the gold standard marker",
+        "Dual antiplatelet therapy prevents further clotting",
+        "Time to treatment is critical"
+      ]
+    }
+  },
+  {
+    "id": "case-res-001",
+    "title": "Case 1: Complex Multi-System Failure",
+    "difficulty": "resident",
+    "caseLevel": 1,
+    "possibleDiagnoses": [
+      "Septic Shock",
+      "Cardiogenic Shock",
+      "Anaphylactic Shock",
+      "Hemorrhagic Shock",
+      "Neurogenic Shock"
+    ],
+    "correctDiagnosis": "Septic Shock",
+    "availableTreatments": [
+      {
+        "action": "iv_fluids",
+        "label": "Aggressive IV Fluids",
+        "description": "30 mL/kg fluid resuscitation",
+        "medication": "Normal saline 1-2L"
+      },
+      {
+        "action": "antibiotics",
+        "label": "Broad-Spectrum Antibiotics",
+        "description": "Start immediately",
+        "medication": "Vancomycin 15-20 mg/kg IV + Piperacillin-tazobactam 4.5g IV"
+      },
+      {
+        "action": "vasopressors",
+        "label": "Start Vasopressors",
+        "description": "If BP remains low after fluids",
+        "medication": "Norepinephrine IV drip"
+      },
+      {
+        "action": "source_control",
+        "label": "Source Control",
+        "description": "Identify and treat source",
+        "medication": null
+      },
+      {
+        "action": "epinephrine",
+        "label": "Give Epinephrine",
+        "description": "For anaphylaxis",
+        "medication": "Epinephrine 0.3-0.5mg IM"
+      }
+    ],
+    "patientProfile": {
+      "name": "Margaret O'Brien",
+      "age": 72,
+      "sex": "Female",
+      "pastMedicalHistory": [
+        "COPD",
+        "Heart failure",
+        "Recent hospitalization for pneumonia (2 weeks ago)"
+      ],
+      "chiefComplaint": "Confusion, fever, and rapid breathing",
+      "presentingSymptoms": [
+        "Altered mental status",
+        "High fever 39.2°C",
+        "Rapid breathing",
+        "Low blood pressure",
+        "Weakness"
+      ]
+    },
+    "initialVitals": {
+      "hr": 125,
+      "bp": "85/50",
+      "rr": 28,
+      "spo2": 88,
+      "temp": 39.2
+    },
+    "initialNursingNotes": "Patient appears very ill, confused, and lethargic. Hypotensive. Tachypneic. Lung exam reveals crackles bilaterally. Skin is warm and flushed.",
+    "investigations": [
+      {
+        "id": "lactate",
+        "name": "Lactate Level",
+        "timeCost": 15,
+        "result": "4.8 mmol/L (elevated - normal < 2.0)",
+        "interpretation": "Elevated lactate indicates tissue hypoperfusion and sepsis"
+      },
+      {
+        "id": "cbc",
+        "name": "Complete Blood Count",
+        "timeCost": 30,
+        "result": {
+          "wbc": "18,500 /μL (markedly elevated)",
+          "neutrophils": "85% (elevated with left shift)",
+          "platelets": "95,000 /μL (low)"
+        },
+        "interpretation": "Marked leukocytosis suggests severe infection. Low platelets may indicate DIC."
+      },
+      {
+        "id": "blood-culture",
+        "name": "Blood Cultures",
+        "timeCost": 120,
+        "result": "Sent to lab (results pending)",
+        "interpretation": "Critical for identifying causative organism"
+      }
+    ],
+    "correctTreatment": {
+      "sequence": [
+        {
+          "action": "iv_fluids",
+          "description": "Aggressive IV fluid resuscitation"
+        },
+        {
+          "action": "antibiotics",
+          "description": "Start broad-spectrum antibiotics immediately"
+        },
+        {
+          "action": "vasopressors",
+          "description": "If BP remains low after fluids"
+        }
+      ],
+      "expectedOutcome": "With prompt treatment, patient should stabilize. Sepsis bundle within 1 hour improves outcomes."
+    },
+    "scienceBridge": {
+      "pathophysiology": "Sepsis is a life-threatening condition where infection triggers systemic inflammation. Inflammatory mediators cause widespread vasodilation, leading to low blood pressure (shock). This causes poor organ perfusion, leading to organ dysfunction. Elevated lactate indicates tissue hypoxia. Treatment requires the sepsis bundle: fluids, antibiotics, vasopressors, and source control.",
+      "keyLearningPoints": [
+        "Sepsis is infection + systemic inflammation + organ dysfunction",
+        "Early recognition is critical",
+        "Sepsis bundle must be started within 1 hour",
+        "Elevated lactate indicates tissue hypoperfusion",
+        "Every hour delay in antibiotics increases mortality"
+      ]
+    }
+  },
+  {
+    "id": "case-pm-002",
+    "title": "Case 5: Acute Kidney Injury",
+    "difficulty": "premed",
+    "caseLevel": 5,
+    "possibleDiagnoses": [
+      "Acute Kidney Injury from Contrast",
+      "Acute Tubular Necrosis",
+      "Prerenal Azotemia",
+      "Glomerulonephritis",
+      "Obstructive Uropathy"
+    ],
+    "correctDiagnosis": "Acute Kidney Injury from Contrast",
+    "availableTreatments": [
+      {
+        "action": "iv_fluids",
+        "label": "Aggressive IV Fluids",
+        "description": "Hydration to flush contrast",
+        "medication": "Normal saline 1-2L"
+      },
+      {
+        "action": "bicarbonate",
+        "label": "Sodium Bicarbonate",
+        "description": "Alkalinize urine",
+        "medication": "Sodium bicarbonate 150 mEq in 1L D5W"
+      },
+      {
+        "action": "dialysis",
+        "label": "Hemodialysis",
+        "description": "For severe AKI",
+        "medication": null
+      },
+      {
+        "action": "steroid",
+        "label": "Start Steroids",
+        "description": "For glomerulonephritis",
+        "medication": "Prednisone 1mg/kg PO daily"
+      },
+      {
+        "action": "foley",
+        "label": "Place Foley Catheter",
+        "description": "For obstruction",
+        "medication": null
+      }
+    ],
+    "patientProfile": {
+      "name": "Thomas Anderson",
+      "age": 68,
+      "sex": "Male",
+      "pastMedicalHistory": [
+        "Chronic Kidney Disease (baseline Cr 1.4)",
+        "Diabetes",
+        "Hypertension",
+        "Underwent CT with contrast yesterday"
+      ],
+      "chiefComplaint": "Decreased urine output and fatigue",
+      "presentingSymptoms": [
+        "Oliguria (urine output < 400mL/day)",
+        "Fatigue and weakness",
+        "Nausea",
+        "Swelling in legs",
+        "No chest pain or shortness of breath"
+      ]
+    },
+    "initialVitals": {
+      "hr": 88,
+      "bp": "145/90",
+      "rr": 18,
+      "spo2": 96,
+      "temp": 36.8
+    },
+    "initialNursingNotes": "Patient appears tired. Mild peripheral edema. Lungs clear. No signs of volume overload. Urine output has been minimal since contrast study.",
+    "investigations": [
+      {
+        "id": "bmp",
+        "name": "Basic Metabolic Panel",
+        "timeCost": 30,
+        "result": {
+          "creatinine": "3.2 mg/dL (elevated from baseline 1.4)",
+          "bun": "65 mg/dL (elevated)",
+          "sodium": "138 mEq/L",
+          "potassium": "5.1 mEq/L (elevated)",
+          "bicarbonate": "18 mEq/L (low)"
+        },
+        "interpretation": "Acute kidney injury - creatinine doubled from baseline"
+      },
+      {
+        "id": "urinalysis",
+        "name": "Urinalysis",
+        "timeCost": 15,
+        "result": "Muddy brown casts, granular casts, no WBCs or RBCs",
+        "interpretation": "Findings consistent with acute tubular necrosis"
+      },
+      {
+        "id": "fena",
+        "name": "Fractional Excretion of Sodium",
+        "timeCost": 30,
+        "result": "FENa > 2% (elevated)",
+        "interpretation": "Suggests intrinsic renal disease rather than prerenal"
+      }
+    ],
+    "correctTreatment": {
+      "sequence": [
+        {
+          "action": "iv_fluids",
+          "description": "Aggressive hydration to flush contrast"
+        },
+        {
+          "action": "bicarbonate",
+          "description": "Alkalinize urine to prevent contrast nephropathy"
+        }
+      ],
+      "expectedOutcome": "With aggressive hydration, kidney function should improve over days to weeks."
+    },
+    "scienceBridge": {
+      "pathophysiology": "Contrast-induced nephropathy occurs when contrast dye causes direct toxicity to renal tubules. The contrast causes vasoconstriction and direct cellular damage. Risk factors include pre-existing kidney disease, diabetes, and dehydration. Prevention involves hydration before and after contrast administration.",
+      "keyLearningPoints": [
+        "Contrast can cause acute kidney injury",
+        "Hydration before and after contrast is key to prevention",
+        "Creatinine elevation indicates AKI",
+        "Muddy brown casts suggest tubular necrosis",
+        "FENa helps differentiate intrinsic from prerenal causes"
+      ]
+    }
+  },
+  {
+    "id": "case-ms-002",
+    "title": "Case 2: Acute Liver Failure",
+    "difficulty": "student",
+    "caseLevel": 2,
+    "possibleDiagnoses": [
+      "Acetaminophen Overdose",
+      "Viral Hepatitis",
+      "Autoimmune Hepatitis",
+      "Wilson's Disease",
+      "Ischemic Hepatitis"
+    ],
+    "correctDiagnosis": "Acetaminophen Overdose",
+    "availableTreatments": [
+      {
+        "action": "nac",
+        "label": "N-Acetylcysteine (NAC)",
+        "description": "Antidote for acetaminophen",
+        "medication": "NAC 150mg/kg IV loading, then 50mg/kg over 4h, then 100mg/kg over 16h"
+      },
+      {
+        "action": "antiviral",
+        "label": "Start Antiviral",
+        "description": "For viral hepatitis",
+        "medication": "Entecavir or Tenofovir"
+      },
+      {
+        "action": "steroid",
+        "label": "Start Steroids",
+        "description": "For autoimmune hepatitis",
+        "medication": "Prednisone 40-60mg PO daily"
+      },
+      {
+        "action": "penicillamine",
+        "label": "Start Penicillamine",
+        "description": "For Wilson's disease",
+        "medication": "Penicillamine 250mg PO QID"
+      },
+      {
+        "action": "liver_transplant",
+        "label": "Liver Transplant Evaluation",
+        "description": "For severe liver failure",
+        "medication": null
+      }
+    ],
+    "patientProfile": {
+      "name": "Lisa Chang",
+      "age": 32,
+      "sex": "Female",
+      "pastMedicalHistory": [
+        "Depression",
+        "Chronic pain",
+        "No liver disease"
+      ],
+      "chiefComplaint": "Nausea, vomiting, and right upper quadrant pain",
+      "presentingSymptoms": [
+        "Severe nausea and vomiting",
+        "Right upper quadrant pain",
+        "Jaundice (yellow skin and eyes)",
+        "Confusion",
+        "Dark urine"
+      ]
+    },
+    "initialVitals": {
+      "hr": 105,
+      "bp": "110/70",
+      "rr": 20,
+      "spo2": 96,
+      "temp": 37.5
+    },
+    "initialNursingNotes": "Patient appears jaundiced and confused. Right upper quadrant tenderness. No signs of chronic liver disease. Family reports patient took 'many pain pills' yesterday.",
+    "investigations": [
+      {
+        "id": "lft",
+        "name": "Liver Function Tests",
+        "timeCost": 30,
+        "result": {
+          "alt": "4,500 U/L (markedly elevated)",
+          "ast": "3,800 U/L (markedly elevated)",
+          "bilirubin": "8.5 mg/dL (elevated)",
+          "inr": "2.8 (elevated)",
+          "albumin": "3.2 g/dL"
+        },
+        "interpretation": "Severe hepatocellular injury with synthetic dysfunction"
+      },
+      {
+        "id": "acetaminophen_level",
+        "name": "Acetaminophen Level",
+        "timeCost": 60,
+        "result": "180 mcg/mL (toxic level - normal < 10)",
+        "interpretation": "Toxic acetaminophen level confirms overdose"
+      },
+      {
+        "id": "coagulation",
+        "name": "Coagulation Studies",
+        "timeCost": 30,
+        "result": "INR 2.8, PT 28 seconds (prolonged)",
+        "interpretation": "Impaired liver synthetic function"
+      }
+    ],
+    "correctTreatment": {
+      "sequence": [
+        {
+          "action": "nac",
+          "description": "Start N-acetylcysteine immediately - time is critical"
+        }
+      ],
+      "expectedOutcome": "With prompt NAC administration, liver function should improve. If given within 8 hours of ingestion, prognosis is excellent."
+    },
+    "scienceBridge": {
+      "pathophysiology": "Acetaminophen overdose causes liver failure through toxic metabolite formation. Normally, acetaminophen is metabolized safely. In overdose, the normal pathways are saturated, and a toxic metabolite (NAPQI) is formed. NAPQI depletes glutathione and causes hepatocellular necrosis. N-acetylcysteine replenishes glutathione and prevents further damage.",
+      "keyLearningPoints": [
+        "Acetaminophen overdose is a common cause of acute liver failure",
+        "NAC is the antidote and must be given promptly",
+        "Toxic levels depend on time since ingestion",
+        "Elevated transaminases indicate hepatocellular injury",
+        "INR elevation indicates impaired synthetic function"
+      ]
+    }
+  },
+  {
+    "id": "case-res-002",
+    "title": "Case 2: Multi-Organ Dysfunction",
+    "difficulty": "resident",
+    "caseLevel": 2,
+    "possibleDiagnoses": [
+      "Severe Sepsis with MODS",
+      "Disseminated Intravascular Coagulation",
+      "Toxic Shock Syndrome",
+      "Hemophagocytic Lymphohistiocytosis",
+      "Capillary Leak Syndrome"
+    ],
+    "correctDiagnosis": "Severe Sepsis with MODS",
+    "availableTreatments": [
+      {
+        "action": "iv_fluids",
+        "label": "Aggressive IV Fluids",
+        "description": "30 mL/kg fluid resuscitation",
+        "medication": "Normal saline or balanced crystalloid"
+      },
+      {
+        "action": "antibiotics",
+        "label": "Broad-Spectrum Antibiotics",
+        "description": "Start immediately",
+        "medication": "Vancomycin + Piperacillin-tazobactam + Metronidazole"
+      },
+      {
+        "action": "vasopressors",
+        "label": "Multiple Vasopressors",
+        "description": "Norepinephrine + Vasopressin",
+        "medication": "Norepinephrine + Vasopressin 0.03 units/min"
+      },
+      {
+        "action": "mechanical_ventilation",
+        "label": "Mechanical Ventilation",
+        "description": "For respiratory failure",
+        "medication": null
+      },
+      {
+        "action": "crt",
+        "label": "Continuous Renal Replacement Therapy",
+        "description": "For acute kidney injury",
+        "medication": null
+      }
+    ],
+    "patientProfile": {
+      "name": "Dr. Patricia Williams",
+      "age": 45,
+      "sex": "Female",
+      "pastMedicalHistory": [
+        "Recent abdominal surgery 5 days ago",
+        "Post-operative course complicated",
+        "Currently on antibiotics"
+      ],
+      "chiefComplaint": "Progressive organ failure",
+      "presentingSymptoms": [
+        "Hypotension requiring multiple vasopressors",
+        "Respiratory failure requiring intubation",
+        "Acute kidney injury with anuria",
+        "Altered mental status",
+        "Disseminated intravascular coagulation"
+      ]
+    },
+    "initialVitals": {
+      "hr": 135,
+      "bp": "75/45 (on norepinephrine)",
+      "rr": 28,
+      "spo2": 88,
+      "temp": 39.8
+    },
+    "initialNursingNotes": "Patient is intubated and sedated. Multiple vasopressors running. No urine output. Bleeding from multiple sites. Petechiae and purpura present. Extremely ill appearance.",
+    "investigations": [
+      {
+        "id": "lactate",
+        "name": "Lactate Level",
+        "timeCost": 15,
+        "result": "8.5 mmol/L (severely elevated)",
+        "interpretation": "Severe tissue hypoperfusion"
+      },
+      {
+        "id": "coagulation",
+        "name": "Coagulation Studies",
+        "timeCost": 30,
+        "result": "INR 3.2, PT 45 seconds, PTT 120 seconds, Fibrinogen 80 mg/dL (low), D-dimer > 5000",
+        "interpretation": "Disseminated intravascular coagulation (DIC)"
+      },
+      {
+        "id": "bmp",
+        "name": "Basic Metabolic Panel",
+        "timeCost": 30,
+        "result": {
+          "creatinine": "4.5 mg/dL (elevated)",
+          "bun": "85 mg/dL (elevated)",
+          "potassium": "6.2 mEq/L (elevated)",
+          "bicarbonate": "12 mEq/L (low)"
+        },
+        "interpretation": "Severe acute kidney injury with metabolic acidosis"
+      },
+      {
+        "id": "abg",
+        "name": "Arterial Blood Gas",
+        "timeCost": 15,
+        "result": "pH 7.15, pCO2 55 mmHg, pO2 65 mmHg, HCO3- 12 mEq/L",
+        "interpretation": "Severe mixed acidosis with respiratory failure"
+      }
+    ],
+    "correctTreatment": {
+      "sequence": [
+        {
+          "action": "iv_fluids",
+          "description": "Continue aggressive fluid resuscitation"
+        },
+        {
+          "action": "antibiotics",
+          "description": "Broad-spectrum antibiotics - consider source control"
+        },
+        {
+          "action": "vasopressors",
+          "description": "Multiple vasopressors to maintain perfusion"
+        },
+        {
+          "action": "crt",
+          "description": "CRRT for AKI and fluid management"
+        }
+      ],
+      "expectedOutcome": "With aggressive multi-organ support, patient may stabilize. Mortality is high in MODS."
+    },
+    "scienceBridge": {
+      "pathophysiology": "Multiple Organ Dysfunction Syndrome (MODS) occurs when severe sepsis leads to failure of multiple organ systems. The systemic inflammatory response causes widespread endothelial damage, microvascular thrombosis, and organ hypoperfusion. DIC develops as the coagulation system is activated. Each failing organ system compounds the others, creating a vicious cycle.",
+      "keyLearningPoints": [
+        "MODS represents failure of multiple organ systems",
+        "DIC is a common complication of severe sepsis",
+        "Each failing organ compounds the others",
+        "Aggressive supportive care is essential",
+        "Source control is critical for survival"
+      ]
+    }
+  },
+  {
+    "id": "case-res-003",
+    "title": "Case 3: Acute Respiratory Distress Syndrome",
+    "difficulty": "resident",
+    "caseLevel": 3,
+    "possibleDiagnoses": [
+      "ARDS from Sepsis",
+      "ARDS from Aspiration",
+      "Cardiogenic Pulmonary Edema",
+      "Acute Interstitial Pneumonia",
+      "Pulmonary Hemorrhage"
+    ],
+    "correctDiagnosis": "ARDS from Sepsis",
+    "availableTreatments": [
+      {
+        "action": "mechanical_ventilation",
+        "label": "Mechanical Ventilation",
+        "description": "Low tidal volume strategy",
+        "medication": "Tidal volume 6 mL/kg ideal body weight"
+      },
+      {
+        "action": "peep",
+        "label": "High PEEP Strategy",
+        "description": "Optimize PEEP",
+        "medication": null
+      },
+      {
+        "action": "prone_positioning",
+        "label": "Prone Positioning",
+        "description": "For severe ARDS",
+        "medication": null
+      },
+      {
+        "action": "diuretics",
+        "label": "Give Diuretics",
+        "description": "For cardiogenic edema",
+        "medication": "Furosemide 40-80mg IV"
+      },
+      {
+        "action": "antibiotics",
+        "label": "Broad-Spectrum Antibiotics",
+        "description": "For infection",
+        "medication": "Vancomycin + Piperacillin-tazobactam"
+      }
+    ],
+    "patientProfile": {
+      "name": "Mark Thompson",
+      "age": 55,
+      "sex": "Male",
+      "pastMedicalHistory": [
+        "Pneumonia 3 days ago",
+        "Progressive respiratory failure",
+        "Currently intubated"
+      ],
+      "chiefComplaint": "Severe hypoxemia despite mechanical ventilation",
+      "presentingSymptoms": [
+        "Severe hypoxemia (PaO2/FiO2 < 100)",
+        "Bilateral infiltrates on chest X-ray",
+        "No evidence of heart failure",
+        "Requiring high FiO2 and PEEP"
+      ]
+    },
+    "initialVitals": {
+      "hr": 110,
+      "bp": "100/60",
+      "rr": 28,
+      "spo2": 82,
+      "temp": 38.5
+    },
+    "initialNursingNotes": "Patient is intubated and sedated. High ventilator settings required. Bilateral crackles. No JVD or peripheral edema. Chest X-ray shows bilateral fluffy infiltrates.",
+    "investigations": [
+      {
+        "id": "abg",
+        "name": "Arterial Blood Gas",
+        "timeCost": 15,
+        "result": "pH 7.28, pCO2 50 mmHg, pO2 65 mmHg on FiO2 0.8, PaO2/FiO2 = 81",
+        "interpretation": "Severe ARDS - PaO2/FiO2 < 100"
+      },
+      {
+        "id": "chest-xray",
+        "name": "Chest X-Ray",
+        "timeCost": 45,
+        "result": "Bilateral fluffy infiltrates, no cardiomegaly, no pleural effusion",
+        "interpretation": "Bilateral infiltrates consistent with ARDS, not cardiogenic edema"
+      },
+      {
+        "id": "echo",
+        "name": "Echocardiogram",
+        "timeCost": 60,
+        "result": "Normal LV function, EF 60%, no wall motion abnormalities",
+        "interpretation": "No evidence of cardiogenic pulmonary edema"
+      },
+      {
+        "id": "bnp",
+        "name": "B-type Natriuretic Peptide",
+        "timeCost": 30,
+        "result": "150 pg/mL (normal < 100)",
+        "interpretation": "Mildly elevated but not consistent with heart failure"
+      }
+    ],
+    "correctTreatment": {
+      "sequence": [
+        {
+          "action": "mechanical_ventilation",
+          "description": "Low tidal volume ventilation (6 mL/kg)"
+        },
+        {
+          "action": "peep",
+          "description": "Optimize PEEP using PEEP table"
+        },
+        {
+          "action": "prone_positioning",
+          "description": "Consider prone positioning for severe ARDS"
+        },
+        {
+          "action": "antibiotics",
+          "description": "Continue antibiotics for underlying infection"
+        }
+      ],
+      "expectedOutcome": "With lung-protective ventilation, patient may improve over days to weeks."
+    },
+    "scienceBridge": {
+      "pathophysiology": "ARDS is a form of acute lung injury characterized by diffuse alveolar damage. The alveolar-capillary membrane becomes leaky, allowing fluid and protein to enter alveoli. This causes V/Q mismatch and severe hypoxemia. The Berlin criteria define ARDS as: acute onset, bilateral infiltrates, not fully explained by heart failure, and PaO2/FiO2 < 300. Treatment focuses on lung-protective ventilation to prevent further injury.",
+      "keyLearningPoints": [
+        "ARDS is defined by Berlin criteria",
+        "Low tidal volume ventilation (6 mL/kg) reduces mortality",
+        "PaO2/FiO2 ratio determines ARDS severity",
+        "Prone positioning improves outcomes in severe ARDS",
+        "Must differentiate from cardiogenic pulmonary edema"
+      ]
+    }
+  },
+  {
+    "id": "case-res-004",
+    "title": "Case 4: Fulminant Hepatic Failure",
+    "difficulty": "resident",
+    "caseLevel": 4,
+    "possibleDiagnoses": [
+      "Fulminant Hepatic Failure from Drug",
+      "Acute Viral Hepatitis",
+      "Wilson's Disease",
+      "Autoimmune Hepatitis",
+      "Budd-Chiari Syndrome"
+    ],
+    "correctDiagnosis": "Fulminant Hepatic Failure from Drug",
+    "availableTreatments": [
+      {
+        "action": "liver_transplant",
+        "label": "Liver Transplant Evaluation",
+        "description": "Urgent transplant workup",
+        "medication": null
+      },
+      {
+        "action": "lactulose",
+        "label": "Lactulose",
+        "description": "For hepatic encephalopathy",
+        "medication": "Lactulose 30-45mL PO TID"
+      },
+      {
+        "action": "ffp",
+        "label": "Fresh Frozen Plasma",
+        "description": "For coagulopathy",
+        "medication": "FFP 2-4 units"
+      },
+      {
+        "action": "icp_monitoring",
+        "label": "ICP Monitoring",
+        "description": "For cerebral edema",
+        "medication": null
+      },
+      {
+        "action": "molecular_adsorbent",
+        "label": "Molecular Adsorbent Recirculating System",
+        "description": "MARS for liver support",
+        "medication": null
+      }
+    ],
+    "patientProfile": {
+      "name": "Jennifer Martinez",
+      "age": 28,
+      "sex": "Female",
+      "pastMedicalHistory": [
+        "Depression",
+        "Took unknown herbal supplement",
+        "No liver disease"
+      ],
+      "chiefComplaint": "Jaundice, confusion, and bleeding",
+      "presentingSymptoms": [
+        "Severe jaundice",
+        "Hepatic encephalopathy (confusion, asterixis)",
+        "Coagulopathy with bleeding",
+        "Hypoglycemia",
+        "Ascites"
+      ]
+    },
+    "initialVitals": {
+      "hr": 100,
+      "bp": "95/60",
+      "rr": 22,
+      "spo2": 94,
+      "temp": 37.2
+    },
+    "initialNursingNotes": "Patient is confused and jaundiced. Asterixis present. Bleeding from IV sites. Abdominal distension. Extremely ill appearance.",
+    "investigations": [
+      {
+        "id": "lft",
+        "name": "Liver Function Tests",
+        "timeCost": 30,
+        "result": {
+          "alt": "6,200 U/L (markedly elevated)",
+          "ast": "5,800 U/L (markedly elevated)",
+          "bilirubin": "25 mg/dL (severely elevated)",
+          "inr": "4.5 (severely elevated)",
+          "ammonia": "180 μmol/L (elevated)"
+        },
+        "interpretation": "Fulminant hepatic failure with synthetic dysfunction"
+      },
+      {
+        "id": "coagulation",
+        "name": "Coagulation Studies",
+        "timeCost": 30,
+        "result": "INR 4.5, PT 60 seconds, unable to correct with FFP",
+        "interpretation": "Severe coagulopathy"
+      },
+      {
+        "id": "glucose",
+        "name": "Blood Glucose",
+        "timeCost": 5,
+        "result": "45 mg/dL (low)",
+        "interpretation": "Hypoglycemia due to impaired gluconeogenesis"
+      },
+      {
+        "id": "ct_head",
+        "name": "CT Head",
+        "timeCost": 60,
+        "result": "Cerebral edema, no mass effect yet",
+        "interpretation": "Hepatic encephalopathy with cerebral edema"
+      }
+    ],
+    "correctTreatment": {
+      "sequence": [
+        {
+          "action": "liver_transplant",
+          "description": "Urgent liver transplant evaluation - this is life-threatening"
+        },
+        {
+          "action": "lactulose",
+          "description": "Lactulose for hepatic encephalopathy"
+        },
+        {
+          "action": "ffp",
+          "description": "FFP for coagulopathy"
+        },
+        {
+          "action": "icp_monitoring",
+          "description": "Consider ICP monitoring for cerebral edema"
+        }
+      ],
+      "expectedOutcome": "Without liver transplant, mortality is very high. With transplant, survival is possible."
+    },
+    "scienceBridge": {
+      "pathophysiology": "Fulminant hepatic failure is rapid liver failure occurring within weeks. The liver loses its synthetic functions (coagulation factors, albumin, glucose) and detoxification functions (ammonia clearance). This leads to coagulopathy, hypoglycemia, and hepatic encephalopathy. Cerebral edema can develop due to ammonia toxicity. Without liver transplant, mortality approaches 80%.",
+      "keyLearningPoints": [
+        "Fulminant hepatic failure is a medical emergency",
+        "Liver transplant may be the only treatment",
+        "Coagulopathy and encephalopathy are key features",
+        "Cerebral edema is a major cause of death",
+        "King's College criteria help determine transplant candidacy"
+      ]
+    }
+  },
+  {
+    "id": "case-res-005",
+    "title": "Case 5: Toxic Epidermal Necrolysis",
+    "difficulty": "resident",
+    "caseLevel": 5,
+    "possibleDiagnoses": [
+      "Toxic Epidermal Necrolysis (TEN)",
+      "Stevens-Johnson Syndrome",
+      "Staphylococcal Scalded Skin Syndrome",
+      "Pemphigus Vulgaris",
+      "Bullous Pemphigoid"
+    ],
+    "correctDiagnosis": "Toxic Epidermal Necrolysis (TEN)",
+    "availableTreatments": [
+      {
+        "action": "stop_offending_drug",
+        "label": "Stop Offending Drug",
+        "description": "Immediately discontinue suspected medication",
+        "medication": null
+      },
+      {
+        "action": "burn_care",
+        "label": "Burn Unit Care",
+        "description": "Transfer to burn unit",
+        "medication": null
+      },
+      {
+        "action": "ivig",
+        "label": "IVIG",
+        "description": "Intravenous immunoglobulin",
+        "medication": "IVIG 1g/kg/day x 3-4 days"
+      },
+      {
+        "action": "steroid",
+        "label": "High-Dose Steroids",
+        "description": "Controversial, may increase infection risk",
+        "medication": "Methylprednisolone 1-2 mg/kg/day"
+      },
+      {
+        "action": "antibiotics",
+        "label": "Prophylactic Antibiotics",
+        "description": "Prevent infection",
+        "medication": "Broad-spectrum coverage"
+      }
+    ],
+    "patientProfile": {
+      "name": "Robert Chen",
+      "age": 42,
+      "sex": "Male",
+      "pastMedicalHistory": [
+        "Seizure disorder",
+        "Started new antiepileptic 2 weeks ago",
+        "No known drug allergies"
+      ],
+      "chiefComplaint": "Widespread skin sloughing and pain",
+      "presentingSymptoms": [
+        "Widespread skin sloughing (>30% body surface area)",
+        "Severe pain",
+        "Mucous membrane involvement",
+        "Fever",
+        "Conjunctival involvement"
+      ]
+    },
+    "initialVitals": {
+      "hr": 120,
+      "bp": "90/55",
+      "rr": 24,
+      "spo2": 92,
+      "temp": 39.2
+    },
+    "initialNursingNotes": "Patient appears extremely ill. Large areas of skin sloughing. Nikolsky sign positive. Oral and conjunctival mucosa involved. High risk for infection and fluid loss.",
+    "investigations": [
+      {
+        "id": "skin_biopsy",
+        "name": "Skin Biopsy",
+        "timeCost": 120,
+        "result": "Full-thickness epidermal necrosis with minimal inflammation",
+        "interpretation": "Consistent with TEN"
+      },
+      {
+        "id": "cbc",
+        "name": "Complete Blood Count",
+        "timeCost": 30,
+        "result": {
+          "wbc": "12,500 /μL (elevated)",
+          "hemoglobin": "11.5 g/dL (low)",
+          "platelets": "180,000 /μL"
+        },
+        "interpretation": "Leukocytosis suggests infection risk"
+      },
+      {
+        "id": "bmp",
+        "name": "Basic Metabolic Panel",
+        "timeCost": 30,
+        "result": {
+          "sodium": "135 mEq/L",
+          "potassium": "4.0 mEq/L",
+          "creatinine": "1.8 mg/dL (elevated)",
+          "bicarbonate": "20 mEq/L"
+        },
+        "interpretation": "Acute kidney injury from fluid loss"
+      },
+      {
+        "id": "cultures",
+        "name": "Blood and Wound Cultures",
+        "timeCost": 120,
+        "result": "Sent to lab (results pending)",
+        "interpretation": "High risk for infection"
+      }
+    ],
+    "correctTreatment": {
+      "sequence": [
+        {
+          "action": "stop_offending_drug",
+          "description": "Immediately stop suspected medication"
+        },
+        {
+          "action": "burn_care",
+          "description": "Transfer to burn unit for specialized care"
+        },
+        {
+          "action": "ivig",
+          "description": "Consider IVIG early in course"
+        },
+        {
+          "action": "antibiotics",
+          "description": "Prophylactic antibiotics to prevent infection"
+        }
+      ],
+      "expectedOutcome": "Mortality is 30-50%. Early recognition and specialized care improve outcomes."
+    },
+    "scienceBridge": {
+      "pathophysiology": "TEN is a severe drug reaction causing widespread skin sloughing. It's thought to be a T-cell mediated reaction that causes apoptosis of keratinocytes. The skin barrier is lost, leading to massive fluid loss, infection risk, and pain. SCORTEN score helps predict mortality. Common triggers include antiepileptics, antibiotics, and NSAIDs.",
+      "keyLearningPoints": [
+        "TEN is a medical emergency with high mortality",
+        "Stop offending drug immediately",
+        "Burn unit care is essential",
+        "SCORTEN score predicts mortality",
+        "Infection is the leading cause of death"
       ]
     }
   }

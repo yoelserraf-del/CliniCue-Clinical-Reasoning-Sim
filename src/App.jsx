@@ -6,6 +6,7 @@ import LeftSidebar from './components/LeftSidebar';
 import ExaminationRoom from './components/ExaminationRoom';
 import ActionMenu from './components/ActionMenu';
 import ScienceDebrief from './components/ScienceDebrief';
+import DiagnosisSelection from './components/DiagnosisSelection';
 import caseLibrary from './data/CaseLibrary.json';
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
   const [vitals, setVitals] = useState(null);
   const [showWalkthrough, setShowWalkthrough] = useState(false);
   const [walkthroughStep, setWalkthroughStep] = useState(0);
+  const [selectedDiagnosis, setSelectedDiagnosis] = useState(null);
 
   // Get cases filtered by difficulty
   const getFilteredCases = () => {
@@ -30,7 +32,8 @@ function App() {
     const difficultyMap = {
       'highschool': 'highschool',
       'pre-med': 'premed',
-      'med school': 'student'
+      'med school': 'student',
+      'residency': 'resident'
     };
     const mappedDifficulty = difficultyMap[selectedDifficulty] || selectedDifficulty;
     return caseLibrary.filter(c => c.difficulty === mappedDifficulty);
@@ -131,10 +134,29 @@ function App() {
     alert('Specialist consulted. They recommend proceeding with investigations.');
   };
 
+  // Handle diagnosis selection
+  const handleDiagnosisSelect = (diagnosis) => {
+    setSelectedDiagnosis(diagnosis);
+    const isCorrect = diagnosis === selectedCase?.correctDiagnosis;
+    
+    if (isCorrect) {
+      // Correct diagnosis - small stability boost
+      setPatientStability(prev => Math.min(100, prev + 5));
+    } else {
+      // Wrong diagnosis - small penalty
+      setPatientStability(prev => Math.max(0, prev - 5));
+    }
+    
+    // Allow proceeding to treatment after diagnosis selection
+    setTimeout(() => {
+      setCurrentState(CASE_STATES.TREATMENT);
+    }, 2000);
+  };
+
   // Calculate performance metrics
   const calculatePerformance = () => {
     const timeToTreatment = currentTime;
-    const correctDiagnosis = true; // Would check against selected diagnosis
+    const correctDiagnosis = selectedDiagnosis === selectedCase?.correctDiagnosis;
     setPerformance({
       finalStability: patientStability,
       timeToTreatment,
@@ -154,6 +176,11 @@ function App() {
         alert('Please order and wait for test results before proceeding to diagnosis.');
       }
     } else if (currentState === CASE_STATES.DIAGNOSIS) {
+      // Diagnosis must be selected before proceeding
+      if (!selectedDiagnosis) {
+        alert('Please select a diagnosis before proceeding to treatment.');
+        return;
+      }
       setCurrentState(CASE_STATES.TREATMENT);
     }
   };
@@ -170,6 +197,7 @@ function App() {
       setShowDebrief(false);
       setPerformance(null);
       setVitals(selectedCase.initialVitals);
+      setSelectedDiagnosis(null);
     }
   };
 
@@ -338,7 +366,14 @@ function App() {
               className="block w-full px-8 py-4 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium text-lg transition-colors"
             >
               <div className="font-bold text-xl mb-1">Med School</div>
-              <div className="text-sm opacity-90">Advanced cases for medical students and beyond</div>
+              <div className="text-sm opacity-90">Advanced cases for medical students</div>
+            </button>
+            <button
+              onClick={() => setSelectedDifficulty('residency')}
+              className="block w-full px-8 py-4 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium text-lg transition-colors"
+            >
+              <div className="font-bold text-xl mb-1">Residency</div>
+              <div className="text-sm opacity-90">Complex cases for residents and beyond</div>
             </button>
           </div>
         </div>
@@ -470,14 +505,25 @@ function App() {
           difficulty={selectedCase.difficulty}
         />
 
-        {/* Center - Examination Room */}
-        <ExaminationRoom
-          investigations={selectedCase.investigations}
-          testResults={testResults}
-          orderedTests={orderedTests}
-          currentTime={currentTime}
-          difficulty={selectedCase.difficulty}
-        />
+        {/* Center - Examination Room or Diagnosis Selection */}
+        {currentState === CASE_STATES.DIAGNOSIS ? (
+          <div className="flex-1 overflow-y-auto p-6">
+            <DiagnosisSelection
+              possibleDiagnoses={selectedCase.possibleDiagnoses || []}
+              correctDiagnosis={selectedCase.correctDiagnosis}
+              onSelect={handleDiagnosisSelect}
+              selectedDiagnosis={selectedDiagnosis}
+            />
+          </div>
+        ) : (
+          <ExaminationRoom
+            investigations={selectedCase.investigations}
+            testResults={testResults}
+            orderedTests={orderedTests}
+            currentTime={currentTime}
+            difficulty={selectedCase.difficulty}
+          />
+        )}
 
         {/* Right Sidebar - Action Menu */}
         <ActionMenu
@@ -488,6 +534,7 @@ function App() {
           orderedTests={orderedTests}
           givenTreatments={givenTreatments}
           currentState={currentState}
+          availableTreatments={selectedCase.availableTreatments || []}
         />
       </div>
 
