@@ -1,6 +1,6 @@
 import { FileText, Image as ImageIcon, Clock } from 'lucide-react';
 
-const ExaminationRoom = ({ investigations, testResults, orderedTests, currentTime, difficulty }) => {
+const ExaminationRoom = ({ investigations, testResults, orderedTests, currentTime, difficulty, onViewExplanation }) => {
   const getTestStatus = (testId) => {
     const ordered = orderedTests.find(t => t.id === testId);
     if (!ordered) return 'not_ordered';
@@ -114,6 +114,16 @@ const ExaminationRoom = ({ investigations, testResults, orderedTests, currentTim
                             <p className="text-sm text-blue-300 font-medium">
                               💡 Interpretation: {investigation.interpretation}
                             </p>
+                          </div>
+                        )}
+                        {difficulty !== 'student' && investigation.interpretation && (
+                          <div className="mt-4 pt-4 border-t border-gray-700">
+                            <button
+                              onClick={() => onViewExplanation && onViewExplanation()}
+                              className="text-sm text-purple-400 hover:text-purple-300 font-medium underline"
+                            >
+                              📚 Click to view interpretation (affects score)
+                            </button>
                           </div>
                         )}
                       </div>

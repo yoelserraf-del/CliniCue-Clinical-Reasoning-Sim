@@ -24,6 +24,16 @@ function App() {
   const [showWalkthrough, setShowWalkthrough] = useState(false);
   const [walkthroughStep, setWalkthroughStep] = useState(0);
   const [selectedDiagnosis, setSelectedDiagnosis] = useState(null);
+  const [currentCaseLevel, setCurrentCaseLevel] = useState(1);
+  const [hintsUsed, setHintsUsed] = useState(0);
+  const [explanationsViewed, setExplanationsViewed] = useState(0);
+  const [wrongTestsOrdered, setWrongTestsOrdered] = useState(0);
+  const [wrongTreatmentsGiven, setWrongTreatmentsGiven] = useState(0);
+  const [showHint, setShowHint] = useState(false);
+  const [showExplanation, setShowExplanation] = useState(false);
+  const [caseScore, setCaseScore] = useState(null);
+  const [showScoreScreen, setShowScoreScreen] = useState(false);
+  const [debriefViewed, setDebriefViewed] = useState(false);
 
   // Get cases filtered by difficulty
   const getFilteredCases = () => {
@@ -38,6 +48,47 @@ function App() {
     const mappedDifficulty = difficultyMap[selectedDifficulty] || selectedDifficulty;
     return caseLibrary.filter(c => c.difficulty === mappedDifficulty);
   };
+
+  // Get next case based on current level and difficulty
+  const getNextCase = (level, difficulty) => {
+    const filteredCases = getFilteredCases();
+    // Find case at the specified level
+    const caseAtLevel = filteredCases.find(c => c.caseLevel === level);
+    if (caseAtLevel) return caseAtLevel;
+    // If no case at exact level, find closest
+    const sortedCases = filteredCases
+      .filter(c => c.caseLevel)
+      .sort((a, b) => a.caseLevel - b.caseLevel);
+    if (level < 1) return sortedCases[0] || filteredCases[0];
+    if (level > sortedCases.length) return sortedCases[sortedCases.length - 1] || filteredCases[0];
+    return filteredCases[0];
+  };
+
+  // Load case automatically when difficulty is selected
+  useEffect(() => {
+    if (selectedDifficulty && !selectedCase) {
+      const firstCase = getNextCase(1, selectedDifficulty);
+      if (firstCase) {
+        setSelectedCase(firstCase);
+        setVitals(firstCase.initialVitals);
+        setCurrentCaseLevel(1);
+        setHintsUsed(0);
+        setExplanationsViewed(0);
+        setWrongTestsOrdered(0);
+        setWrongTreatmentsGiven(0);
+        setCurrentState(CASE_STATES.TRIAGE);
+        setPatientStability(INITIAL_STABILITY);
+        setOrderedTests([]);
+        setTestResults([]);
+        setGivenTreatments([]);
+        setCurrentTime(0);
+        setSelectedDiagnosis(null);
+        setShowScoreScreen(false);
+        setCaseScore(null);
+        setDebriefViewed(false);
+      }
+    }
+  }, [selectedDifficulty]);
 
   // Simulate time passing and test completion
   useEffect(() => {
@@ -94,8 +145,12 @@ function App() {
 
     setOrderedTests(prev => [...prev, newOrderedTest]);
 
-    // Wrong test ordering reduces stability (example logic)
-    // In a real implementation, you'd check against correctTreatment
+    // Check if test is recommended (first 2-3 tests are usually key)
+    const recommendedTests = selectedCase?.investigations.slice(0, 3).map(inv => inv.id) || [];
+    if (!recommendedTests.includes(test.id)) {
+      setWrongTestsOrdered(prev => prev + 1);
+      setPatientStability(prev => Math.max(0, prev - 2));
+    }
   };
 
   // Handle treatment actions
@@ -113,6 +168,7 @@ function App() {
       setPatientStability(prev => Math.min(100, prev + 10));
     } else {
       // Wrong treatment - decrease stability
+      setWrongTreatmentsGiven(prev => prev + 1);
       const penalty = calculateStabilityPenalty(treatment, selectedCase, selectedCase?.difficulty);
       setPatientStability(prev => applyStabilityChange(prev, penalty.basePenalty));
     }
@@ -123,7 +179,7 @@ function App() {
       setTimeout(() => {
         setCurrentState(CASE_STATES.DEBRIEF);
         calculatePerformance();
-        setShowDebrief(true);
+        setShowScoreScreen(true);
       }, 2000);
     }
   };
@@ -153,15 +209,77 @@ function App() {
     }, 2000);
   };
 
-  // Calculate performance metrics
+  // Calculate performance metrics and score
   const calculatePerformance = () => {
     const timeToTreatment = currentTime;
     const correctDiagnosis = selectedDiagnosis === selectedCase?.correctDiagnosis;
-    setPerformance({
+    
+    // Calculate score (0-100)
+    let score = 100;
+    
+    // Deduct points for hints used (5 points each)
+    score -= hintsUsed * 5;
+    
+    // Deduct points for explanations viewed (3 points each)
+    score -= explanationsViewed * 3;
+    
+    // Deduct points for wrong tests (2 points each)
+    score -= wrongTestsOrdered * 2;
+    
+    // Deduct points for wrong treatments (5 points each)
+    score -= wrongTreatmentsGiven * 5;
+    
+    // Deduct points for time (1 point per 10 minutes over optimal)
+    const optimalTime = 30; // Assume 30 minutes is optimal
+    if (timeToTreatment > optimalTime) {
+      score -= Math.floor((timeToTreatment - optimalTime) / 10);
+    }
+    
+    // Deduct points for incorrect diagnosis (20 points)
+    if (!correctDiagnosis) {
+      score -= 20;
+    }
+    
+    // Bonus for high stability (up to 10 points)
+    if (patientStability >= 90) {
+      score += 10;
+    } else if (patientStability >= 80) {
+      score += 5;
+    }
+    
+    // Ensure score is between 0 and 100
+    score = Math.max(0, Math.min(100, score));
+    
+    const performanceData = {
       finalStability: patientStability,
       timeToTreatment,
-      correctDiagnosis
-    });
+      correctDiagnosis,
+      score: Math.round(score),
+      hintsUsed,
+      explanationsViewed,
+      wrongTestsOrdered,
+      wrongTreatmentsGiven
+    };
+    
+    setPerformance(performanceData);
+    setCaseScore(performanceData);
+    
+    // Determine next case level based on performance
+    let nextLevel = currentCaseLevel;
+    if (score >= 80) {
+      // Did well - increase difficulty
+      nextLevel = Math.min(currentCaseLevel + 1, 10);
+    } else if (score >= 60) {
+      // Did okay - stay at same level
+      nextLevel = currentCaseLevel;
+    } else {
+      // Struggled - decrease difficulty
+      nextLevel = Math.max(currentCaseLevel - 1, 1);
+    }
+    
+    setCurrentCaseLevel(nextLevel);
+    
+    return performanceData;
   };
 
   // Proceed to next state
@@ -201,14 +319,17 @@ function App() {
     }
   };
 
-  // Case selection
-  const handleCaseSelect = (caseId) => {
-    const caseToLoad = caseLibrary.find(c => c.id === caseId);
-    if (caseToLoad) {
-      setSelectedCase(caseToLoad);
-      setVitals(caseToLoad.initialVitals);
-      handleResetCase();
-    }
+  // Reset to start new game
+  const handleNewGame = () => {
+    setSelectedDifficulty(null);
+    setSelectedCase(null);
+    setCurrentCaseLevel(1);
+    setHintsUsed(0);
+    setExplanationsViewed(0);
+    setWrongTestsOrdered(0);
+    setWrongTreatmentsGiven(0);
+    setShowScoreScreen(false);
+    setCaseScore(null);
   };
 
   // Get walkthrough steps for current state
@@ -318,11 +439,15 @@ function App() {
     return steps;
   };
 
-  // Handle walkthrough
+  // Handle walkthrough (counts as hint)
   const handleWalkthroughNext = () => {
     const steps = getWalkthroughSteps();
     if (walkthroughStep < steps.length - 1) {
       setWalkthroughStep(walkthroughStep + 1);
+      // Count viewing a walkthrough step as using a hint
+      if (walkthroughStep === 0) {
+        setHintsUsed(prev => prev + 1);
+      }
       const nextStep = steps[walkthroughStep + 1];
       if (nextStep.action) {
         setTimeout(() => nextStep.action(), 500);
@@ -330,6 +455,58 @@ function App() {
     } else {
       setShowWalkthrough(false);
       setWalkthroughStep(0);
+    }
+  };
+
+  // Handle getting a hint
+  const handleGetHint = () => {
+    setShowHint(true);
+    setHintsUsed(prev => prev + 1);
+  };
+
+  // Handle viewing explanation
+  const handleViewExplanation = () => {
+    if (!showExplanation) {
+      setShowExplanation(true);
+      setExplanationsViewed(prev => prev + 1);
+    }
+  };
+
+  // Handle viewing debrief (counts as explanation)
+  const handleViewDebrief = () => {
+    if (!debriefViewed) {
+      setDebriefViewed(true);
+      setExplanationsViewed(prev => prev + 1);
+    }
+    setShowDebrief(true);
+    setShowScoreScreen(false);
+  };
+
+  // Load next case
+  const handleNextCase = () => {
+    const nextCase = getNextCase(currentCaseLevel, selectedDifficulty);
+    if (nextCase) {
+      setSelectedCase(nextCase);
+      setVitals(nextCase.initialVitals);
+      setCurrentState(CASE_STATES.TRIAGE);
+      setPatientStability(INITIAL_STABILITY);
+      setOrderedTests([]);
+      setTestResults([]);
+      setGivenTreatments([]);
+      setCurrentTime(0);
+      setShowDebrief(false);
+      setShowScoreScreen(false);
+      setPerformance(null);
+      setCaseScore(null);
+      setSelectedDiagnosis(null);
+      setHintsUsed(0);
+      setExplanationsViewed(0);
+      setWrongTestsOrdered(0);
+      setWrongTreatmentsGiven(0);
+      setShowHint(false);
+      setShowExplanation(false);
+      setWalkthroughStep(0);
+      setDebriefViewed(false);
     }
   };
 
@@ -381,41 +558,119 @@ function App() {
     );
   }
 
-  // Case selection screen
-  if (!selectedCase) {
-    const filteredCases = getFilteredCases();
+  // Score screen after case completion
+  if (showScoreScreen && caseScore) {
+    const getScoreColor = (score) => {
+      if (score >= 90) return 'text-green-400';
+      if (score >= 80) return 'text-blue-400';
+      if (score >= 70) return 'text-yellow-400';
+      if (score >= 60) return 'text-orange-400';
+      return 'text-red-400';
+    };
+
+    const getScoreLabel = (score) => {
+      if (score >= 90) return 'Excellent!';
+      if (score >= 80) return 'Great Job!';
+      if (score >= 70) return 'Good Work!';
+      if (score >= 60) return 'Not Bad';
+      return 'Keep Practicing';
+    };
+
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <div className="text-center max-w-3xl mx-auto px-4">
-          <div className="mb-6">
-            <h1 className="text-3xl font-bold text-white mb-2">Select a Case</h1>
-            <p className="text-gray-400 mb-4">
-              Difficulty: <span className="capitalize font-medium text-white">{selectedDifficulty}</span>
-            </p>
-            <button
-              onClick={() => setSelectedDifficulty(null)}
-              className="text-blue-400 hover:text-blue-300 text-sm"
-            >
-              ← Change Difficulty
-            </button>
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4">
+        <div className="bg-gray-800 rounded-lg border border-gray-700 p-8 max-w-2xl w-full">
+          <div className="text-center mb-8">
+            <h1 className="text-4xl font-bold text-white mb-2">Case Complete!</h1>
+            <div className={`text-6xl font-bold mb-2 ${getScoreColor(caseScore.score)}`}>
+              {caseScore.score}/100
+            </div>
+            <div className={`text-2xl font-semibold ${getScoreColor(caseScore.score)}`}>
+              {getScoreLabel(caseScore.score)}
+            </div>
           </div>
-          <div className="space-y-2">
-            {filteredCases.length > 0 ? (
-              filteredCases.map(caseItem => (
-                <button
-                  key={caseItem.id}
-                  onClick={() => handleCaseSelect(caseItem.id)}
-                  className="block w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-left"
-                >
-                  <div className="font-semibold">{caseItem.title}</div>
-                  <div className="text-sm opacity-90">{caseItem.patientProfile?.chiefComplaint || ''}</div>
-                </button>
-              ))
-            ) : (
-              <div className="text-gray-400 py-8">
-                No cases available for this difficulty level yet.
+
+          <div className="space-y-4 mb-8">
+            <div className="bg-gray-900 rounded-lg p-4 border border-gray-700">
+              <h3 className="text-lg font-semibold text-white mb-4">Performance Breakdown</h3>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-300">Final Patient Stability</span>
+                  <span className={`font-bold ${
+                    caseScore.finalStability >= 80 ? 'text-green-400' :
+                    caseScore.finalStability >= 60 ? 'text-yellow-400' :
+                    'text-red-400'
+                  }`}>
+                    {caseScore.finalStability.toFixed(0)}%
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-300">Time to Treatment</span>
+                  <span className="text-white font-semibold">{caseScore.timeToTreatment} minutes</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-300">Correct Diagnosis</span>
+                  <span className={caseScore.correctDiagnosis ? 'text-green-400 font-bold' : 'text-red-400 font-bold'}>
+                    {caseScore.correctDiagnosis ? '✓ Yes' : '✗ No (-20 points)'}
+                  </span>
+                </div>
+                <div className="border-t border-gray-700 pt-3 mt-3">
+                  <div className="text-sm text-gray-400 mb-2">Deductions:</div>
+                  {caseScore.hintsUsed > 0 && (
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-gray-300">Hints Used</span>
+                      <span className="text-yellow-400">-{caseScore.hintsUsed * 5} points ({caseScore.hintsUsed} × 5)</span>
+                    </div>
+                  )}
+                  {caseScore.explanationsViewed > 0 && (
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-gray-300">Explanations Viewed</span>
+                      <span className="text-yellow-400">-{caseScore.explanationsViewed * 3} points ({caseScore.explanationsViewed} × 3)</span>
+                    </div>
+                  )}
+                  {caseScore.wrongTestsOrdered > 0 && (
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-gray-300">Unnecessary Tests</span>
+                      <span className="text-yellow-400">-{caseScore.wrongTestsOrdered * 2} points ({caseScore.wrongTestsOrdered} × 2)</span>
+                    </div>
+                  )}
+                  {caseScore.wrongTreatmentsGiven > 0 && (
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-gray-300">Wrong Treatments</span>
+                      <span className="text-yellow-400">-{caseScore.wrongTreatmentsGiven * 5} points ({caseScore.wrongTreatmentsGiven} × 5)</span>
+                    </div>
+                  )}
+                </div>
               </div>
-            )}
+            </div>
+
+            <div className="bg-blue-900/20 border border-blue-500/30 rounded-lg p-4">
+              <p className="text-blue-300 text-sm">
+                <strong>Next Case:</strong> Based on your performance, the next case will be{' '}
+                {caseScore.score >= 80 ? 'more challenging' : caseScore.score >= 60 ? 'at the same level' : 'easier'}.
+                Current level: {currentCaseLevel}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex gap-4">
+            <button
+              onClick={handleNextCase}
+              className="flex-1 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors"
+            >
+              Continue to Next Case
+            </button>
+            <button
+              onClick={handleViewDebrief}
+              className="px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white font-semibold rounded-lg transition-colors"
+            >
+              View Full Debrief
+            </button>
+            <button
+              onClick={handleNewGame}
+              className="px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white font-semibold rounded-lg transition-colors"
+            >
+              New Game
+            </button>
           </div>
         </div>
       </div>
@@ -449,28 +704,29 @@ function App() {
               </button>
             )}
             <button
+              onClick={handleGetHint}
+              className="px-3 py-1.5 bg-yellow-600 hover:bg-yellow-700 text-white rounded text-sm font-medium"
+              title="Get a hint (affects score)"
+            >
+              💡 Hint {hintsUsed > 0 && `(${hintsUsed})`}
+            </button>
+            <button
               onClick={() => setShowWalkthrough(!showWalkthrough)}
               className={`px-3 py-1.5 rounded text-sm font-medium ${
                 showWalkthrough 
-                  ? 'bg-yellow-700 hover:bg-yellow-800 text-white' 
-                  : 'bg-yellow-600 hover:bg-yellow-700 text-white'
+                  ? 'bg-blue-700 hover:bg-blue-800 text-white' 
+                  : 'bg-blue-600 hover:bg-blue-700 text-white'
               }`}
             >
-              {showWalkthrough ? 'Hide' : 'Show'} Help
+              {showWalkthrough ? 'Hide' : 'Show'} Walkthrough
             </button>
-            <div className="relative">
-              <select
-                value={selectedCase.id}
-                onChange={(e) => handleCaseSelect(e.target.value)}
-                className="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 text-white rounded text-sm border border-gray-600 cursor-pointer appearance-none pr-8"
-              >
-                {getFilteredCases().map(c => (
-                  <option key={c.id} value={c.id}>
-                    {c.title}
-                  </option>
-                ))}
-              </select>
-            </div>
+            <button
+              onClick={handleViewExplanation}
+              className="px-3 py-1.5 bg-purple-600 hover:bg-purple-700 text-white rounded text-sm font-medium"
+              title="View explanation (affects score)"
+            >
+              📚 Explain {explanationsViewed > 0 && `(${explanationsViewed})`}
+            </button>
             <button
               onClick={handleResetCase}
               className="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 text-white rounded text-sm font-medium"
@@ -479,11 +735,11 @@ function App() {
               Reset
             </button>
             <button
-              onClick={() => setSelectedCase(null)}
+              onClick={handleNewGame}
               className="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 text-white rounded text-sm font-medium"
-              title="Back to Case Selection"
+              title="Start New Game"
             >
-              Cases
+              New Game
             </button>
           </div>
         </div>
@@ -522,6 +778,7 @@ function App() {
             orderedTests={orderedTests}
             currentTime={currentTime}
             difficulty={selectedCase.difficulty}
+            onViewExplanation={handleViewExplanation}
           />
         )}
 
@@ -537,6 +794,121 @@ function App() {
           availableTreatments={selectedCase.availableTreatments || []}
         />
       </div>
+
+      {/* Hint Modal */}
+      {showHint && selectedCase && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-gray-800 rounded-lg p-6 max-w-2xl w-full mx-4 border border-gray-700">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-bold text-white">💡 Hint</h2>
+              <button
+                onClick={() => setShowHint(false)}
+                className="text-gray-400 hover:text-white"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="bg-yellow-900/20 border border-yellow-500/30 rounded-lg p-4 mb-4">
+              <p className="text-yellow-300 text-sm font-medium mb-2">
+                ⚠️ Using hints affects your score (-5 points per hint)
+              </p>
+            </div>
+            <div className="bg-gray-900 rounded-lg p-4">
+              {currentState === CASE_STATES.TRIAGE && (
+                <p className="text-white">
+                  <strong>Hint:</strong> Focus on the patient's chief complaint and vital signs. Look for patterns that suggest the underlying condition.
+                </p>
+              )}
+              {currentState === CASE_STATES.INVESTIGATION && (
+                <p className="text-white">
+                  <strong>Hint:</strong> Consider ordering tests that will help differentiate between the possible diagnoses. Start with the most specific tests for the suspected condition.
+                </p>
+              )}
+              {currentState === CASE_STATES.DIAGNOSIS && (
+                <p className="text-white">
+                  <strong>Hint:</strong> Review all the test results together. The correct diagnosis should explain all the findings - symptoms, vitals, and test results.
+                </p>
+              )}
+              {currentState === CASE_STATES.TREATMENT && (
+                <p className="text-white">
+                  <strong>Hint:</strong> Treatment should address the underlying cause. Consider what the patient needs immediately (supportive care) and what treats the root cause.
+                </p>
+              )}
+            </div>
+            <div className="mt-4 flex justify-end">
+              <button
+                onClick={() => setShowHint(false)}
+                className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Explanation Modal */}
+      {showExplanation && selectedCase && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-gray-800 rounded-lg p-6 max-w-3xl w-full mx-4 border border-gray-700 max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-bold text-white">📚 Explanation</h2>
+              <button
+                onClick={() => setShowExplanation(false)}
+                className="text-gray-400 hover:text-white"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="bg-purple-900/20 border border-purple-500/30 rounded-lg p-4 mb-4">
+              <p className="text-purple-300 text-sm font-medium mb-2">
+                ⚠️ Viewing explanations affects your score (-3 points per explanation)
+              </p>
+            </div>
+            <div className="bg-gray-900 rounded-lg p-4 space-y-4">
+              <div>
+                <h3 className="text-lg font-semibold text-white mb-2">Current Stage Explanation</h3>
+                {currentState === CASE_STATES.TRIAGE && (
+                  <p className="text-gray-300">
+                    In triage, you're gathering initial information about the patient. Review the patient's history, symptoms, and vital signs. This information will guide your investigation strategy.
+                  </p>
+                )}
+                {currentState === CASE_STATES.INVESTIGATION && (
+                  <p className="text-gray-300">
+                    During investigation, you order diagnostic tests to confirm or rule out diagnoses. Choose tests that are most likely to provide definitive answers. Unnecessary tests waste time and resources.
+                  </p>
+                )}
+                {currentState === CASE_STATES.DIAGNOSIS && (
+                  <p className="text-gray-300">
+                    Diagnosis requires synthesizing all available information. The correct diagnosis should explain all findings - symptoms, physical exam, and test results. Consider what condition best fits the complete picture.
+                  </p>
+                )}
+                {currentState === CASE_STATES.TREATMENT && (
+                  <p className="text-gray-300">
+                    Treatment should address both immediate needs (supportive care) and the underlying cause. Follow evidence-based treatment protocols for the diagnosed condition.
+                  </p>
+                )}
+              </div>
+              {selectedCase.scienceBridge && (
+                <div className="border-t border-gray-700 pt-4">
+                  <h3 className="text-lg font-semibold text-white mb-2">Pathophysiology Overview</h3>
+                  <p className="text-gray-300 text-sm">
+                    {selectedCase.scienceBridge.pathophysiology.split('\n\n')[0]}
+                  </p>
+                </div>
+              )}
+            </div>
+            <div className="mt-4 flex justify-end">
+              <button
+                onClick={() => setShowExplanation(false)}
+                className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Walkthrough Modal */}
       {showWalkthrough && (
@@ -600,7 +972,12 @@ function App() {
       <ScienceDebrief
         caseData={selectedCase}
         isOpen={showDebrief}
-        onClose={() => setShowDebrief(false)}
+        onClose={() => {
+          setShowDebrief(false);
+          if (caseScore) {
+            setShowScoreScreen(true);
+          }
+        }}
         performance={performance}
       />
     </div>
