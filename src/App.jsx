@@ -41,6 +41,11 @@ function App() {
   const [debriefViewed, setDebriefViewed] = useState(false);
   const [caseSearchQuery, setCaseSearchQuery] = useState('');
   const [showCaseSearch, setShowCaseSearch] = useState(false);
+  const [casesSolved, setCasesSolved] = useState(() => {
+    // Load from localStorage
+    const saved = localStorage.getItem('casesSolved');
+    return saved ? parseInt(saved, 10) : 0;
+  });
 
   // Get time limit for current case
   const timeLimit = selectedCase && timeLimitEnabled 
@@ -612,13 +617,15 @@ function App() {
   const handleWalkthroughNext = () => {
     const steps = getWalkthroughSteps();
     if (walkthroughStep < steps.length - 1) {
-      setWalkthroughStep(walkthroughStep + 1);
+      const nextStepIndex = walkthroughStep + 1;
       // Count viewing a walkthrough step as using a hint
       if (walkthroughStep === 0) {
         setHintsUsed(prev => prev + 1);
       }
-      const nextStep = steps[walkthroughStep + 1];
-      if (nextStep.action) {
+      setWalkthroughStep(nextStepIndex);
+      // Access the next step using the calculated index (before state update)
+      const nextStep = steps[nextStepIndex];
+      if (nextStep && nextStep.action) {
         setTimeout(() => nextStep.action(), 500);
       }
     } else {
@@ -653,6 +660,11 @@ function App() {
 
   // Load next case
   const handleNextCase = () => {
+    // Increment cases solved counter
+    const newCount = casesSolved + 1;
+    setCasesSolved(newCount);
+    localStorage.setItem('casesSolved', newCount.toString());
+    
     const nextCase = getNextCase(currentCaseLevel, selectedDifficulty);
     if (nextCase) {
       setSelectedCase(nextCase);
