@@ -388,13 +388,13 @@ function App() {
     let nextLevel = currentCaseLevel;
     if (score >= 80) {
       // Did well - increase difficulty
-      nextLevel = Math.min(currentCaseLevel + 1, 10);
+      nextLevel = Math.min(currentCaseLevel + 1, 100);
     } else if (score >= 60) {
       // Did okay - stay at same level
       nextLevel = currentCaseLevel;
     } else {
-      // Struggled - decrease difficulty
-      nextLevel = Math.max(currentCaseLevel - 1, 1);
+      // Struggled - decrease difficulty (move to easier case)
+      nextLevel = Math.max(currentCaseLevel - 2, 1); // Decrease by 2 to make it noticeably easier
     }
     
     setCurrentCaseLevel(nextLevel);
