@@ -280,7 +280,9 @@ function App() {
 
   // Generate physical exam findings based on case
   const generatePhysicalExamFindings = (examType, caseData) => {
-    const diagnosis = caseData.correctDiagnosis;
+    const diagnosis = (caseData.correctDiagnosis || '').toLowerCase();
+    const title = (caseData.title || '').toLowerCase();
+    const chiefComplaint = (caseData.patientProfile?.chiefComplaint || '').toLowerCase();
     const findings = {
       'auscultation': [],
       'palpation': [],
@@ -288,23 +290,66 @@ function App() {
       'cardiac': []
     };
 
-    // Generate findings based on diagnosis
-    if (diagnosis.includes('Pneumonia') || diagnosis.includes('Respiratory')) {
+    // Generate findings based on diagnosis, title, and chief complaint
+    const isRespiratory = diagnosis.includes('pneumonia') || diagnosis.includes('asthma') || 
+                         diagnosis.includes('copd') || diagnosis.includes('respiratory') ||
+                         diagnosis.includes('pulmonary') || diagnosis.includes('bronchitis') ||
+                         title.includes('respiratory') || title.includes('breath') || title.includes('cough') ||
+                         chiefComplaint.includes('breath') || chiefComplaint.includes('cough');
+    
+    const isCardiac = diagnosis.includes('cardiac') || diagnosis.includes('infarction') || 
+                     diagnosis.includes('heart') || diagnosis.includes('atrial') || diagnosis.includes('svt') ||
+                     diagnosis.includes('arrhythmia') || diagnosis.includes('angina') ||
+                     title.includes('chest pain') || title.includes('palpitation') || title.includes('syncope') ||
+                     chiefComplaint.includes('chest') || chiefComplaint.includes('palpitation');
+    
+    const isAbdominal = diagnosis.includes('appendicitis') || diagnosis.includes('abdominal') ||
+                       diagnosis.includes('gastroenteritis') || diagnosis.includes('cholecystitis') ||
+                       diagnosis.includes('pancreatitis') || diagnosis.includes('gastritis') ||
+                       title.includes('abdominal') || title.includes('nausea') || title.includes('diarrhea') ||
+                       chiefComplaint.includes('abdominal') || chiefComplaint.includes('stomach') ||
+                       chiefComplaint.includes('nausea') || chiefComplaint.includes('vomiting');
+    
+    const isNeurological = diagnosis.includes('stroke') || diagnosis.includes('neurological') ||
+                          diagnosis.includes('seizure') || diagnosis.includes('migraine') ||
+                          diagnosis.includes('meningitis') || diagnosis.includes('epilepsy') ||
+                          title.includes('headache') || title.includes('seizure') ||
+                          title.includes('mental status') || chiefComplaint.includes('headache');
+
+    if (isRespiratory) {
       findings.auscultation = ['Bilateral crackles in lower lung fields', 'Decreased breath sounds on right side'];
       findings.palpation = ['Tactile fremitus increased on right', 'No chest wall tenderness'];
-    } else if (diagnosis.includes('Cardiac') || diagnosis.includes('Infarction')) {
-      findings.cardiac = ['S3 gallop present', 'Murmur grade 2/6 systolic'];
-      findings.auscultation = ['Bilateral rales', 'Jugular venous distension'];
-    } else if (diagnosis.includes('Appendicitis') || diagnosis.includes('Abdominal')) {
+    }
+    
+    if (isCardiac) {
+      findings.cardiac = ['S3 gallop present', 'Murmur grade 2/6 systolic', 'Jugular venous distension'];
+      findings.auscultation = ['Bilateral rales', 'Irregular rhythm'];
+    }
+    
+    if (isAbdominal) {
       findings.palpation = ['Right lower quadrant tenderness', 'Positive McBurney\'s point', 'Rebound tenderness present'];
-    } else if (diagnosis.includes('Stroke') || diagnosis.includes('Neurological')) {
+    }
+    
+    if (isNeurological) {
       findings.neurological = ['Left-sided hemiparesis', 'Facial droop on left', 'Dysarthria present'];
-    } else {
-      // Generic findings
-      findings.auscultation = ['Clear to auscultation bilaterally'];
-      findings.palpation = ['No focal tenderness'];
-      findings.cardiac = ['Regular rate and rhythm', 'No murmurs, rubs, or gallops'];
-      findings.neurological = ['Cranial nerves II-XII intact', 'No focal neurological deficits'];
+    }
+
+    // If no specific findings for exam type, provide generic normal findings
+    if (findings[examType].length === 0) {
+      switch (examType) {
+        case 'auscultation':
+          findings.auscultation = ['Clear to auscultation bilaterally', 'No wheezes or rales'];
+          break;
+        case 'palpation':
+          findings.palpation = ['No focal tenderness', 'Abdomen soft, non-tender'];
+          break;
+        case 'cardiac':
+          findings.cardiac = ['Regular rate and rhythm', 'No murmurs, rubs, or gallops'];
+          break;
+        case 'neurological':
+          findings.neurological = ['Cranial nerves II-XII intact', 'No focal neurological deficits'];
+          break;
+      }
     }
 
     return findings[examType] || ['Examination unremarkable'];
