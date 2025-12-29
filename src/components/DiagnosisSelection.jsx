@@ -32,9 +32,9 @@ const DiagnosisSelection = ({ possibleDiagnoses, correctDiagnosis, onSelect, sel
   });
 
   return (
-    <div className="bg-gray-800 rounded-lg border border-gray-700 p-6">
-      <h2 className="text-2xl font-bold text-white mb-4">Make a Diagnosis</h2>
-      <p className="text-gray-400 mb-6">Select the most likely diagnosis based on your findings.</p>
+    <div className="card rounded-xl p-8">
+      <h2 className="text-3xl font-bold text-white mb-2">Make a Diagnosis</h2>
+      <p className="text-slate-400 mb-8">Select the most likely diagnosis based on your findings.</p>
 
       {/* Search Bar */}
       <div className="mb-4">
@@ -45,7 +45,7 @@ const DiagnosisSelection = ({ possibleDiagnoses, correctDiagnosis, onSelect, sel
             placeholder="Search diagnoses..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-10 py-2 bg-gray-900 border border-gray-600 rounded-lg text-white text-sm placeholder-gray-500 focus:outline-none focus:border-blue-500"
+              className="w-full pl-10 pr-10 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white text-sm placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
           />
           {searchQuery && (
             <button
@@ -63,7 +63,7 @@ const DiagnosisSelection = ({ possibleDiagnoses, correctDiagnosis, onSelect, sel
         <select
           value={selectedCategory}
           onChange={(e) => setSelectedCategory(e.target.value)}
-          className="w-full px-3 py-2 bg-gray-900 border border-gray-600 rounded-lg text-white text-sm focus:outline-none focus:border-blue-500"
+              className="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
         >
           {categories.map(cat => (
             <option key={cat} value={cat}>
@@ -90,10 +90,10 @@ const DiagnosisSelection = ({ possibleDiagnoses, correctDiagnosis, onSelect, sel
                 key={index}
                 onClick={() => onSelect(diagnosisName)}
                 disabled={!!selectedDiagnosis}
-                className={`w-full text-left p-4 rounded-lg border transition-all flex items-center justify-between ${
+                className={`w-full text-left p-5 rounded-xl border transition-all flex items-center justify-between card-hover ${
                   isSelected
-                    ? (isCorrect ? 'bg-green-900/30 border-green-500' : 'bg-red-900/30 border-red-500')
-                    : 'bg-gray-900 border-gray-600 hover:border-blue-500 hover:bg-gray-900/80 cursor-pointer'
+                    ? (isCorrect ? 'bg-green-500/20 border-green-500 shadow-lg shadow-green-500/20' : 'bg-red-500/20 border-red-500 shadow-lg shadow-red-500/20')
+                    : 'bg-slate-800 border-slate-700 hover:border-blue-500 hover:bg-slate-800/80 cursor-pointer'
                 } ${selectedDiagnosis ? 'cursor-not-allowed' : ''}`}
               >
                 <div className="flex-1">

@@ -1,74 +1,86 @@
-import { User, FileText, Calendar } from 'lucide-react';
+import { User, FileText, Calendar, AlertCircle } from 'lucide-react';
 
 const LeftSidebar = ({ patientProfile, nursingNotes, difficulty }) => {
   return (
-    <div className="w-80 bg-gray-800 border-r border-gray-700 overflow-y-auto">
-      {/* Patient Profile */}
-      <div className="p-4 border-b border-gray-700">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center">
-            <User className="w-6 h-6" />
+    <div className="w-96 bg-slate-900 border-r border-slate-700/50 overflow-y-auto">
+      <div className="p-8 space-y-6">
+        {/* Patient Profile Card */}
+        <div className="card rounded-xl p-6">
+          <div className="flex items-center gap-4 mb-6">
+            <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+              <User className="w-8 h-8 text-white" />
+            </div>
+            <div>
+              <h2 className="text-xl font-bold text-white mb-1">{patientProfile.name}</h2>
+              <p className="text-sm text-slate-400">
+                {patientProfile.age} years old, {patientProfile.sex}
+              </p>
+            </div>
           </div>
-          <div>
-            <h2 className="text-lg font-bold text-white">{patientProfile.name}</h2>
-            <p className="text-sm text-gray-400">
-              {patientProfile.age} years old, {patientProfile.sex}
+
+          {/* Chief Complaint - Bold and Larger */}
+          <div className="mb-6 pt-6 border-t border-slate-700/50">
+            <div className="flex items-center gap-2 text-slate-400 text-xs font-semibold uppercase tracking-wide mb-3">
+              <AlertCircle className="w-4 h-4" />
+              <span>Chief Complaint</span>
+            </div>
+            <p className="text-lg font-bold text-white leading-relaxed">
+              {patientProfile.chiefComplaint}
             </p>
           </div>
         </div>
 
-        <div className="space-y-3">
-          <div>
-            <div className="flex items-center gap-2 text-gray-400 text-sm mb-1">
-              <Calendar className="w-4 h-4" />
-              <span className="font-medium">Chief Complaint</span>
-            </div>
-            <p className="text-white text-sm">{patientProfile.chiefComplaint}</p>
+        {/* Past Medical History Card */}
+        <div className="card rounded-xl p-6">
+          <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4">
+            Past Medical History
+          </h3>
+          <ul className="space-y-3">
+            {patientProfile.pastMedicalHistory.map((item, idx) => (
+              <li key={idx} className="text-sm text-slate-300 flex items-start gap-3">
+                <span className="text-blue-400 mt-1.5 font-bold">•</span>
+                <span className="leading-relaxed">{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Presenting Symptoms Card */}
+        <div className="card rounded-xl p-6">
+          <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4">
+            Presenting Symptoms
+          </h3>
+          <ul className="space-y-3">
+            {patientProfile.presentingSymptoms.map((symptom, idx) => (
+              <li key={idx} className="text-sm text-slate-300 flex items-start gap-3">
+                <span className="text-red-400 mt-1.5 font-bold">•</span>
+                <span className="leading-relaxed">{symptom}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Clinical Notes Card */}
+        <div className="card rounded-xl p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <FileText className="w-5 h-5 text-green-400" />
+            <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+              Clinical Notes
+            </h3>
           </div>
-        </div>
-      </div>
-
-      {/* Past Medical History */}
-      <div className="p-4 border-b border-gray-700">
-        <h3 className="text-sm font-semibold text-gray-400 uppercase mb-3">Past Medical History</h3>
-        <ul className="space-y-2">
-          {patientProfile.pastMedicalHistory.map((item, idx) => (
-            <li key={idx} className="text-sm text-gray-300 flex items-start gap-2">
-              <span className="text-blue-400 mt-1">•</span>
-              <span>{item}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      {/* Presenting Symptoms */}
-      <div className="p-4 border-b border-gray-700">
-        <h3 className="text-sm font-semibold text-gray-400 uppercase mb-3">Presenting Symptoms</h3>
-        <ul className="space-y-2">
-          {patientProfile.presentingSymptoms.map((symptom, idx) => (
-            <li key={idx} className="text-sm text-gray-300 flex items-start gap-2">
-              <span className="text-red-400 mt-1">•</span>
-              <span>{symptom}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      {/* Nursing Notes */}
-      <div className="p-4">
-        <div className="flex items-center gap-2 mb-3">
-          <FileText className="w-5 h-5 text-green-400" />
-          <h3 className="text-sm font-semibold text-gray-400 uppercase">Clinical Notes</h3>
-        </div>
-        <div className="bg-gray-900 rounded-lg p-3 border border-gray-700">
-          <p className="text-sm text-gray-300 leading-relaxed whitespace-pre-wrap">
-            {nursingNotes}
-          </p>
-          {difficulty === 'student' && (
-            <div className="mt-3 pt-3 border-t border-gray-700">
-              <p className="text-xs text-yellow-400 font-medium">💡 Hint: Focus on the most prominent clinical findings</p>
-            </div>
-          )}
+          <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
+            <p className="text-sm text-slate-300 leading-relaxed whitespace-pre-wrap">
+              {nursingNotes}
+            </p>
+            {difficulty === 'student' || difficulty === 'highschool' && (
+              <div className="mt-4 pt-4 border-t border-slate-700/50">
+                <p className="text-xs text-yellow-400 font-medium flex items-center gap-2">
+                  <span>💡</span>
+                  <span>Focus on the most prominent clinical findings</span>
+                </p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

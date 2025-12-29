@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { TestTube, Pill, Stethoscope, CheckCircle, Search, X } from 'lucide-react';
+import { TestTube, Pill, Stethoscope, CheckCircle, Search, X, FlaskConical, Activity, Heart, Brain } from 'lucide-react';
 import testLibrary from '../data/TestLibrary.json';
 
 const ActionMenu = ({ 
@@ -44,11 +44,8 @@ const ActionMenu = ({
 
   // Merge with case-specific investigations (for results)
   const getTestData = (testId) => {
-    // First check if it's in the case investigations (has results)
     const caseTest = investigations.find(inv => inv.id === testId);
     if (caseTest) return caseTest;
-    
-    // Otherwise use library test
     const libraryTest = testLibrary.find(t => t.id === testId);
     return libraryTest;
   };
@@ -61,145 +58,167 @@ const ActionMenu = ({
     return givenTreatments.some(t => t === treatment);
   };
 
+  const getTestIcon = (category) => {
+    if (category.includes('Lab')) return <FlaskConical className="w-4 h-4" />;
+    if (category.includes('Imaging')) return <Activity className="w-4 h-4" />;
+    if (category.includes('Cardiac')) return <Heart className="w-4 h-4" />;
+    if (category.includes('Assessment')) return <Stethoscope className="w-4 h-4" />;
+    return <TestTube className="w-4 h-4" />;
+  };
+
   return (
-    <div className="w-80 bg-gray-800 border-l border-gray-700 overflow-y-auto">
-      <div className="p-4 border-b border-gray-700">
-        <h2 className="text-xl font-bold text-white">Action Menu</h2>
-        <p className="text-sm text-gray-400 mt-1">Select actions to manage the patient</p>
-      </div>
+    <div className="w-96 bg-slate-900 border-l border-slate-700/50 overflow-y-auto">
+      <div className="p-8">
+        <div className="mb-6">
+          <h2 className="text-2xl font-bold text-white mb-2">Actions</h2>
+          <p className="text-sm text-slate-400">Order tests and manage treatment</p>
+        </div>
 
-      {/* Order Tests */}
-      {(currentState === 'investigation' || currentState === 'triage') && (
-        <div className="p-4 border-b border-gray-700">
-          <div className="flex items-center gap-2 mb-4">
-            <TestTube className="w-5 h-5 text-blue-400" />
-            <h3 className="font-semibold text-white">Order Tests</h3>
-          </div>
+        {/* Order Tests */}
+        {(currentState === 'investigation' || currentState === 'triage') && (
+          <div className="card rounded-xl p-6 mb-6">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 bg-blue-500/20 rounded-xl flex items-center justify-center">
+                <FlaskConical className="w-5 h-5 text-blue-400" />
+              </div>
+              <h3 className="text-lg font-semibold text-white">Order Tests</h3>
+            </div>
 
-          {/* Search Bar */}
-          <div className="mb-3">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search tests..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-10 py-2 bg-gray-900 border border-gray-600 rounded-lg text-white text-sm placeholder-gray-500 focus:outline-none focus:border-blue-500"
-              />
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery('')}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
-                >
-                  <X className="w-4 h-4" />
-                </button>
+            {/* Search Bar */}
+            <div className="mb-4">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <input
+                  type="text"
+                  placeholder="Search tests..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-10 pr-10 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white text-sm placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery('')}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-white transition-colors"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Category Filter */}
+            <div className="mb-4">
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+              >
+                {categories.map(cat => (
+                  <option key={cat} value={cat}>
+                    {cat === 'all' ? 'All Categories' : cat}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Tests List */}
+            <div className="space-y-2 max-h-[600px] overflow-y-auto">
+              {filteredTests.length === 0 ? (
+                <div className="text-center py-12 text-slate-400 text-sm">
+                  No tests found matching your search.
+                </div>
+              ) : (
+                filteredTests.map((test) => {
+                  const ordered = isTestOrdered(test.id);
+                  const testData = getTestData(test.id);
+                  return (
+                    <button
+                      key={test.id}
+                      onClick={() => !ordered && onOrderTest(testData || test)}
+                      disabled={ordered}
+                      className={`w-full text-left p-4 rounded-lg border transition-all ${
+                        ordered
+                          ? 'bg-slate-800/50 border-green-500/50 cursor-not-allowed opacity-60'
+                          : 'bg-slate-800 border-slate-700 hover:border-blue-500 hover:bg-slate-800/80 cursor-pointer card-hover'
+                      }`}
+                      title={test.description}
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-start gap-3 flex-1">
+                          <div className={`mt-0.5 ${ordered ? 'text-green-400' : 'text-blue-400'}`}>
+                            {getTestIcon(test.category)}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="font-semibold text-white text-sm mb-1">{test.name}</div>
+                            <div className="text-xs text-slate-400 mb-2">
+                              {test.category} • {test.timeCost} min
+                            </div>
+                            {test.description && (
+                              <div className="text-xs text-slate-500 line-clamp-2">
+                                {test.description}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        {ordered && (
+                          <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                        )}
+                      </div>
+                    </button>
+                  );
+                })
               )}
             </div>
           </div>
+        )}
 
-          {/* Category Filter */}
-          <div className="mb-3">
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="w-full px-3 py-2 bg-gray-900 border border-gray-600 rounded-lg text-white text-sm focus:outline-none focus:border-blue-500"
-            >
-              {categories.map(cat => (
-                <option key={cat} value={cat}>
-                  {cat === 'all' ? 'All Categories' : cat}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Tests List */}
-          <div className="space-y-2 max-h-96 overflow-y-auto">
-            {filteredTests.length === 0 ? (
-              <div className="text-center py-8 text-gray-400 text-sm">
-                No tests found matching your search.
+        {/* Treatment Actions */}
+        {currentState === 'treatment' && (
+          <div className="card rounded-xl p-6 mb-6">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 bg-green-500/20 rounded-xl flex items-center justify-center">
+                <Pill className="w-5 h-5 text-green-400" />
+              </div>
+              <h3 className="text-lg font-semibold text-white">Treatment Options</h3>
+            </div>
+            {availableTreatments.length > 0 ? (
+              <div className="space-y-2">
+                {availableTreatments.map((treatment) => (
+                  <ActionButton
+                    key={treatment.action}
+                    label={treatment.label || treatment.description}
+                    action={treatment.action}
+                    icon={<Pill className="w-4 h-4" />}
+                    onClick={() => onGiveMedication(treatment.action)}
+                    completed={isTreatmentGiven(treatment.action)}
+                    medication={treatment.medication}
+                  />
+                ))}
               </div>
             ) : (
-              filteredTests.map((test) => {
-                const ordered = isTestOrdered(test.id);
-                const testData = getTestData(test.id);
-                return (
-                  <button
-                    key={test.id}
-                    onClick={() => !ordered && onOrderTest(testData || test)}
-                    disabled={ordered}
-                    className={`w-full text-left p-3 rounded-lg border transition-all ${
-                      ordered
-                        ? 'bg-gray-700/50 border-green-500/50 cursor-not-allowed'
-                        : 'bg-gray-900 border-gray-600 hover:border-blue-500 hover:bg-gray-900/80 cursor-pointer'
-                    }`}
-                    title={test.description}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1">
-                        <div className="font-medium text-white text-sm">{test.name}</div>
-                        <div className="text-xs text-gray-400 mt-1">
-                          {test.category} • {test.timeCost} min
-                        </div>
-                        {test.description && (
-                          <div className="text-xs text-gray-500 mt-1 line-clamp-2">
-                            {test.description}
-                          </div>
-                        )}
-                      </div>
-                      {ordered && (
-                        <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0" />
-                      )}
-                    </div>
-                  </button>
-                );
-              })
+              <div className="text-slate-400 text-sm text-center py-8">
+                No treatment options available.
+              </div>
             )}
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Treatment Actions */}
-      {currentState === 'treatment' && (
-        <div className="p-4 border-b border-gray-700">
-          <div className="flex items-center gap-2 mb-4">
-            <Pill className="w-5 h-5 text-green-400" />
-            <h3 className="font-semibold text-white">Treatment Options</h3>
+        {/* Consultation */}
+        <div className="card rounded-xl p-6">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 bg-purple-500/20 rounded-xl flex items-center justify-center">
+              <Stethoscope className="w-5 h-5 text-purple-400" />
+            </div>
+            <h3 className="text-lg font-semibold text-white">Consultation</h3>
           </div>
-          {availableTreatments.length > 0 ? (
-            <div className="space-y-2">
-              {availableTreatments.map((treatment) => (
-                <ActionButton
-                  key={treatment.action}
-                  label={treatment.label || treatment.description}
-                  action={treatment.action}
-                  icon={treatment.icon || <Pill className="w-4 h-4" />}
-                  onClick={() => onGiveMedication(treatment.action)}
-                  completed={isTreatmentGiven(treatment.action)}
-                  medication={treatment.medication}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="text-gray-400 text-sm">
-              No treatment options available. Check case configuration.
-            </div>
-          )}
+          <button
+            onClick={onConsultSpecialist}
+            className="w-full p-4 rounded-lg border border-slate-700 bg-slate-800 hover:border-purple-500 hover:bg-slate-800/80 transition-all text-white text-sm font-semibold flex items-center justify-center gap-2 card-hover"
+          >
+            <Stethoscope className="w-4 h-4" />
+            <span>Consult Specialist</span>
+          </button>
         </div>
-      )}
-
-      {/* Consultation */}
-      <div className="p-4">
-        <div className="flex items-center gap-2 mb-4">
-          <Stethoscope className="w-5 h-5 text-purple-400" />
-          <h3 className="font-semibold text-white">Consultation</h3>
-        </div>
-        <button
-          onClick={onConsultSpecialist}
-          className="w-full p-3 rounded-lg border border-gray-600 bg-gray-900 hover:border-purple-500 hover:bg-gray-900/80 transition-all text-white text-sm font-medium"
-        >
-          Consult Specialist
-        </button>
       </div>
     </div>
   );
@@ -209,21 +228,23 @@ const ActionButton = ({ label, icon, onClick, completed, medication }) => (
   <button
     onClick={onClick}
     disabled={completed}
-    className={`w-full text-left p-3 rounded-lg border transition-all ${
+    className={`w-full text-left p-4 rounded-lg border transition-all ${
       completed
-        ? 'bg-gray-700/50 border-green-500/50 cursor-not-allowed'
-        : 'bg-gray-900 border-gray-600 hover:border-green-500 hover:bg-gray-900/80 cursor-pointer'
+        ? 'bg-slate-800/50 border-green-500/50 cursor-not-allowed opacity-60'
+        : 'bg-slate-800 border-slate-700 hover:border-green-500 hover:bg-slate-800/80 cursor-pointer card-hover'
     }`}
   >
-    <div className="flex items-center justify-between">
-      <div className="flex-1">
-        <div className="flex items-center gap-2">
+    <div className="flex items-center justify-between gap-3">
+      <div className="flex items-center gap-3 flex-1">
+        <div className={completed ? 'text-green-400' : 'text-green-400'}>
           {icon}
-          <span className="text-white text-sm font-medium">{label}</span>
         </div>
-        {medication && (
-          <div className="text-xs text-gray-400 mt-1 ml-6">{medication}</div>
-        )}
+        <div className="flex-1">
+          <span className="text-white text-sm font-semibold">{label}</span>
+          {medication && (
+            <div className="text-xs text-slate-400 mt-1">{medication}</div>
+          )}
+        </div>
       </div>
       {completed && <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0" />}
     </div>

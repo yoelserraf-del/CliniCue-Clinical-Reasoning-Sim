@@ -721,69 +721,80 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 flex flex-col">
+    <div className="min-h-screen bg-slate-900 flex flex-col">
       {/* Header with Case Info and State */}
-      <div className="bg-gray-800 border-b border-gray-700 px-6 py-3">
-        <div className="flex items-center justify-between flex-wrap gap-3">
-          <div className="flex-1 min-w-0">
-            <h1 className="text-xl font-bold text-white truncate">{selectedCase?.title || 'Case Loading...'}</h1>
-            <div className="flex items-center gap-3 mt-1">
-              <span className="text-xs text-gray-400">
-                Difficulty: <span className="capitalize font-medium text-white">{selectedCase.difficulty}</span>
-              </span>
-              <span className="text-xs text-gray-500">•</span>
-              <span className="text-xs text-gray-400">
-                Stage: <span className="font-medium text-white">{getStateDisplayName(currentState)}</span>
-              </span>
+      <div className="bg-slate-800/50 border-b border-slate-700/50 backdrop-blur-sm">
+        <div className="max-w-[1920px] mx-auto px-8 py-6">
+          <div className="flex items-center justify-between flex-wrap gap-4">
+            <div className="flex-1 min-w-0">
+              <h1 className="text-2xl font-bold text-white truncate mb-2">{selectedCase?.title || 'Case Loading...'}</h1>
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-semibold text-slate-400 uppercase tracking-wide">Difficulty:</span>
+                  <span className="px-3 py-1 bg-slate-700/50 rounded-lg text-sm font-semibold text-white capitalize">
+                    {selectedCase.difficulty}
+                  </span>
+                </div>
+                <div className="w-1 h-1 rounded-full bg-slate-600"></div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-semibold text-slate-400 uppercase tracking-wide">Stage:</span>
+                  <span className="px-3 py-1 bg-blue-500/20 border border-blue-500/30 rounded-lg text-sm font-semibold text-blue-400">
+                    {getStateDisplayName(currentState)}
+                  </span>
+                </div>
+              </div>
             </div>
-          </div>
-          <div className="flex items-center gap-2 flex-wrap">
-            {(currentState === CASE_STATES.INVESTIGATION || currentState === CASE_STATES.DIAGNOSIS) && (
+            <div className="flex items-center gap-3 flex-wrap">
+              {(currentState === CASE_STATES.INVESTIGATION || currentState === CASE_STATES.DIAGNOSIS) && (
+                <button
+                  onClick={handleNextState}
+                  className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-semibold flex items-center gap-2 transition-all shadow-lg shadow-blue-500/20"
+                >
+                  <span>Next Stage</span>
+                  <span>→</span>
+                </button>
+              )}
               <button
-                onClick={handleNextState}
-                className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm font-medium"
+                onClick={handleGetHint}
+                className="px-4 py-2.5 bg-yellow-600/90 hover:bg-yellow-600 text-white rounded-lg text-sm font-semibold flex items-center gap-2 transition-all shadow-lg shadow-yellow-500/20"
+                title="Get a hint (affects score)"
               >
-                Next Stage →
+                <span>💡</span>
+                <span>Hint {hintsUsed > 0 && `(${hintsUsed})`}</span>
               </button>
-            )}
-            <button
-              onClick={handleGetHint}
-              className="px-3 py-1.5 bg-yellow-600 hover:bg-yellow-700 text-white rounded text-sm font-medium"
-              title="Get a hint (affects score)"
-            >
-              💡 Hint {hintsUsed > 0 && `(${hintsUsed})`}
-            </button>
-            <button
-              onClick={() => setShowWalkthrough(!showWalkthrough)}
-              className={`px-3 py-1.5 rounded text-sm font-medium ${
-                showWalkthrough 
-                  ? 'bg-blue-700 hover:bg-blue-800 text-white' 
-                  : 'bg-blue-600 hover:bg-blue-700 text-white'
-              }`}
-            >
-              {showWalkthrough ? 'Hide' : 'Show'} Walkthrough
-            </button>
-            <button
-              onClick={handleViewExplanation}
-              className="px-3 py-1.5 bg-purple-600 hover:bg-purple-700 text-white rounded text-sm font-medium"
-              title="View explanation (affects score)"
-            >
-              📚 Explain {explanationsViewed > 0 && `(${explanationsViewed})`}
-            </button>
-            <button
-              onClick={handleResetCase}
-              className="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 text-white rounded text-sm font-medium"
-              title="Reset Case"
-            >
-              Reset
-            </button>
-            <button
-              onClick={handleNewGame}
-              className="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 text-white rounded text-sm font-medium"
-              title="Start New Game"
-            >
-              New Game
-            </button>
+              <button
+                onClick={() => setShowWalkthrough(!showWalkthrough)}
+                className={`px-4 py-2.5 rounded-lg text-sm font-semibold flex items-center gap-2 transition-all ${
+                  showWalkthrough 
+                    ? 'bg-blue-700 hover:bg-blue-800 text-white shadow-lg shadow-blue-500/20' 
+                    : 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-500/20'
+                }`}
+              >
+                <span>{showWalkthrough ? 'Hide' : 'Show'} Walkthrough</span>
+              </button>
+              <button
+                onClick={handleViewExplanation}
+                className="px-4 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm font-semibold flex items-center gap-2 transition-all shadow-lg shadow-purple-500/20"
+                title="View explanation (affects score)"
+              >
+                <span>📚</span>
+                <span>Explain {explanationsViewed > 0 && `(${explanationsViewed})`}</span>
+              </button>
+              <button
+                onClick={handleResetCase}
+                className="px-4 py-2.5 bg-slate-700 hover:bg-slate-600 text-white rounded-lg text-sm font-semibold transition-all"
+                title="Reset Case"
+              >
+                Reset
+              </button>
+              <button
+                onClick={handleNewGame}
+                className="px-4 py-2.5 bg-slate-700 hover:bg-slate-600 text-white rounded-lg text-sm font-semibold transition-all"
+                title="Start New Game"
+              >
+                New Game
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -842,8 +853,8 @@ function App() {
 
       {/* Hint Modal */}
       {showHint && selectedCase && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-gray-800 rounded-lg p-6 max-w-2xl w-full mx-4 border border-gray-700">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="glass rounded-2xl p-8 max-w-2xl w-full shadow-2xl">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-2xl font-bold text-white">💡 Hint</h2>
               <button
@@ -853,12 +864,13 @@ function App() {
                 ✕
               </button>
             </div>
-            <div className="bg-yellow-900/20 border border-yellow-500/30 rounded-lg p-4 mb-4">
-              <p className="text-yellow-300 text-sm font-medium mb-2">
-                ⚠️ Using hints affects your score (-5 points per hint)
+            <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4 mb-6">
+              <p className="text-yellow-400 text-sm font-semibold flex items-center gap-2">
+                <span>⚠️</span>
+                <span>Using hints affects your score (-5 points per hint)</span>
               </p>
             </div>
-            <div className="bg-gray-900 rounded-lg p-4">
+            <div className="bg-slate-800/50 rounded-xl p-6">
               {currentState === CASE_STATES.TRIAGE && (
                 <p className="text-white">
                   <strong>Hint:</strong> Focus on the patient's chief complaint and vital signs. Look for patterns that suggest the underlying condition.
@@ -894,8 +906,8 @@ function App() {
 
       {/* Explanation Modal */}
       {showExplanation && selectedCase && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-gray-800 rounded-lg p-6 max-w-3xl w-full mx-4 border border-gray-700 max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="glass rounded-2xl p-8 max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-2xl font-bold text-white">📚 Explanation</h2>
               <button
@@ -905,12 +917,13 @@ function App() {
                 ✕
               </button>
             </div>
-            <div className="bg-purple-900/20 border border-purple-500/30 rounded-lg p-4 mb-4">
-              <p className="text-purple-300 text-sm font-medium mb-2">
-                ⚠️ Viewing explanations affects your score (-3 points per explanation)
+            <div className="bg-purple-500/10 border border-purple-500/30 rounded-xl p-4 mb-6">
+              <p className="text-purple-400 text-sm font-semibold flex items-center gap-2">
+                <span>⚠️</span>
+                <span>Viewing explanations affects your score (-3 points per explanation)</span>
               </p>
             </div>
-            <div className="bg-gray-900 rounded-lg p-4 space-y-4">
+            <div className="bg-slate-800/50 rounded-xl p-6 space-y-4">
               <div>
                 <h3 className="text-lg font-semibold text-white mb-2">Current Stage Explanation</h3>
                 {currentState === CASE_STATES.TRIAGE && (
@@ -957,8 +970,8 @@ function App() {
 
       {/* Walkthrough Modal */}
       {showWalkthrough && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-gray-800 rounded-lg p-6 max-w-2xl w-full mx-4 border border-gray-700">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="glass rounded-2xl p-8 max-w-2xl w-full shadow-2xl">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-2xl font-bold text-white">Walkthrough Guide</h2>
               <button

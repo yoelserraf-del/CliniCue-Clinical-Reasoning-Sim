@@ -1,4 +1,4 @@
-import { FileText, Image as ImageIcon, Clock } from 'lucide-react';
+import { FileText, Image as ImageIcon, Clock, CheckCircle2, Loader2 } from 'lucide-react';
 
 const ExaminationRoom = ({ investigations, testResults, orderedTests, currentTime, difficulty, onViewExplanation }) => {
   const getTestStatus = (testId) => {
@@ -16,30 +16,27 @@ const ExaminationRoom = ({ investigations, testResults, orderedTests, currentTim
 
   const formatResult = (result) => {
     if (typeof result === 'string') {
-      return <p className="text-white">{result}</p>;
+      return <p className="text-slate-900">{result}</p>;
     }
     if (typeof result === 'object' && result !== null) {
       return (
-        <div className="space-y-1">
+        <div className="space-y-2">
           {Object.entries(result).map(([key, value]) => (
-            <div key={key} className="mb-1">
-              <span className="font-medium text-gray-400 capitalize">{key}:</span>{' '}
-              <span className="text-white">{String(value)}</span>
+            <div key={key} className="flex justify-between py-2 border-b border-slate-200 last:border-0">
+              <span className="font-semibold text-slate-700 capitalize">{key}:</span>
+              <span className="text-slate-900">{String(value)}</span>
             </div>
           ))}
         </div>
       );
     }
-    return <p className="text-white">{String(result)}</p>;
+    return <p className="text-slate-900">{String(result)}</p>;
   };
 
   // Show all tests that have been ordered (from case investigations or test library)
   const displayedTests = orderedTests.map(orderedTest => {
-    // First check if it's in the case investigations
     const caseTest = investigations.find(inv => inv.id === orderedTest.id);
     if (caseTest) return caseTest;
-    
-    // Otherwise, create a test object from the ordered test data
     return {
       id: orderedTest.id,
       name: orderedTest.name || `Test ${orderedTest.id}`,
@@ -48,21 +45,21 @@ const ExaminationRoom = ({ investigations, testResults, orderedTests, currentTim
   });
 
   return (
-    <div className="flex-1 bg-gray-900 p-6 overflow-y-auto">
-      <div className="max-w-4xl mx-auto">
-        <div className="mb-6">
-          <h2 className="text-2xl font-bold text-white mb-2">Examination Room</h2>
-          <p className="text-gray-400 text-sm">Review test results and imaging studies</p>
+    <div className="flex-1 bg-slate-900 p-8 overflow-y-auto">
+      <div className="max-w-6xl mx-auto">
+        <div className="mb-8">
+          <h2 className="text-3xl font-bold text-white mb-2">Laboratory & Imaging Results</h2>
+          <p className="text-slate-400 text-sm">Review test results and imaging studies</p>
         </div>
 
         {displayedTests.length === 0 ? (
-          <div className="bg-gray-800 rounded-lg border-2 border-dashed border-gray-700 p-12 text-center">
-            <FileText className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-            <p className="text-gray-400 text-lg">No test results yet</p>
-            <p className="text-gray-500 text-sm mt-2">Order tests from the action menu to view results</p>
+          <div className="card rounded-xl p-16 text-center border-2 border-dashed border-slate-700/50">
+            <FileText className="w-20 h-20 text-slate-600 mx-auto mb-6" />
+            <p className="text-slate-400 text-xl mb-2">No test results yet</p>
+            <p className="text-slate-500 text-sm">Order tests from the action menu to view results</p>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-6">
             {displayedTests.map((investigation) => {
               const status = getTestStatus(investigation.id);
               const testResult = getTestResult(investigation.id);
@@ -71,70 +68,95 @@ const ExaminationRoom = ({ investigations, testResults, orderedTests, currentTim
               return (
                 <div
                   key={investigation.id}
-                  className="bg-gray-800 rounded-lg border border-gray-700 p-6 hover:border-blue-500 transition-colors"
+                  className="card rounded-xl p-6 card-hover"
                 >
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center gap-3">
-                      {isImage ? (
-                        <ImageIcon className="w-6 h-6 text-blue-400" />
-                      ) : (
-                        <FileText className="w-6 h-6 text-green-400" />
-                      )}
+                  {/* Test Header */}
+                  <div className="flex items-start justify-between mb-6">
+                    <div className="flex items-center gap-4">
+                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                        isImage ? 'bg-blue-500/20 text-blue-400' : 'bg-green-500/20 text-green-400'
+                      }`}>
+                        {isImage ? (
+                          <ImageIcon className="w-6 h-6" />
+                        ) : (
+                          <FileText className="w-6 h-6" />
+                        )}
+                      </div>
                       <div>
-                        <h3 className="text-lg font-semibold text-white">{investigation.name}</h3>
+                        <h3 className="text-xl font-bold text-white mb-1">{investigation.name}</h3>
                         {investigation.timeCost && (
-                          <p className="text-sm text-gray-400 flex items-center gap-1 mt-1">
-                            <Clock className="w-3 h-3" />
-                            Time cost: {investigation.timeCost} minutes
+                          <p className="text-sm text-slate-400 flex items-center gap-2">
+                            <Clock className="w-4 h-4" />
+                            Time: {investigation.timeCost} minutes
                           </p>
                         )}
                       </div>
                     </div>
-                    <span
-                      className={`px-3 py-1 rounded-full text-xs font-medium ${
-                        status === 'completed'
-                          ? 'bg-green-500/20 text-green-400'
-                          : status === 'pending'
-                          ? 'bg-yellow-500/20 text-yellow-400'
-                          : 'bg-gray-500/20 text-gray-400'
-                      }`}
-                    >
-                      {status === 'completed' ? 'Completed' : status === 'pending' ? 'Pending' : 'Not Ordered'}
-                    </span>
+                    <div className={`px-4 py-2 rounded-lg text-xs font-semibold uppercase tracking-wide ${
+                      status === 'completed'
+                        ? 'bg-green-500/20 text-green-400 border border-green-500/30'
+                        : status === 'pending'
+                        ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30'
+                        : 'bg-slate-700/50 text-slate-400 border border-slate-600/50'
+                    }`}>
+                      {status === 'completed' ? (
+                        <div className="flex items-center gap-2">
+                          <CheckCircle2 className="w-4 h-4" />
+                          <span>Completed</span>
+                        </div>
+                      ) : status === 'pending' ? (
+                        <div className="flex items-center gap-2">
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          <span>Pending</span>
+                        </div>
+                      ) : (
+                        'Not Ordered'
+                      )}
+                    </div>
                   </div>
 
+                  {/* Test Results - Table Style */}
                   {status === 'completed' && testResult && (
-                    <div className="mt-4">
-                      <div className={`bg-gray-900 rounded p-4 border ${
-                        testResult.isGeneric ? 'border-yellow-500/50' : 'border-gray-700'
+                    <div className="mt-6">
+                      <div className={`bg-white rounded-xl p-6 border-2 ${
+                        testResult.isGeneric ? 'border-yellow-500/50 bg-yellow-50/50' : 'border-slate-200'
                       }`}>
                         {testResult.isGeneric && (
-                          <div className="mb-3 p-2 bg-yellow-500/10 border border-yellow-500/30 rounded">
-                            <p className="text-xs text-yellow-400">
-                              ⚠️ This test was ordered but is not directly relevant to this case.
+                          <div className="mb-4 p-3 bg-yellow-100 border border-yellow-300 rounded-lg">
+                            <p className="text-sm text-yellow-800 font-medium flex items-center gap-2">
+                              <span>⚠️</span>
+                              <span>This test was ordered but is not directly relevant to this case.</span>
                             </p>
                           </div>
                         )}
-                        <h4 className="text-sm font-semibold text-gray-400 mb-3">Results:</h4>
-                        <div className="text-white text-sm space-y-2">
-                          {formatResult(testResult.result)}
+                        <div className="mb-4 pb-4 border-b border-slate-200">
+                          <h4 className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-4">
+                            Results
+                          </h4>
+                          <div className="text-slate-900">
+                            {formatResult(testResult.result)}
+                          </div>
                         </div>
                         {testResult.interpretation && (
-                          <div className="mt-4 pt-4 border-t border-gray-700">
+                          <div className="pt-4 border-t border-slate-200">
                             {difficulty === 'student' || difficulty === 'highschool' ? (
-                              <p className="text-sm text-blue-300 font-medium">
-                                💡 Interpretation: {testResult.interpretation}
-                              </p>
+                              <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+                                <p className="text-sm text-blue-900 font-medium flex items-start gap-2">
+                                  <span>💡</span>
+                                  <span><strong>Interpretation:</strong> {testResult.interpretation}</span>
+                                </p>
+                              </div>
                             ) : (
                               <div>
-                                <p className="text-xs text-gray-500 italic mb-2">
-                                  Note: Manual interpretation required for {difficulty} level
+                                <p className="text-xs text-slate-500 italic mb-3">
+                                  Manual interpretation required for {difficulty} level
                                 </p>
                                 <button
                                   onClick={() => onViewExplanation && onViewExplanation()}
-                                  className="text-sm text-purple-400 hover:text-purple-300 font-medium underline"
+                                  className="text-sm text-purple-600 hover:text-purple-700 font-semibold underline flex items-center gap-2"
                                 >
-                                  📚 Click to view interpretation (affects score)
+                                  <span>📚</span>
+                                  <span>View interpretation (affects score)</span>
                                 </button>
                               </div>
                             )}
@@ -144,10 +166,12 @@ const ExaminationRoom = ({ investigations, testResults, orderedTests, currentTim
                     </div>
                   )}
 
+                  {/* Pending Status */}
                   {status === 'pending' && (
-                    <div className="mt-4 bg-yellow-500/10 border border-yellow-500/30 rounded p-3">
-                      <p className="text-sm text-yellow-400">
-                        ⏳ Test in progress... Estimated completion: {investigation.timeCost || 0} minutes
+                    <div className="mt-6 bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4">
+                      <p className="text-sm text-yellow-400 flex items-center gap-2">
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span>Test in progress... Estimated completion: {investigation.timeCost || 0} minutes</span>
                       </p>
                     </div>
                   )}
