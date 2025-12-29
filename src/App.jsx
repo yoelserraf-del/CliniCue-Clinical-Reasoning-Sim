@@ -20,7 +20,8 @@ function App() {
   const [testResults, setTestResults] = useState([]);
   const [givenTreatments, setGivenTreatments] = useState([]);
   const [physicalExamFindings, setPhysicalExamFindings] = useState([]);
-  const [currentTime, setCurrentTime] = useState(0);
+  const [currentTime, setCurrentTime] = useState(0); // Simulation time (1 sec = 1 min)
+  const [realTimeElapsed, setRealTimeElapsed] = useState(0); // Real time in seconds
   const [timeLimitEnabled, setTimeLimitEnabled] = useState(true);
   const [showDebrief, setShowDebrief] = useState(false);
   const [performance, setPerformance] = useState(null);
@@ -94,6 +95,8 @@ function App() {
           setTestResults([]);
           setGivenTreatments([]);
           setCurrentTime(0);
+      setRealTimeElapsed(0);
+          setRealTimeElapsed(0);
           setSelectedDiagnosis(null);
           setShowScoreScreen(false);
           setCaseScore(null);
@@ -115,7 +118,38 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedDifficulty]);
 
-  // Simulate time passing, test completion, and stability decay
+  // Real-time counter for time limit (1 second = 1 second)
+  useEffect(() => {
+    if (timeLimitEnabled && selectedCase && currentState !== CASE_STATES.COMPLETED) {
+      const interval = setInterval(() => {
+        setRealTimeElapsed(prev => {
+          const newRealTime = prev + 1;
+          
+          // Check if time limit expired (timeLimit is in minutes, convert to seconds)
+          if (timeLimit && newRealTime >= timeLimit * 60) {
+            setPatientStability(0);
+            setCurrentState(CASE_STATES.COMPLETED);
+            calculatePerformance();
+            setShowDebrief(true);
+            return newRealTime;
+          }
+          
+          // Stability decay based on real time
+          if (timeLimit) {
+            const timeInMinutes = newRealTime / 60;
+            const decay = calculateTimeDecay(timeInMinutes, timeLimit, selectedCase.difficulty);
+            setPatientStability(prev => Math.max(0, prev - decay));
+          }
+          
+          return newRealTime;
+        });
+      }, 1000); // Real time: 1 second = 1 second
+
+      return () => clearInterval(interval);
+    }
+  }, [timeLimitEnabled, selectedCase, currentState, timeLimit]);
+
+  // Simulate time passing and test completion (simulation time: 1 sec = 1 min)
   useEffect(() => {
     if (currentState !== CASE_STATES.COMPLETED && selectedCase) {
       const interval = setInterval(() => {
@@ -160,26 +194,6 @@ function App() {
               ));
             }
           });
-
-          // Stability decay based on time (if time limit enabled)
-          if (timeLimitEnabled && timeLimit) {
-            const decay = calculateTimeDecay(newTime, timeLimit, selectedCase.difficulty);
-            setPatientStability(prev => {
-              const newStability = Math.max(0, prev - decay);
-              
-              // Critical state if time expired
-              if (isTimeExpired(timeLimit, newTime) && newStability > 0) {
-                setTimeout(() => {
-                  setCurrentState(CASE_STATES.COMPLETED);
-                  // Calculate performance will be called when state changes
-                  setShowDebrief(true);
-                }, 100);
-                return 0;
-              }
-              
-              return newStability;
-            });
-          }
           
           return newTime;
         });
@@ -187,7 +201,7 @@ function App() {
 
       return () => clearInterval(interval);
     }
-  }, [orderedTests, selectedCase, currentState, timeLimitEnabled, timeLimit]);
+  }, [orderedTests, selectedCase, currentState]);
 
   // Handle test ordering
   const handleOrderTest = (test) => {
@@ -373,6 +387,7 @@ function App() {
       setTestResults([]);
       setGivenTreatments([]);
       setCurrentTime(0);
+      setRealTimeElapsed(0);
       setShowDebrief(false);
       setPerformance(null);
       setVitals(selectedCase.initialVitals);
@@ -555,6 +570,7 @@ function App() {
       setTestResults([]);
       setGivenTreatments([]);
       setCurrentTime(0);
+      setRealTimeElapsed(0);
       setShowDebrief(false);
       setShowScoreScreen(false);
       setPerformance(null);
@@ -580,31 +596,10 @@ function App() {
   // Difficulty selection screen
   if (!selectedDifficulty) {
     return (
-      <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4 relative">
         <div className="text-center max-w-3xl mx-auto">
           <h1 className="text-5xl font-bold text-white mb-4">Clinical Reasoning Simulator</h1>
           <p className="text-slate-400 mb-8 text-lg">Select your difficulty level to begin</p>
-          
-          {/* Time Limit Toggle */}
-          <div className="mb-8 card rounded-xl p-6 max-w-md mx-auto">
-            <label className="flex items-center justify-between cursor-pointer">
-              <div className="flex items-center gap-3">
-                <Clock className="w-5 h-5 text-blue-400" />
-                <span className="text-white font-semibold">Enable Time Limits</span>
-              </div>
-              <input
-                type="checkbox"
-                checked={timeLimitEnabled}
-                onChange={(e) => setTimeLimitEnabled(e.target.checked)}
-                className="w-5 h-5 rounded text-blue-600 focus:ring-blue-500"
-              />
-            </label>
-            <p className="text-sm text-slate-400 mt-2 text-left">
-              {timeLimitEnabled 
-                ? 'Time limits are enabled. Cases have time constraints based on difficulty.'
-                : 'Time limits are disabled. Take your time to learn.'}
-            </p>
-          </div>
           
           <div className="space-y-4">
             <button
@@ -635,6 +630,25 @@ function App() {
               <div className="font-bold text-xl mb-1">Residency</div>
               <div className="text-sm opacity-90">Complex cases for residents and beyond</div>
             </button>
+          </div>
+        </div>
+        
+        {/* Time Limit Toggle - Bottom Right */}
+        <div className="absolute bottom-4 right-4">
+          <div className="card rounded-lg p-3 max-w-xs">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <Clock className="w-4 h-4 text-blue-400" />
+              <span className="text-white text-sm font-medium">Time Limits</span>
+              <input
+                type="checkbox"
+                checked={timeLimitEnabled}
+                onChange={(e) => setTimeLimitEnabled(e.target.checked)}
+                className="ml-auto w-4 h-4 rounded text-blue-600 focus:ring-blue-500"
+              />
+            </label>
+            <p className="text-xs text-slate-400 mt-1">
+              {timeLimitEnabled ? 'Enabled' : 'Disabled'}
+            </p>
           </div>
         </div>
       </div>
@@ -856,7 +870,7 @@ function App() {
         vitals={vitals || selectedCase.initialVitals}
         stability={patientStability}
         difficulty={selectedCase.difficulty}
-        currentTime={currentTime}
+        realTimeElapsed={realTimeElapsed}
         timeLimit={timeLimit}
         timeLimitEnabled={timeLimitEnabled}
       />
