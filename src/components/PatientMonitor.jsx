@@ -91,7 +91,7 @@ const PatientMonitor = ({ vitals, stability, difficulty, realTimeElapsed, timeLi
             <VitalCard
               icon={<Thermometer className="w-5 h-5" />}
               label="Temperature"
-              value={`${vitals.temp}`}
+              value={typeof vitals.temp === 'number' ? vitals.temp.toFixed(1) : vitals.temp}
               unit="°C"
               color={getVitalColor('temp')}
             />

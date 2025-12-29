@@ -1,6 +1,6 @@
 import { FileText, Image as ImageIcon, Clock, CheckCircle2, Loader2 } from 'lucide-react';
 
-const ExaminationRoom = ({ investigations, testResults, orderedTests, currentTime, difficulty, onViewExplanation }) => {
+const ExaminationRoom = ({ investigations, testResults, orderedTests, currentTime, difficulty, onViewExplanation, physicalExamFindings = [] }) => {
   const getTestStatus = (testId) => {
     const ordered = orderedTests.find(t => t.id === testId);
     if (!ordered) return 'not_ordered';
@@ -48,8 +48,40 @@ const ExaminationRoom = ({ investigations, testResults, orderedTests, currentTim
     <div className="flex-1 bg-slate-900 p-8 overflow-y-auto">
       <div className="max-w-6xl mx-auto">
         <div className="mb-8">
-          <h2 className="text-3xl font-bold text-white mb-2">Laboratory & Imaging Results</h2>
-          <p className="text-slate-400 text-sm">Review test results and imaging studies</p>
+          <h2 className="text-3xl font-bold text-white mb-2">The Clinical Workspace</h2>
+          <p className="text-slate-400 text-sm">Review physical exam findings, test results, and imaging studies</p>
+        </div>
+
+        {/* Physical Exam Findings */}
+        {physicalExamFindings.length > 0 && (
+          <div className="mb-8">
+            <h3 className="text-xl font-bold text-white mb-4">Physical Examination Findings</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {physicalExamFindings.map((exam, idx) => (
+                <div key={idx} className="card rounded-xl p-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 bg-purple-500/20 rounded-xl flex items-center justify-center">
+                      <FileText className="w-5 h-5 text-purple-400" />
+                    </div>
+                    <h4 className="text-lg font-semibold text-white capitalize">{exam.type} Exam</h4>
+                  </div>
+                  <ul className="space-y-2">
+                    {exam.findings.map((finding, fIdx) => (
+                      <li key={fIdx} className="text-sm text-slate-300 flex items-start gap-2">
+                        <span className="text-purple-400 mt-1">•</span>
+                        <span>{finding}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Laboratory & Imaging Results */}
+        <div className="mb-6">
+          <h3 className="text-xl font-bold text-white mb-4">Laboratory & Imaging Results</h3>
         </div>
 
         {displayedTests.length === 0 ? (

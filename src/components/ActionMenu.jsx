@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { TestTube, Pill, Stethoscope, CheckCircle, Search, X, FlaskConical, Activity, Heart, Brain } from 'lucide-react';
+import { TestTube, Pill, Stethoscope, CheckCircle, Search, X, FlaskConical, Activity, Heart, Brain, Lungs, Bone } from 'lucide-react';
 import testLibrary from '../data/TestLibrary.json';
 
 const ActionMenu = ({ 
@@ -7,6 +7,7 @@ const ActionMenu = ({
   onOrderTest, 
   onGiveMedication, 
   onConsultSpecialist,
+  onPhysicalExam,
   orderedTests,
   givenTreatments,
   currentState,

@@ -75,9 +75,8 @@ const ScienceDebrief = ({ caseData, isOpen, onClose, performance }) => {
               <ReactMarkdown
                 remarkPlugins={[remarkMath]}
                 rehypePlugins={[rehypeKatex]}
-                className="text-gray-300 leading-relaxed"
               >
-                {caseData.scienceBridge.pathophysiology}
+                {caseData.scienceBridge?.pathophysiology || 'No pathophysiology information available.'}
               </ReactMarkdown>
             </div>
           </div>

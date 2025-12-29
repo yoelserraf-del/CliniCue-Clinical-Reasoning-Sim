@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Clock } from 'lucide-react';
+import { Clock, Search, X } from 'lucide-react';
 import { CASE_STATES, getNextState, getStateDisplayName } from './utils/stateMachine';
 import { INITIAL_STABILITY, applyStabilityChange, calculateStabilityPenalty, calculateTimeDecay } from './utils/stabilityManager';
 import { getTimeLimit, getTimeRemaining, isTimeExpired, getTimeWarning } from './utils/timeManager';
@@ -40,6 +40,7 @@ function App() {
   const [showScoreScreen, setShowScoreScreen] = useState(false);
   const [debriefViewed, setDebriefViewed] = useState(false);
   const [caseSearchQuery, setCaseSearchQuery] = useState('');
+  const [showCaseSearch, setShowCaseSearch] = useState(false);
 
   // Get time limit for current case
   const timeLimit = selectedCase && timeLimitEnabled 
@@ -263,6 +264,56 @@ function App() {
   const handleConsultSpecialist = () => {
     // Consultation might provide hints or reduce time
     alert('Specialist consulted. They recommend proceeding with investigations.');
+  };
+
+  // Handle physical exam
+  const handlePhysicalExam = (examType) => {
+    if (!selectedCase) return;
+    
+    // Generate findings based on case
+    const findings = generatePhysicalExamFindings(examType, selectedCase);
+    
+    // Check if already performed
+    const existingFinding = physicalExamFindings.find(f => f.type === examType);
+    if (existingFinding) return;
+    
+    setPhysicalExamFindings(prev => [...prev, {
+      type: examType,
+      findings: findings,
+      timestamp: currentTime
+    }]);
+  };
+
+  // Generate physical exam findings based on case
+  const generatePhysicalExamFindings = (examType, caseData) => {
+    const diagnosis = caseData.correctDiagnosis;
+    const findings = {
+      'auscultation': [],
+      'palpation': [],
+      'neurological': [],
+      'cardiac': []
+    };
+
+    // Generate findings based on diagnosis
+    if (diagnosis.includes('Pneumonia') || diagnosis.includes('Respiratory')) {
+      findings.auscultation = ['Bilateral crackles in lower lung fields', 'Decreased breath sounds on right side'];
+      findings.palpation = ['Tactile fremitus increased on right', 'No chest wall tenderness'];
+    } else if (diagnosis.includes('Cardiac') || diagnosis.includes('Infarction')) {
+      findings.cardiac = ['S3 gallop present', 'Murmur grade 2/6 systolic'];
+      findings.auscultation = ['Bilateral rales', 'Jugular venous distension'];
+    } else if (diagnosis.includes('Appendicitis') || diagnosis.includes('Abdominal')) {
+      findings.palpation = ['Right lower quadrant tenderness', 'Positive McBurney\'s point', 'Rebound tenderness present'];
+    } else if (diagnosis.includes('Stroke') || diagnosis.includes('Neurological')) {
+      findings.neurological = ['Left-sided hemiparesis', 'Facial droop on left', 'Dysarthria present'];
+    } else {
+      // Generic findings
+      findings.auscultation = ['Clear to auscultation bilaterally'];
+      findings.palpation = ['No focal tenderness'];
+      findings.cardiac = ['Regular rate and rhythm', 'No murmurs, rubs, or gallops'];
+      findings.neurological = ['Cranial nerves II-XII intact', 'No focal neurological deficits'];
+    }
+
+    return findings[examType] || ['Examination unremarkable'];
   };
 
   // Handle diagnosis selection
@@ -595,11 +646,54 @@ function App() {
 
   // Difficulty selection screen
   if (!selectedDifficulty) {
+    // Filter cases by search query
+    const filteredCases = caseSearchQuery ? caseLibrary.filter(caseItem => {
+      const query = caseSearchQuery.toLowerCase();
+      return (
+        caseItem.title?.toLowerCase().includes(query) ||
+        caseItem.patientProfile?.chiefComplaint?.toLowerCase().includes(query) ||
+        caseItem.correctDiagnosis?.toLowerCase().includes(query) ||
+        caseItem.patientProfile?.presentingSymptoms?.some(s => s.toLowerCase().includes(query))
+      );
+    }) : [];
+
     return (
       <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4 relative">
-        <div className="text-center max-w-3xl mx-auto">
+        <div className="text-center max-w-3xl mx-auto w-full">
           <h1 className="text-5xl font-bold text-white mb-4">Clinical Reasoning Simulator</h1>
           <p className="text-slate-400 mb-8 text-lg">Select your difficulty level to begin</p>
+          
+          {/* Case Search */}
+          <div className="mb-8 max-w-md mx-auto">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
+              <input
+                type="text"
+                placeholder="Search cases by symptoms, diagnosis, or complaint..."
+                value={caseSearchQuery}
+                onChange={(e) => setCaseSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-10 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white text-sm placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+              />
+              {caseSearchQuery && (
+                <button
+                  onClick={() => setCaseSearchQuery('')}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-white transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              )}
+            </div>
+            {caseSearchQuery && filteredCases.length > 0 && (
+              <div className="mt-4 text-sm text-slate-400">
+                Found {filteredCases.length} case{filteredCases.length !== 1 ? 's' : ''} matching "{caseSearchQuery}"
+              </div>
+            )}
+            {caseSearchQuery && filteredCases.length === 0 && (
+              <div className="mt-4 text-sm text-red-400">
+                No cases found matching "{caseSearchQuery}"
+              </div>
+            )}
+          </div>
           
           <div className="space-y-4">
             <button
@@ -903,6 +997,7 @@ function App() {
             currentTime={currentTime}
             difficulty={selectedCase.difficulty}
             onViewExplanation={handleViewExplanation}
+            physicalExamFindings={physicalExamFindings}
           />
         )}
 
@@ -912,6 +1007,7 @@ function App() {
           onOrderTest={handleOrderTest}
           onGiveMedication={handleGiveMedication}
           onConsultSpecialist={handleConsultSpecialist}
+          onPhysicalExam={handlePhysicalExam}
           orderedTests={orderedTests}
           givenTreatments={givenTreatments}
           currentState={currentState}
