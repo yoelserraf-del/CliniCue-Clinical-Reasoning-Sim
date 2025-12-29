@@ -116,10 +116,13 @@ function App() {
           if (!test.completedAt && currentTime >= test.orderedAt + test.timeCost) {
             // Mark test as completed and add result
             const testData = selectedCase?.investigations.find(inv => inv.id === test.id);
-            if (testData) {
-              setTestResults(prev => {
-                // Prevent duplicate results
-                if (prev.some(r => r.id === test.id)) return prev;
+            
+            setTestResults(prev => {
+              // Prevent duplicate results
+              if (prev.some(r => r.id === test.id)) return prev;
+              
+              if (testData) {
+                // Test is in case investigations - use case-specific results
                 return [...prev, {
                   id: test.id,
                   name: testData.name,
@@ -128,12 +131,24 @@ function App() {
                   timeCost: testData.timeCost,
                   type: test.id.includes('xray') || test.id.includes('ct') || test.id.includes('ctpa') ? 'image' : 'text'
                 }];
-              });
+              } else {
+                // Test not in case investigations - show generic "normal" result
+                // This represents ordering a test that isn't relevant to this case
+                return [...prev, {
+                  id: test.id,
+                  name: test.name || 'Test',
+                  result: "Results within normal limits. This test is not directly relevant to the current case presentation.",
+                  interpretation: "Consider focusing on tests more relevant to the patient's symptoms.",
+                  timeCost: test.timeCost,
+                  type: test.id.includes('xray') || test.id.includes('ct') || test.id.includes('ctpa') ? 'image' : 'text',
+                  isGeneric: true
+                }];
+              }
+            });
               
-              setOrderedTests(prev => prev.map(t => 
-                t.id === test.id ? { ...t, completedAt: currentTime } : t
-              ));
-            }
+            setOrderedTests(prev => prev.map(t => 
+              t.id === test.id ? { ...t, completedAt: currentTime } : t
+            ));
           }
         });
 
@@ -153,6 +168,7 @@ function App() {
 
     const newOrderedTest = {
       id: test.id,
+      name: test.name,
       orderedAt: currentTime,
       timeCost: test.timeCost,
       completedAt: null
@@ -796,6 +812,7 @@ function App() {
               correctDiagnosis={selectedCase.correctDiagnosis}
               onSelect={handleDiagnosisSelect}
               selectedDiagnosis={selectedDiagnosis}
+              difficulty={selectedCase.difficulty}
             />
           </div>
         ) : (
@@ -819,6 +836,7 @@ function App() {
           givenTreatments={givenTreatments}
           currentState={currentState}
           availableTreatments={selectedCase.availableTreatments || []}
+          difficulty={selectedCase.difficulty}
         />
       </div>
 

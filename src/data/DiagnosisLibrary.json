@@ -1,0 +1,163 @@
+[
+  {
+    "name": "Common Cold",
+    "category": "Respiratory",
+    "availableAtDifficulty": ["highschool", "premed", "student", "resident"]
+  },
+  {
+    "name": "Influenza",
+    "category": "Respiratory",
+    "availableAtDifficulty": ["highschool", "premed", "student", "resident"]
+  },
+  {
+    "name": "Simple Pneumonia",
+    "category": "Respiratory",
+    "availableAtDifficulty": ["highschool", "premed", "student", "resident"]
+  },
+  {
+    "name": "Community-Acquired Pneumonia",
+    "category": "Respiratory",
+    "availableAtDifficulty": ["premed", "student", "resident"]
+  },
+  {
+    "name": "Acute Bronchitis",
+    "category": "Respiratory",
+    "availableAtDifficulty": ["highschool", "premed", "student", "resident"]
+  },
+  {
+    "name": "Asthma Exacerbation",
+    "category": "Respiratory",
+    "availableAtDifficulty": ["highschool", "premed", "student", "resident"]
+  },
+  {
+    "name": "Pulmonary Embolism",
+    "category": "Cardiovascular",
+    "availableAtDifficulty": ["premed", "student", "resident"]
+  },
+  {
+    "name": "Acute Myocardial Infarction",
+    "category": "Cardiovascular",
+    "availableAtDifficulty": ["premed", "student", "resident"]
+  },
+  {
+    "name": "Heart Failure",
+    "category": "Cardiovascular",
+    "availableAtDifficulty": ["premed", "student", "resident"]
+  },
+  {
+    "name": "Atrial Fibrillation",
+    "category": "Cardiovascular",
+    "availableAtDifficulty": ["student", "resident"]
+  },
+  {
+    "name": "Aortic Dissection",
+    "category": "Cardiovascular",
+    "availableAtDifficulty": ["student", "resident"]
+  },
+  {
+    "name": "Pneumothorax",
+    "category": "Respiratory",
+    "availableAtDifficulty": ["premed", "student", "resident"]
+  },
+  {
+    "name": "Pleural Effusion",
+    "category": "Respiratory",
+    "availableAtDifficulty": ["premed", "student", "resident"]
+  },
+  {
+    "name": "Sepsis",
+    "category": "Infectious Disease",
+    "availableAtDifficulty": ["student", "resident"]
+  },
+  {
+    "name": "Urinary Tract Infection",
+    "category": "Infectious Disease",
+    "availableAtDifficulty": ["highschool", "premed", "student", "resident"]
+  },
+  {
+    "name": "Acute Kidney Injury",
+    "category": "Renal",
+    "availableAtDifficulty": ["premed", "student", "resident"]
+  },
+  {
+    "name": "Diabetic Ketoacidosis",
+    "category": "Endocrine",
+    "availableAtDifficulty": ["premed", "student", "resident"]
+  },
+  {
+    "name": "Hyperthyroidism",
+    "category": "Endocrine",
+    "availableAtDifficulty": ["premed", "student", "resident"]
+  },
+  {
+    "name": "Hypothyroidism",
+    "category": "Endocrine",
+    "availableAtDifficulty": ["premed", "student", "resident"]
+  },
+  {
+    "name": "Meningitis",
+    "category": "Neurological",
+    "availableAtDifficulty": ["student", "resident"]
+  },
+  {
+    "name": "Stroke",
+    "category": "Neurological",
+    "availableAtDifficulty": ["student", "resident"]
+  },
+  {
+    "name": "Seizure",
+    "category": "Neurological",
+    "availableAtDifficulty": ["premed", "student", "resident"]
+  },
+  {
+    "name": "Gastroenteritis",
+    "category": "Gastrointestinal",
+    "availableAtDifficulty": ["highschool", "premed", "student", "resident"]
+  },
+  {
+    "name": "Appendicitis",
+    "category": "Gastrointestinal",
+    "availableAtDifficulty": ["premed", "student", "resident"]
+  },
+  {
+    "name": "Pancreatitis",
+    "category": "Gastrointestinal",
+    "availableAtDifficulty": ["student", "resident"]
+  },
+  {
+    "name": "Allergic Reaction",
+    "category": "Immunological",
+    "availableAtDifficulty": ["highschool", "premed", "student", "resident"]
+  },
+  {
+    "name": "Anaphylaxis",
+    "category": "Immunological",
+    "availableAtDifficulty": ["premed", "student", "resident"]
+  },
+  {
+    "name": "Deep Vein Thrombosis",
+    "category": "Cardiovascular",
+    "availableAtDifficulty": ["premed", "student", "resident"]
+  },
+  {
+    "name": "Chronic Obstructive Pulmonary Disease (COPD) Exacerbation",
+    "category": "Respiratory",
+    "availableAtDifficulty": ["premed", "student", "resident"]
+  },
+  {
+    "name": "Pulmonary Hypertension",
+    "category": "Cardiovascular",
+    "availableAtDifficulty": ["resident"]
+  },
+  {
+    "name": "Interstitial Lung Disease",
+    "category": "Respiratory",
+    "availableAtDifficulty": ["resident"]
+  },
+  {
+    "name": "Acute Respiratory Distress Syndrome (ARDS)",
+    "category": "Respiratory",
+    "availableAtDifficulty": ["resident"]
+  }
+]
+

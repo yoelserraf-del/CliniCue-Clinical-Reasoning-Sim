@@ -1,0 +1,219 @@
+[
+  {
+    "id": "vitals",
+    "name": "Vital Signs",
+    "category": "Basic Assessment",
+    "timeCost": 0,
+    "availableAtDifficulty": ["highschool", "premed", "student", "resident"],
+    "description": "Measure heart rate, blood pressure, respiratory rate, temperature, and oxygen saturation"
+  },
+  {
+    "id": "physical-exam",
+    "name": "Physical Examination",
+    "category": "Basic Assessment",
+    "timeCost": 5,
+    "availableAtDifficulty": ["highschool", "premed", "student", "resident"],
+    "description": "Complete physical examination including auscultation, palpation, and inspection"
+  },
+  {
+    "id": "cbc",
+    "name": "Complete Blood Count (CBC)",
+    "category": "Basic Lab",
+    "timeCost": 30,
+    "availableAtDifficulty": ["highschool", "premed", "student", "resident"],
+    "description": "Measures white blood cells, red blood cells, hemoglobin, hematocrit, and platelets"
+  },
+  {
+    "id": "basic-metabolic-panel",
+    "name": "Basic Metabolic Panel (BMP)",
+    "category": "Basic Lab",
+    "timeCost": 30,
+    "availableAtDifficulty": ["highschool", "premed", "student", "resident"],
+    "description": "Measures glucose, electrolytes (sodium, potassium, chloride), BUN, and creatinine"
+  },
+  {
+    "id": "urinalysis",
+    "name": "Urinalysis",
+    "category": "Basic Lab",
+    "timeCost": 15,
+    "availableAtDifficulty": ["highschool", "premed", "student", "resident"],
+    "description": "Tests urine for infection, blood, protein, glucose, and other abnormalities"
+  },
+  {
+    "id": "chest-xray",
+    "name": "Chest X-Ray",
+    "category": "Basic Imaging",
+    "timeCost": 45,
+    "availableAtDifficulty": ["highschool", "premed", "student", "resident"],
+    "description": "Standard chest radiograph to evaluate lungs, heart, and mediastinum"
+  },
+  {
+    "id": "ekg",
+    "name": "Electrocardiogram (EKG/ECG)",
+    "category": "Basic Imaging",
+    "timeCost": 10,
+    "availableAtDifficulty": ["highschool", "premed", "student", "resident"],
+    "description": "Records electrical activity of the heart to detect arrhythmias and ischemia"
+  },
+  {
+    "id": "blood-culture",
+    "name": "Blood Cultures",
+    "category": "Microbiology",
+    "timeCost": 120,
+    "availableAtDifficulty": ["premed", "student", "resident"],
+    "description": "Tests for bacterial or fungal infection in the bloodstream"
+  },
+  {
+    "id": "sputum-culture",
+    "name": "Sputum Culture & Gram Stain",
+    "category": "Microbiology",
+    "timeCost": 60,
+    "availableAtDifficulty": ["premed", "student", "resident"],
+    "description": "Identifies bacteria in respiratory secretions"
+  },
+  {
+    "id": "liver-function",
+    "name": "Liver Function Tests (LFTs)",
+    "category": "Advanced Lab",
+    "timeCost": 45,
+    "availableAtDifficulty": ["premed", "student", "resident"],
+    "description": "Measures ALT, AST, bilirubin, albumin, and prothrombin time"
+  },
+  {
+    "id": "troponin",
+    "name": "Troponin",
+    "category": "Cardiac Markers",
+    "timeCost": 30,
+    "availableAtDifficulty": ["premed", "student", "resident"],
+    "description": "Cardiac enzyme marker for myocardial infarction"
+  },
+  {
+    "id": "bnp",
+    "name": "B-type Natriuretic Peptide (BNP)",
+    "category": "Cardiac Markers",
+    "timeCost": 30,
+    "availableAtDifficulty": ["premed", "student", "resident"],
+    "description": "Marker for heart failure"
+  },
+  {
+    "id": "d-dimer",
+    "name": "D-Dimer",
+    "category": "Coagulation",
+    "timeCost": 30,
+    "availableAtDifficulty": ["premed", "student", "resident"],
+    "description": "Screening test for deep vein thrombosis and pulmonary embolism"
+  },
+  {
+    "id": "ct-chest",
+    "name": "CT Chest",
+    "category": "Advanced Imaging",
+    "timeCost": 60,
+    "availableAtDifficulty": ["student", "resident"],
+    "description": "Computed tomography of the chest for detailed lung and mediastinal evaluation"
+  },
+  {
+    "id": "ctpa",
+    "name": "CT Pulmonary Angiography (CTPA)",
+    "category": "Advanced Imaging",
+    "timeCost": 90,
+    "availableAtDifficulty": ["student", "resident"],
+    "description": "CT scan with contrast to detect pulmonary embolism"
+  },
+  {
+    "id": "mri-chest",
+    "name": "MRI Chest",
+    "category": "Advanced Imaging",
+    "timeCost": 120,
+    "availableAtDifficulty": ["resident"],
+    "description": "Magnetic resonance imaging of the chest for detailed soft tissue evaluation"
+  },
+  {
+    "id": "echocardiogram",
+    "name": "Echocardiogram",
+    "category": "Cardiac Imaging",
+    "timeCost": 60,
+    "availableAtDifficulty": ["student", "resident"],
+    "description": "Ultrasound of the heart to evaluate structure and function"
+  },
+  {
+    "id": "arterial-blood-gas",
+    "name": "Arterial Blood Gas (ABG)",
+    "category": "Advanced Lab",
+    "timeCost": 15,
+    "availableAtDifficulty": ["student", "resident"],
+    "description": "Measures pH, pCO2, pO2, and bicarbonate to assess acid-base balance and oxygenation"
+  },
+  {
+    "id": "lumbar-puncture",
+    "name": "Lumbar Puncture",
+    "category": "Procedures",
+    "timeCost": 45,
+    "availableAtDifficulty": ["student", "resident"],
+    "description": "Cerebrospinal fluid analysis for infection or bleeding"
+  },
+  {
+    "id": "bronchoscopy",
+    "name": "Bronchoscopy",
+    "category": "Procedures",
+    "timeCost": 120,
+    "availableAtDifficulty": ["resident"],
+    "description": "Direct visualization of airways and collection of samples"
+  },
+  {
+    "id": "pulmonary-function",
+    "name": "Pulmonary Function Tests",
+    "category": "Specialized Tests",
+    "timeCost": 60,
+    "availableAtDifficulty": ["student", "resident"],
+    "description": "Measures lung volumes and airflow to assess respiratory function"
+  },
+  {
+    "id": "ventilation-perfusion",
+    "name": "V/Q Scan",
+    "category": "Nuclear Medicine",
+    "timeCost": 90,
+    "availableAtDifficulty": ["student", "resident"],
+    "description": "Nuclear medicine scan to detect pulmonary embolism"
+  },
+  {
+    "id": "ultrasound-abdomen",
+    "name": "Abdominal Ultrasound",
+    "category": "Basic Imaging",
+    "timeCost": 45,
+    "availableAtDifficulty": ["premed", "student", "resident"],
+    "description": "Ultrasound imaging of abdominal organs"
+  },
+  {
+    "id": "ct-abdomen",
+    "name": "CT Abdomen/Pelvis",
+    "category": "Advanced Imaging",
+    "timeCost": 90,
+    "availableAtDifficulty": ["student", "resident"],
+    "description": "Computed tomography of abdomen and pelvis with contrast"
+  },
+  {
+    "id": "lipid-panel",
+    "name": "Lipid Panel",
+    "category": "Basic Lab",
+    "timeCost": 30,
+    "availableAtDifficulty": ["highschool", "premed", "student", "resident"],
+    "description": "Measures cholesterol, triglycerides, HDL, and LDL"
+  },
+  {
+    "id": "coagulation-panel",
+    "name": "Coagulation Panel (PT/INR, PTT)",
+    "category": "Coagulation",
+    "timeCost": 30,
+    "availableAtDifficulty": ["premed", "student", "resident"],
+    "description": "Tests blood clotting function"
+  },
+  {
+    "id": "thyroid-function",
+    "name": "Thyroid Function Tests (TSH, T4)",
+    "category": "Endocrine",
+    "timeCost": 45,
+    "availableAtDifficulty": ["premed", "student", "resident"],
+    "description": "Evaluates thyroid hormone levels"
+  }
+]
+

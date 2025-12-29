@@ -33,10 +33,18 @@ const ExaminationRoom = ({ investigations, testResults, orderedTests, currentTim
     return <p className="text-white">{String(result)}</p>;
   };
 
-  // Show all investigations that have been ordered or completed
-  const displayedTests = investigations.filter(inv => {
-    const ordered = orderedTests.find(t => t.id === inv.id);
-    return ordered !== undefined;
+  // Show all tests that have been ordered (from case investigations or test library)
+  const displayedTests = orderedTests.map(orderedTest => {
+    // First check if it's in the case investigations
+    const caseTest = investigations.find(inv => inv.id === orderedTest.id);
+    if (caseTest) return caseTest;
+    
+    // Otherwise, create a test object from the ordered test data
+    return {
+      id: orderedTest.id,
+      name: orderedTest.name || `Test ${orderedTest.id}`,
+      timeCost: orderedTest.timeCost
+    };
   });
 
   return (
@@ -97,33 +105,39 @@ const ExaminationRoom = ({ investigations, testResults, orderedTests, currentTim
 
                   {status === 'completed' && testResult && (
                     <div className="mt-4">
-                      <div className="bg-gray-900 rounded p-4 border border-gray-700">
+                      <div className={`bg-gray-900 rounded p-4 border ${
+                        testResult.isGeneric ? 'border-yellow-500/50' : 'border-gray-700'
+                      }`}>
+                        {testResult.isGeneric && (
+                          <div className="mb-3 p-2 bg-yellow-500/10 border border-yellow-500/30 rounded">
+                            <p className="text-xs text-yellow-400">
+                              ⚠️ This test was ordered but is not directly relevant to this case.
+                            </p>
+                          </div>
+                        )}
                         <h4 className="text-sm font-semibold text-gray-400 mb-3">Results:</h4>
                         <div className="text-white text-sm space-y-2">
                           {formatResult(testResult.result)}
                         </div>
-                        {difficulty !== 'student' && investigation.interpretation && (
+                        {testResult.interpretation && (
                           <div className="mt-4 pt-4 border-t border-gray-700">
-                            <p className="text-xs text-gray-500 italic">
-                              Note: Manual interpretation required for {difficulty} level
-                            </p>
-                          </div>
-                        )}
-                        {difficulty === 'student' && investigation.interpretation && (
-                          <div className="mt-4 pt-4 border-t border-gray-700">
-                            <p className="text-sm text-blue-300 font-medium">
-                              💡 Interpretation: {investigation.interpretation}
-                            </p>
-                          </div>
-                        )}
-                        {difficulty !== 'student' && investigation.interpretation && (
-                          <div className="mt-4 pt-4 border-t border-gray-700">
-                            <button
-                              onClick={() => onViewExplanation && onViewExplanation()}
-                              className="text-sm text-purple-400 hover:text-purple-300 font-medium underline"
-                            >
-                              📚 Click to view interpretation (affects score)
-                            </button>
+                            {difficulty === 'student' || difficulty === 'highschool' ? (
+                              <p className="text-sm text-blue-300 font-medium">
+                                💡 Interpretation: {testResult.interpretation}
+                              </p>
+                            ) : (
+                              <div>
+                                <p className="text-xs text-gray-500 italic mb-2">
+                                  Note: Manual interpretation required for {difficulty} level
+                                </p>
+                                <button
+                                  onClick={() => onViewExplanation && onViewExplanation()}
+                                  className="text-sm text-purple-400 hover:text-purple-300 font-medium underline"
+                                >
+                                  📚 Click to view interpretation (affects score)
+                                </button>
+                              </div>
+                            )}
                           </div>
                         )}
                       </div>
