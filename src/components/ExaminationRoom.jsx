@@ -45,11 +45,11 @@ const ExaminationRoom = ({ investigations, testResults, orderedTests, currentTim
   });
 
   return (
-    <div className="flex-1 bg-slate-900 p-8 overflow-y-auto">
+    <div className="flex-1 bg-slate-900 p-4 sm:p-6 lg:p-8 overflow-y-auto">
       <div className="max-w-6xl mx-auto">
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold text-white mb-2">The Clinical Workspace</h2>
-          <p className="text-slate-400 text-sm">Review physical exam findings, test results, and imaging studies</p>
+        <div className="mb-6 sm:mb-8">
+          <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-2">The Clinical Workspace</h2>
+          <p className="text-slate-400 text-xs sm:text-sm">Review physical exam findings, test results, and imaging studies</p>
         </div>
 
         {/* Physical Exam Findings */}

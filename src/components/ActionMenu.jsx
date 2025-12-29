@@ -68,8 +68,8 @@ const ActionMenu = ({
   };
 
   return (
-    <div className="w-96 bg-slate-900 border-l border-slate-700/50 overflow-y-auto">
-      <div className="p-8">
+    <div className="w-full lg:w-96 bg-slate-900 lg:border-l border-slate-700/50 overflow-y-auto">
+      <div className="p-4 sm:p-6 lg:p-8">
         <div className="mb-6">
           <h2 className="text-2xl font-bold text-white mb-2">Clinical Actions</h2>
           <p className="text-sm text-slate-400">Perform exams, order tests, make diagnoses, and provide treatment</p>

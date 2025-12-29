@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Clock, Search, X } from 'lucide-react';
+import { Clock, Search, X, Home } from 'lucide-react';
 import { CASE_STATES, getNextState, getStateDisplayName } from './utils/stateMachine';
 import { INITIAL_STABILITY, applyStabilityChange, calculateStabilityPenalty, calculateTimeDecay } from './utils/stabilityManager';
 import { getTimeLimit, getTimeRemaining, isTimeExpired, getTimeWarning } from './utils/timeManager';
@@ -658,15 +658,15 @@ function App() {
           <p className="text-slate-400 mb-8 text-lg">Select your difficulty level to begin</p>
           
           {/* Case Search */}
-          <div className="mb-8 max-w-md mx-auto">
+          <div className="mb-6 sm:mb-8 max-w-md mx-auto">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-slate-400" />
               <input
                 type="text"
-                placeholder="Search cases by symptoms, diagnosis, or complaint..."
+                placeholder="Search cases..."
                 value={caseSearchQuery}
                 onChange={(e) => setCaseSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-10 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white text-sm placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                className="w-full pl-9 sm:pl-10 pr-9 sm:pr-10 py-2 sm:py-3 bg-slate-800 border border-slate-700 rounded-lg text-white text-xs sm:text-sm placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
               />
               {caseSearchQuery && (
                 <button
@@ -689,49 +689,49 @@ function App() {
             )}
           </div>
           
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             <button
               onClick={() => setSelectedDifficulty('highschool')}
-              className="block w-full px-8 py-4 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium text-lg transition-colors"
+              className="block w-full px-6 sm:px-8 py-3 sm:py-4 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium text-base sm:text-lg transition-colors"
             >
-              <div className="font-bold text-xl mb-1">High School</div>
-              <div className="text-sm opacity-90">Basic medical concepts and terminology</div>
+              <div className="font-bold text-lg sm:text-xl mb-1">High School</div>
+              <div className="text-xs sm:text-sm opacity-90">Basic medical concepts and terminology</div>
             </button>
             <button
               onClick={() => setSelectedDifficulty('pre-med')}
-              className="block w-full px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-lg transition-colors"
+              className="block w-full px-6 sm:px-8 py-3 sm:py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-base sm:text-lg transition-colors"
             >
-              <div className="font-bold text-xl mb-1">Pre-Med</div>
-              <div className="text-sm opacity-90">Intermediate level cases for pre-medical students</div>
+              <div className="font-bold text-lg sm:text-xl mb-1">Pre-Med</div>
+              <div className="text-xs sm:text-sm opacity-90">Intermediate level cases for pre-medical students</div>
             </button>
             <button
               onClick={() => setSelectedDifficulty('med school')}
-              className="block w-full px-8 py-4 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium text-lg transition-colors"
+              className="block w-full px-6 sm:px-8 py-3 sm:py-4 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium text-base sm:text-lg transition-colors"
             >
-              <div className="font-bold text-xl mb-1">Med School</div>
-              <div className="text-sm opacity-90">Advanced cases for medical students</div>
+              <div className="font-bold text-lg sm:text-xl mb-1">Med School</div>
+              <div className="text-xs sm:text-sm opacity-90">Advanced cases for medical students</div>
             </button>
             <button
               onClick={() => setSelectedDifficulty('residency')}
-              className="block w-full px-8 py-4 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium text-lg transition-colors"
+              className="block w-full px-6 sm:px-8 py-3 sm:py-4 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium text-base sm:text-lg transition-colors"
             >
-              <div className="font-bold text-xl mb-1">Residency</div>
-              <div className="text-sm opacity-90">Complex cases for residents and beyond</div>
+              <div className="font-bold text-lg sm:text-xl mb-1">Residency</div>
+              <div className="text-xs sm:text-sm opacity-90">Complex cases for residents and beyond</div>
             </button>
           </div>
         </div>
         
         {/* Time Limit Toggle - Bottom Right */}
-        <div className="absolute bottom-4 right-4">
-          <div className="card rounded-lg p-3 max-w-xs">
-            <label className="flex items-center gap-2 cursor-pointer">
-              <Clock className="w-4 h-4 text-blue-400" />
-              <span className="text-white text-sm font-medium">Time Limits</span>
+        <div className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4">
+          <div className="card rounded-lg p-2 sm:p-3 max-w-xs">
+            <label className="flex items-center gap-1 sm:gap-2 cursor-pointer">
+              <Clock className="w-3 h-3 sm:w-4 sm:h-4 text-blue-400" />
+              <span className="text-white text-xs sm:text-sm font-medium">Time Limits</span>
               <input
                 type="checkbox"
                 checked={timeLimitEnabled}
                 onChange={(e) => setTimeLimitEnabled(e.target.checked)}
-                className="ml-auto w-4 h-4 rounded text-blue-600 focus:ring-blue-500"
+                className="ml-auto w-3 h-3 sm:w-4 sm:h-4 rounded text-blue-600 focus:ring-blue-500"
               />
             </label>
             <p className="text-xs text-slate-400 mt-1">
@@ -878,11 +878,11 @@ function App() {
     <div className="min-h-screen bg-slate-900 flex flex-col">
       {/* Header with Case Info and State */}
       <div className="bg-slate-800/50 border-b border-slate-700/50 backdrop-blur-sm">
-        <div className="max-w-[1920px] mx-auto px-8 py-6">
-          <div className="flex items-center justify-between flex-wrap gap-4">
+        <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+          <div className="flex items-center justify-between flex-wrap gap-2 sm:gap-4">
             <div className="flex-1 min-w-0">
-              <h1 className="text-2xl font-bold text-white truncate mb-2">{selectedCase?.title || 'Case Loading...'}</h1>
-              <div className="flex items-center gap-4">
+              <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-white truncate mb-1 sm:mb-2">{selectedCase?.title || 'Case Loading...'}</h1>
+              <div className="flex items-center gap-2 sm:gap-4 flex-wrap">
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-semibold text-slate-400 uppercase tracking-wide">Difficulty:</span>
                   <span className="px-3 py-1 bg-slate-700/50 rounded-lg text-sm font-semibold text-white capitalize">
@@ -898,23 +898,33 @@ function App() {
                 </div>
               </div>
             </div>
-            <div className="flex items-center gap-3 flex-wrap">
+            <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+              <button
+                onClick={handleNewGame}
+                className="px-3 py-2 sm:px-4 sm:py-2.5 bg-slate-700 hover:bg-slate-600 text-white rounded-lg text-xs sm:text-sm font-semibold flex items-center gap-1 sm:gap-2 transition-all"
+                title="Return to Home / Change Difficulty"
+              >
+                <Home className="w-4 h-4 sm:w-5 sm:h-5" />
+                <span className="hidden sm:inline">Home</span>
+              </button>
               {(currentState === CASE_STATES.INVESTIGATION || currentState === CASE_STATES.DIAGNOSIS) && (
                 <button
                   onClick={handleNextState}
-                  className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-semibold flex items-center gap-2 transition-all shadow-lg shadow-blue-500/20"
+                  className="px-3 py-2 sm:px-4 sm:py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs sm:text-sm font-semibold flex items-center gap-1 sm:gap-2 transition-all shadow-lg shadow-blue-500/20"
                 >
-                  <span>Next Stage</span>
+                  <span className="hidden sm:inline">Next Stage</span>
+                  <span className="sm:hidden">Next</span>
                   <span>→</span>
                 </button>
               )}
               <button
                 onClick={handleGetHint}
-                className="px-4 py-2.5 bg-yellow-600/90 hover:bg-yellow-600 text-white rounded-lg text-sm font-semibold flex items-center gap-2 transition-all shadow-lg shadow-yellow-500/20"
+                className="px-3 py-2 sm:px-4 sm:py-2.5 bg-yellow-600/90 hover:bg-yellow-600 text-white rounded-lg text-xs sm:text-sm font-semibold flex items-center gap-1 sm:gap-2 transition-all shadow-lg shadow-yellow-500/20"
                 title="Get a hint (affects score)"
               >
                 <span>💡</span>
-                <span>Hint {hintsUsed > 0 && `(${hintsUsed})`}</span>
+                <span className="hidden sm:inline">Hint {hintsUsed > 0 && `(${hintsUsed})`}</span>
+                <span className="sm:hidden">{hintsUsed > 0 && hintsUsed}</span>
               </button>
               <button
                 onClick={() => setShowWalkthrough(!showWalkthrough)}

@@ -2,8 +2,8 @@ import { User, FileText, Calendar, AlertCircle } from 'lucide-react';
 
 const LeftSidebar = ({ patientProfile, nursingNotes, difficulty }) => {
   return (
-    <div className="w-96 bg-slate-900 border-r border-slate-700/50 overflow-y-auto">
-      <div className="p-8 space-y-6">
+    <div className="w-full lg:w-96 bg-slate-900 lg:border-r border-slate-700/50 overflow-y-auto">
+      <div className="p-4 sm:p-6 lg:p-8 space-y-4 sm:space-y-6">
         {/* Patient Profile Card */}
         <div className="card rounded-xl p-6">
           <div className="flex items-center gap-4 mb-6">

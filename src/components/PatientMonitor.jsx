@@ -40,26 +40,26 @@ const PatientMonitor = ({ vitals, stability, difficulty, realTimeElapsed, timeLi
 
   return (
     <div className="bg-slate-900 border-b border-slate-700/50 w-full">
-      <div className="max-w-[1920px] mx-auto px-8 py-6">
+      <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
         {/* Control Center Header */}
-        <div className="mb-6">
-          <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">
+        <div className="mb-4 sm:mb-6">
+          <h2 className="text-xs sm:text-sm font-semibold text-slate-400 uppercase tracking-wider mb-3 sm:mb-4">
             Patient Monitoring System
           </h2>
           
           {/* ECG Monitor Frame */}
-          <div className="card rounded-xl p-4 mb-6 overflow-hidden">
+          <div className="card rounded-xl p-3 sm:p-4 mb-4 sm:mb-6 overflow-hidden">
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs font-medium text-slate-400 uppercase tracking-wide">ECG Monitor</span>
               <span className="text-xs text-slate-500">HR: {vitals?.hr || 70} bpm</span>
             </div>
-            <div className="h-24 bg-black rounded-lg overflow-hidden relative border border-slate-800">
-              <ECGMonitor heartRate={vitals?.hr || 70} height={96} />
+            <div className="h-20 sm:h-24 bg-black rounded-lg overflow-hidden relative border border-slate-800">
+              <ECGMonitor heartRate={vitals?.hr || 70} height={80} />
             </div>
           </div>
 
           {/* Vitals Grid */}
-          <div className="grid grid-cols-5 gap-4 mb-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 mb-4 sm:mb-6">
             <VitalCard
               icon={<Heart className="w-5 h-5" />}
               label="Heart Rate"
@@ -98,7 +98,7 @@ const PatientMonitor = ({ vitals, stability, difficulty, realTimeElapsed, timeLi
           </div>
 
           {/* Time Limit & Stability */}
-          <div className={`grid gap-4 ${timeLimitEnabled && timeLimit ? 'grid-cols-2' : 'grid-cols-1'}`}>
+          <div className={`grid gap-3 sm:gap-4 ${timeLimitEnabled && timeLimit ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1'}`}>
             {/* Time Limit */}
             {timeLimitEnabled && timeLimit && realTimeElapsed !== undefined && (
               <div className="card rounded-xl p-6">
@@ -166,14 +166,14 @@ const PatientMonitor = ({ vitals, stability, difficulty, realTimeElapsed, timeLi
 };
 
 const VitalCard = ({ icon, label, value, unit, color }) => (
-  <div className="card rounded-xl p-6 card-hover">
-    <div className="flex items-center justify-between mb-3">
+  <div className="card rounded-xl p-4 sm:p-6 card-hover">
+    <div className="flex items-center justify-between mb-2 sm:mb-3">
       <div className="text-xs font-semibold text-slate-400 uppercase tracking-wide">{label}</div>
       <div className={color}>{icon}</div>
     </div>
     <div className="flex items-baseline gap-1">
-      <span className={`text-3xl font-bold font-mono ${color}`}>{value}</span>
-      {unit && <span className={`text-lg font-medium ${color} opacity-70`}>{unit}</span>}
+      <span className={`text-2xl sm:text-3xl font-bold font-mono ${color}`}>{value}</span>
+      {unit && <span className={`text-base sm:text-lg font-medium ${color} opacity-70`}>{unit}</span>}
     </div>
   </div>
 );
