@@ -127,19 +127,13 @@ function App() {
           const newRealTime = prev + 1;
           
           // Check if time limit expired (timeLimit is in minutes, convert to seconds)
+          // Only apply stability penalty when time actually expires, not continuously
           if (timeLimit && newRealTime >= timeLimit * 60) {
             setPatientStability(0);
             setCurrentState(CASE_STATES.COMPLETED);
             calculatePerformance();
             setShowDebrief(true);
             return newRealTime;
-          }
-          
-          // Stability decay based on real time
-          if (timeLimit) {
-            const timeInMinutes = newRealTime / 60;
-            const decay = calculateTimeDecay(timeInMinutes, timeLimit, selectedCase.difficulty);
-            setPatientStability(prev => Math.max(0, prev - decay));
           }
           
           return newRealTime;

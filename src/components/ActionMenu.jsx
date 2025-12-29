@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { TestTube, Pill, Stethoscope, CheckCircle, Search, X, FlaskConical, Activity, Heart, Brain, Lungs, Bone } from 'lucide-react';
+import { TestTube, Pill, Stethoscope, CheckCircle, Search, X, FlaskConical, Activity, Heart, Brain, Lungs, Bone, ClipboardList } from 'lucide-react';
 import testLibrary from '../data/TestLibrary.json';
 
 const ActionMenu = ({ 
@@ -173,14 +173,45 @@ const ActionMenu = ({
           </div>
         )}
 
-        {/* Treatment Actions */}
+        {/* [Differential Diagnosis] */}
+        {currentState === 'diagnosis' && (
+          <div className="card rounded-xl p-6 mb-6">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 bg-orange-500/20 rounded-xl flex items-center justify-center">
+                <Brain className="w-5 h-5 text-orange-400" />
+              </div>
+              <h3 className="text-lg font-semibold text-white">[Differential Diagnosis]</h3>
+            </div>
+            <div className="bg-orange-500/10 border border-orange-500/30 rounded-lg p-4 mb-4">
+              <p className="text-sm text-orange-300">
+                Review all findings and select the most likely diagnosis from the center panel.
+              </p>
+            </div>
+            <button
+              onClick={() => {
+                // Diagnosis selection is handled in the center panel (DiagnosisSelection component)
+                // This button can scroll to it or show a message
+                const diagnosisPanel = document.querySelector('[data-diagnosis-panel]');
+                if (diagnosisPanel) {
+                  diagnosisPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+              }}
+              className="w-full p-4 rounded-lg border border-orange-500/50 bg-orange-500/10 hover:border-orange-500 hover:bg-orange-500/20 transition-all text-white text-sm font-semibold flex items-center justify-center gap-2 card-hover"
+            >
+              <ClipboardList className="w-4 h-4" />
+              <span>View Diagnosis Options</span>
+            </button>
+          </div>
+        )}
+
+        {/* [Treatments] */}
         {currentState === 'treatment' && (
           <div className="card rounded-xl p-6 mb-6">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 bg-green-500/20 rounded-xl flex items-center justify-center">
                 <Pill className="w-5 h-5 text-green-400" />
               </div>
-              <h3 className="text-lg font-semibold text-white">Treatment Options</h3>
+              <h3 className="text-lg font-semibold text-white">[Treatments]</h3>
             </div>
             {availableTreatments.length > 0 ? (
               <div className="space-y-2">
