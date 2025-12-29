@@ -1,7 +1,8 @@
-import { Activity, Heart, Thermometer, Droplets, Wind } from 'lucide-react';
+import { Activity, Heart, Thermometer, Droplets, Wind, Clock, AlertTriangle } from 'lucide-react';
 import ECGMonitor from './ECGMonitor';
+import { getTimeRemaining, getTimeWarning } from '../utils/timeManager';
 
-const PatientMonitor = ({ vitals, stability, difficulty }) => {
+const PatientMonitor = ({ vitals, stability, difficulty, currentTime, timeLimit, timeLimitEnabled }) => {
   const getVitalColor = (type) => {
     if (difficulty === 'student' || difficulty === 'highschool') {
       switch (type) {
@@ -96,25 +97,65 @@ const PatientMonitor = ({ vitals, stability, difficulty }) => {
             />
           </div>
 
-          {/* Stability Progress Bar */}
-          <div className="card rounded-xl p-6">
-            <div className="flex justify-between items-center mb-4">
-              <div className="flex items-center gap-3">
-                <div className="w-2 h-2 rounded-full bg-slate-400 animate-pulse"></div>
-                <span className="text-sm font-semibold text-slate-300 uppercase tracking-wide">
-                  Patient Stability
+          {/* Time Limit & Stability */}
+          <div className="grid grid-cols-2 gap-4">
+            {/* Time Limit */}
+            {timeLimitEnabled && timeLimit && (
+              <div className="card rounded-xl p-6">
+                <div className="flex justify-between items-center mb-4">
+                  <div className="flex items-center gap-3">
+                    <Clock className="w-5 h-5 text-slate-400" />
+                    <span className="text-sm font-semibold text-slate-300 uppercase tracking-wide">
+                      Time Remaining
+                    </span>
+                  </div>
+                  <span className={`text-2xl font-bold font-mono ${
+                    getTimeWarning(timeLimit, currentTime) === 'critical' ? 'text-red-400' :
+                    getTimeWarning(timeLimit, currentTime) === 'warning' ? 'text-yellow-400' :
+                    'text-blue-400'
+                  }`}>
+                    {getTimeRemaining(timeLimit, currentTime)}m
+                  </span>
+                </div>
+                <div className="h-3 bg-slate-800 rounded-full overflow-hidden shadow-inner">
+                  <div
+                    className={`h-full transition-all duration-500 ${
+                      getTimeWarning(timeLimit, currentTime) === 'critical' ? 'bg-red-500' :
+                      getTimeWarning(timeLimit, currentTime) === 'warning' ? 'bg-yellow-500' :
+                      'bg-blue-500'
+                    } rounded-full`}
+                    style={{ width: `${(getTimeRemaining(timeLimit, currentTime) / timeLimit) * 100}%` }}
+                  ></div>
+                </div>
+                {getTimeWarning(timeLimit, currentTime) === 'critical' && (
+                  <div className="mt-3 flex items-center gap-2 text-red-400 text-xs font-semibold">
+                    <AlertTriangle className="w-4 h-4" />
+                    <span>Critical: Patient condition deteriorating</span>
+                  </div>
+                )}
+              </div>
+            )}
+            
+            {/* Stability Progress Bar */}
+            <div className="card rounded-xl p-6">
+              <div className="flex justify-between items-center mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-2 h-2 rounded-full bg-slate-400 animate-pulse"></div>
+                  <span className="text-sm font-semibold text-slate-300 uppercase tracking-wide">
+                    Patient Stability
+                  </span>
+                </div>
+                <span className={`text-2xl font-bold ${getStabilityTextColor()}`}>
+                  {stability.toFixed(0)}%
                 </span>
               </div>
-              <span className={`text-2xl font-bold ${getStabilityTextColor()}`}>
-                {stability.toFixed(0)}%
-              </span>
-            </div>
-            <div className="h-4 bg-slate-800 rounded-full overflow-hidden shadow-inner">
-              <div
-                className={`h-full transition-all duration-700 ease-out ${getStabilityColor()} rounded-full`}
-                style={{ width: `${stability}%` }}
-              >
-                <div className="h-full w-full bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse"></div>
+              <div className="h-4 bg-slate-800 rounded-full overflow-hidden shadow-inner">
+                <div
+                  className={`h-full transition-all duration-700 ease-out ${getStabilityColor()} rounded-full`}
+                  style={{ width: `${stability}%` }}
+                >
+                  <div className="h-full w-full bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse"></div>
+                </div>
               </div>
             </div>
           </div>

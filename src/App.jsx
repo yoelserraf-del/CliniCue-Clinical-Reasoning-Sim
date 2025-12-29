@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { CASE_STATES, getNextState, getStateDisplayName } from './utils/stateMachine';
-import { INITIAL_STABILITY, applyStabilityChange, calculateStabilityPenalty } from './utils/stabilityManager';
+import { INITIAL_STABILITY, applyStabilityChange, calculateStabilityPenalty, calculateTimeDecay } from './utils/stabilityManager';
+import { getTimeLimit, getTimeRemaining, isTimeExpired, getTimeWarning } from './utils/timeManager';
 import PatientMonitor from './components/PatientMonitor';
 import LeftSidebar from './components/LeftSidebar';
 import ExaminationRoom from './components/ExaminationRoom';
@@ -17,7 +18,9 @@ function App() {
   const [orderedTests, setOrderedTests] = useState([]);
   const [testResults, setTestResults] = useState([]);
   const [givenTreatments, setGivenTreatments] = useState([]);
+  const [physicalExamFindings, setPhysicalExamFindings] = useState([]);
   const [currentTime, setCurrentTime] = useState(0);
+  const [timeLimitEnabled, setTimeLimitEnabled] = useState(true);
   const [showDebrief, setShowDebrief] = useState(false);
   const [performance, setPerformance] = useState(null);
   const [vitals, setVitals] = useState(null);
@@ -34,6 +37,7 @@ function App() {
   const [caseScore, setCaseScore] = useState(null);
   const [showScoreScreen, setShowScoreScreen] = useState(false);
   const [debriefViewed, setDebriefViewed] = useState(false);
+  const [caseSearchQuery, setCaseSearchQuery] = useState('');
 
   // Get cases filtered by difficulty
   const getFilteredCases = () => {
@@ -550,10 +554,32 @@ function App() {
   // Difficulty selection screen
   if (!selectedDifficulty) {
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <div className="text-center max-w-2xl mx-auto px-4">
-          <h1 className="text-4xl font-bold text-white mb-2">Clinical Reasoning Simulator</h1>
-          <p className="text-gray-400 mb-8">Select your difficulty level to begin</p>
+      <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4">
+        <div className="text-center max-w-3xl mx-auto">
+          <h1 className="text-5xl font-bold text-white mb-4">Clinical Reasoning Simulator</h1>
+          <p className="text-slate-400 mb-8 text-lg">Select your difficulty level to begin</p>
+          
+          {/* Time Limit Toggle */}
+          <div className="mb-8 card rounded-xl p-6 max-w-md mx-auto">
+            <label className="flex items-center justify-between cursor-pointer">
+              <div className="flex items-center gap-3">
+                <Clock className="w-5 h-5 text-blue-400" />
+                <span className="text-white font-semibold">Enable Time Limits</span>
+              </div>
+              <input
+                type="checkbox"
+                checked={timeLimitEnabled}
+                onChange={(e) => setTimeLimitEnabled(e.target.checked)}
+                className="w-5 h-5 rounded text-blue-600 focus:ring-blue-500"
+              />
+            </label>
+            <p className="text-sm text-slate-400 mt-2 text-left">
+              {timeLimitEnabled 
+                ? 'Time limits are enabled. Cases have time constraints based on difficulty.'
+                : 'Time limits are disabled. Take your time to learn.'}
+            </p>
+          </div>
+          
           <div className="space-y-4">
             <button
               onClick={() => setSelectedDifficulty('highschool')}
@@ -804,6 +830,9 @@ function App() {
         vitals={vitals || selectedCase.initialVitals}
         stability={patientStability}
         difficulty={selectedCase.difficulty}
+        currentTime={currentTime}
+        timeLimit={timeLimit}
+        timeLimitEnabled={timeLimitEnabled}
       />
 
       {/* Main Content Area */}
