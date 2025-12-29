@@ -1347,10 +1347,11 @@ function App() {
                   </div>
                 </>
               ) : (
-              <div className="text-gray-400">
-                No walkthrough steps available for the current stage.
-              </div>
-            )}
+                <div className="text-gray-400">
+                  No walkthrough steps available for the current stage.
+                </div>
+              );
+            })()}
           </div>
         </div>
       )}
