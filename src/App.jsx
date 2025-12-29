@@ -504,6 +504,9 @@ function App() {
     setWrongTreatmentsGiven(0);
     setShowScoreScreen(false);
     setCaseScore(null);
+    setPhysicalExamFindings([]);
+    setShowWalkthrough(false);
+    setWalkthroughStep(0);
   };
 
   // Get walkthrough steps for current state
@@ -783,6 +786,21 @@ function App() {
           </div>
         </div>
         
+        {/* Cases Solved Counter - Bottom Left */}
+        <div className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4">
+          <div className="card rounded-lg p-2 sm:p-3">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
+                <span className="text-green-400 text-lg sm:text-xl font-bold">✓</span>
+              </div>
+              <div>
+                <div className="text-white text-xs sm:text-sm font-semibold">Cases Solved</div>
+                <div className="text-green-400 text-lg sm:text-xl font-bold">{casesSolved}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Time Limit Toggle - Bottom Right */}
         <div className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4">
           <div className="card rounded-lg p-2 sm:p-3 max-w-xs">
