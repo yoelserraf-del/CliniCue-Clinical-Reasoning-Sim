@@ -85,12 +85,15 @@ function App() {
   useEffect(() => {
     if (selectedDifficulty && !selectedCase) {
       try {
-        const firstCase = getNextCase(1, selectedDifficulty);
+        const filteredCases = getFilteredCases();
+        // Randomize starting case - pick a random level between 1 and 50
+        const randomLevel = Math.floor(Math.random() * 50) + 1;
+        const firstCase = getNextCase(randomLevel, selectedDifficulty);
         if (firstCase) {
-          console.log('Loading case:', firstCase.id, firstCase.title);
+          console.log('Loading case:', firstCase.id, firstCase.title, 'at level', firstCase.caseLevel);
           setSelectedCase(firstCase);
           setVitals(firstCase.initialVitals);
-          setCurrentCaseLevel(1);
+          setCurrentCaseLevel(firstCase.caseLevel || randomLevel);
           setHintsUsed(0);
           setExplanationsViewed(0);
           setWrongTestsOrdered(0);
@@ -457,6 +460,9 @@ function App() {
 
   // Proceed to next state
   const handleNextState = () => {
+    // Reset walkthrough when state changes
+    setWalkthroughStep(0);
+    
     if (currentState === CASE_STATES.TRIAGE) {
       setCurrentState(CASE_STATES.INVESTIGATION);
     } else if (currentState === CASE_STATES.INVESTIGATION) {
@@ -619,6 +625,13 @@ function App() {
   // Handle walkthrough (counts as hint)
   const handleWalkthroughNext = () => {
     const steps = getWalkthroughSteps();
+    // Ensure we don't go out of bounds
+    if (walkthroughStep >= steps.length) {
+      setWalkthroughStep(0);
+      setShowWalkthrough(false);
+      return;
+    }
+    
     if (walkthroughStep < steps.length - 1) {
       const nextStepIndex = walkthroughStep + 1;
       // Count viewing a walkthrough step as using a hint
@@ -629,7 +642,17 @@ function App() {
       // Access the next step using the calculated index (before state update)
       const nextStep = steps[nextStepIndex];
       if (nextStep && nextStep.action) {
-        setTimeout(() => nextStep.action(), 500);
+        // Execute action, which may change state
+        setTimeout(() => {
+          nextStep.action();
+          // Reset walkthrough step after state change to prevent out-of-bounds
+          setTimeout(() => {
+            const newSteps = getWalkthroughSteps();
+            if (walkthroughStep + 1 >= newSteps.length) {
+              setWalkthroughStep(0);
+            }
+          }, 100);
+        }, 500);
       }
     } else {
       setShowWalkthrough(false);
@@ -1279,39 +1302,51 @@ function App() {
               </button>
             </div>
             
-            {getWalkthroughSteps().length > 0 ? (
-              <>
-                <div className="mb-4">
-                  <div className="text-sm text-gray-400 mb-2">
-                    Step {walkthroughStep + 1} of {getWalkthroughSteps().length}
+            {(() => {
+              const steps = getWalkthroughSteps();
+              // Ensure walkthroughStep is within bounds
+              const safeStep = Math.min(walkthroughStep, Math.max(0, steps.length - 1));
+              const currentStep = steps[safeStep];
+              
+              // If step is out of bounds, reset to 0
+              if (safeStep !== walkthroughStep) {
+                setWalkthroughStep(0);
+                return null;
+              }
+              
+              return steps.length > 0 ? (
+                <>
+                  <div className="mb-4">
+                    <div className="text-sm text-gray-400 mb-2">
+                      Step {walkthroughStep + 1} of {steps.length}
+                    </div>
+                    <div className="bg-gray-900 rounded p-4 mb-4">
+                      <h3 className="text-xl font-semibold text-white mb-2">
+                        {currentStep?.title}
+                      </h3>
+                      <p className="text-gray-300 whitespace-pre-line">
+                        {currentStep?.description}
+                      </p>
+                    </div>
                   </div>
-                  <div className="bg-gray-900 rounded p-4 mb-4">
-                    <h3 className="text-xl font-semibold text-white mb-2">
-                      {getWalkthroughSteps()[walkthroughStep]?.title}
-                    </h3>
-                    <p className="text-gray-300">
-                      {getWalkthroughSteps()[walkthroughStep]?.description}
-                    </p>
+                  
+                  <div className="flex justify-between">
+                    <button
+                      onClick={handleWalkthroughPrev}
+                      disabled={walkthroughStep === 0}
+                      className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      ← Previous
+                    </button>
+                    <button
+                      onClick={handleWalkthroughNext}
+                      className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium"
+                    >
+                      {walkthroughStep === steps.length - 1 ? 'Close' : 'Next →'}
+                    </button>
                   </div>
-                </div>
-                
-                <div className="flex justify-between">
-                  <button
-                    onClick={handleWalkthroughPrev}
-                    disabled={walkthroughStep === 0}
-                    className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    ← Previous
-                  </button>
-                  <button
-                    onClick={handleWalkthroughNext}
-                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium"
-                  >
-                    {walkthroughStep === getWalkthroughSteps().length - 1 ? 'Close' : 'Next →'}
-                  </button>
-                </div>
-              </>
-            ) : (
+                </>
+              ) : (
               <div className="text-gray-400">
                 No walkthrough steps available for the current stage.
               </div>
