@@ -102,6 +102,9 @@ function App() {
           setShowScoreScreen(false);
           setCaseScore(null);
           setDebriefViewed(false);
+          setPhysicalExamFindings([]);
+          setShowWalkthrough(false);
+          setWalkthroughStep(0);
         } else {
           // No case found - show error and reset
           console.error(`No cases found for difficulty: ${selectedDifficulty}`);
@@ -674,6 +677,8 @@ function App() {
       setShowExplanation(false);
       setWalkthroughStep(0);
       setDebriefViewed(false);
+      setPhysicalExamFindings([]);
+      setShowWalkthrough(false);
     }
   };
 
