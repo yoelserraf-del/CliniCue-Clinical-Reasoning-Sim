@@ -67,27 +67,42 @@ function App() {
   // Load case automatically when difficulty is selected
   useEffect(() => {
     if (selectedDifficulty && !selectedCase) {
-      const firstCase = getNextCase(1, selectedDifficulty);
-      if (firstCase) {
-        setSelectedCase(firstCase);
-        setVitals(firstCase.initialVitals);
-        setCurrentCaseLevel(1);
-        setHintsUsed(0);
-        setExplanationsViewed(0);
-        setWrongTestsOrdered(0);
-        setWrongTreatmentsGiven(0);
-        setCurrentState(CASE_STATES.TRIAGE);
-        setPatientStability(INITIAL_STABILITY);
-        setOrderedTests([]);
-        setTestResults([]);
-        setGivenTreatments([]);
-        setCurrentTime(0);
-        setSelectedDiagnosis(null);
-        setShowScoreScreen(false);
-        setCaseScore(null);
-        setDebriefViewed(false);
+      try {
+        const firstCase = getNextCase(1, selectedDifficulty);
+        if (firstCase) {
+          console.log('Loading case:', firstCase.id, firstCase.title);
+          setSelectedCase(firstCase);
+          setVitals(firstCase.initialVitals);
+          setCurrentCaseLevel(1);
+          setHintsUsed(0);
+          setExplanationsViewed(0);
+          setWrongTestsOrdered(0);
+          setWrongTreatmentsGiven(0);
+          setCurrentState(CASE_STATES.TRIAGE);
+          setPatientStability(INITIAL_STABILITY);
+          setOrderedTests([]);
+          setTestResults([]);
+          setGivenTreatments([]);
+          setCurrentTime(0);
+          setSelectedDiagnosis(null);
+          setShowScoreScreen(false);
+          setCaseScore(null);
+          setDebriefViewed(false);
+        } else {
+          // No case found - show error and reset
+          console.error(`No cases found for difficulty: ${selectedDifficulty}`);
+          const filtered = getFilteredCases();
+          console.error(`Filtered cases:`, filtered.length);
+          alert(`No cases found for ${selectedDifficulty} difficulty. Please try another difficulty level.`);
+          setSelectedDifficulty(null);
+        }
+      } catch (error) {
+        console.error('Error loading case:', error);
+        alert(`Error loading case: ${error.message}`);
+        setSelectedDifficulty(null);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedDifficulty]);
 
   // Simulate time passing and test completion
@@ -677,13 +692,25 @@ function App() {
     );
   }
 
+  // Show loading state if case is not yet loaded
+  if (!selectedCase) {
+    return (
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-white text-xl mb-4">Loading case...</div>
+          <div className="text-gray-400">Please wait while we prepare your case.</div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-900 flex flex-col">
       {/* Header with Case Info and State */}
       <div className="bg-gray-800 border-b border-gray-700 px-6 py-3">
         <div className="flex items-center justify-between flex-wrap gap-3">
           <div className="flex-1 min-w-0">
-            <h1 className="text-xl font-bold text-white truncate">{selectedCase.title}</h1>
+            <h1 className="text-xl font-bold text-white truncate">{selectedCase?.title || 'Case Loading...'}</h1>
             <div className="flex items-center gap-3 mt-1">
               <span className="text-xs text-gray-400">
                 Difficulty: <span className="capitalize font-medium text-white">{selectedCase.difficulty}</span>
