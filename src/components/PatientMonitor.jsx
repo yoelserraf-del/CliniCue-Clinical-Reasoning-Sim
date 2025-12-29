@@ -2,7 +2,7 @@ import { Activity, Heart, Thermometer, Droplets, Wind, Clock, AlertTriangle } fr
 import ECGMonitor from './ECGMonitor';
 import { getTimeRemaining, getTimeWarning } from '../utils/timeManager';
 
-const PatientMonitor = ({ vitals, stability, difficulty, realTimeElapsed, timeLimit, timeLimitEnabled }) => {
+const PatientMonitor = ({ vitals, stability, difficulty, realTimeElapsed, timeLimit, timeLimitEnabled, currentTime }) => {
   const getVitalColor = (type) => {
     if (difficulty === 'student' || difficulty === 'highschool') {
       switch (type) {
@@ -104,12 +104,13 @@ const PatientMonitor = ({ vitals, stability, difficulty, realTimeElapsed, timeLi
               <div className="card rounded-xl p-6">
                 <div className="flex justify-between items-center mb-4">
                   <div className="flex items-center gap-3">
-                    <Clock className="w-5 h-5 text-slate-400" />
+                    <Clock className={`w-5 h-5 ${stability < 40 ? 'text-red-500 animate-pulse' : 'text-slate-400'}`} />
                     <span className="text-sm font-semibold text-slate-300 uppercase tracking-wide">
                       Time Remaining
                     </span>
                   </div>
                   <span className={`text-2xl font-bold font-mono ${
+                    stability < 40 ? 'text-red-400 animate-pulse' :
                     timeLimit && realTimeElapsed !== undefined && getTimeWarning(timeLimit, realTimeElapsed) === 'critical' ? 'text-red-400' :
                     timeLimit && realTimeElapsed !== undefined && getTimeWarning(timeLimit, realTimeElapsed) === 'warning' ? 'text-yellow-400' :
                     'text-blue-400'
@@ -120,6 +121,7 @@ const PatientMonitor = ({ vitals, stability, difficulty, realTimeElapsed, timeLi
                 <div className="h-3 bg-slate-800 rounded-full overflow-hidden shadow-inner">
                   <div
                     className={`h-full transition-all duration-500 ${
+                      stability < 40 ? 'bg-red-500 animate-pulse' :
                       timeLimit && realTimeElapsed !== undefined && getTimeWarning(timeLimit, realTimeElapsed) === 'critical' ? 'bg-red-500' :
                       timeLimit && realTimeElapsed !== undefined && getTimeWarning(timeLimit, realTimeElapsed) === 'warning' ? 'bg-yellow-500' :
                       'bg-blue-500'
@@ -127,6 +129,12 @@ const PatientMonitor = ({ vitals, stability, difficulty, realTimeElapsed, timeLi
                     style={{ width: timeLimit && realTimeElapsed !== undefined ? `${(getTimeRemaining(timeLimit, realTimeElapsed) / timeLimit) * 100}%` : '100%' }}
                   ></div>
                 </div>
+                {/* Time Elapsed Counter */}
+                {currentTime !== undefined && (
+                  <div className="mt-2 text-xs text-slate-400">
+                    Time Elapsed: {currentTime} minutes
+                  </div>
+                )}
                 {timeLimit && realTimeElapsed !== undefined && getTimeWarning(timeLimit, realTimeElapsed) === 'critical' && (
                   <div className="mt-3 flex items-center gap-2 text-red-400 text-xs font-semibold">
                     <AlertTriangle className="w-4 h-4" />

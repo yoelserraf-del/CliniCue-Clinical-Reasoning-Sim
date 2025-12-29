@@ -1074,6 +1074,7 @@ function App() {
         realTimeElapsed={realTimeElapsed}
         timeLimit={timeLimit}
         timeLimitEnabled={timeLimitEnabled}
+        currentTime={currentTime}
       />
 
       {/* Main Content Area */}

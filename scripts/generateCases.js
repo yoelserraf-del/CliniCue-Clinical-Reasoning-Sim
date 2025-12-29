@@ -241,6 +241,27 @@ function generateScienceBridge(diagnosis, difficulty) {
   };
 }
 
+// Specialty distribution breakdown (per 100 cases)
+const specialtyDistribution = {
+  cardiology: 20,      // MIs, Arrhythmias, Heart Failure
+  pulmonology: 15,     // Asthma, COPD, PE, Pneumonia
+  neurology: 15,       // Strokes, Seizures, Migraines
+  trauma: 20,          // Bleeding, Fractures, Overdoses
+  gi_renal: 15,        // Kidney stones, Appendicitis, Liver failure
+  endocrine_other: 15  // Diabetes, Thyroid, Electrolytes
+};
+
+// Map systems to specialties
+const systemToSpecialty = {
+  cardiovascular: 'cardiology',
+  respiratory: 'pulmonology',
+  neurological: 'neurology',
+  gastrointestinal: 'gi_renal',
+  renal: 'gi_renal',
+  infectious: 'trauma', // Some infectious cases can be trauma/ER
+  endocrine: 'endocrine_other'
+};
+
 // Main generation function
 function generateAllCases() {
   const difficulties = ['highschool', 'premed', 'student', 'resident'];
@@ -248,14 +269,78 @@ function generateAllCases() {
   let caseId = 1;
   
   difficulties.forEach(difficulty => {
-    const systems = Object.keys(caseTemplates);
+    // Create specialty distribution for this difficulty
+    const specialtyCases = [];
     
+    // Cardiology (20 cases)
+    for (let i = 0; i < 20; i++) {
+      const templates = caseTemplates.cardiovascular;
+      const template = templates[i % templates.length];
+      specialtyCases.push({ specialty: 'cardiology', system: 'cardiovascular', template });
+    }
+    
+    // Pulmonology (15 cases)
+    for (let i = 0; i < 15; i++) {
+      const templates = caseTemplates.respiratory;
+      const template = templates[i % templates.length];
+      specialtyCases.push({ specialty: 'pulmonology', system: 'respiratory', template });
+    }
+    
+    // Neurology (15 cases)
+    for (let i = 0; i < 15; i++) {
+      const templates = caseTemplates.neurological;
+      const template = templates[i % templates.length];
+      specialtyCases.push({ specialty: 'neurology', system: 'neurological', template });
+    }
+    
+    // Trauma/ER (20 cases) - mix of infectious, some cardiovascular emergencies, etc.
+    for (let i = 0; i < 10; i++) {
+      const templates = caseTemplates.infectious;
+      const template = templates[i % templates.length];
+      specialtyCases.push({ specialty: 'trauma', system: 'infectious', template });
+    }
+    // Add some cardiovascular emergencies for trauma
+    for (let i = 0; i < 5; i++) {
+      const templates = caseTemplates.cardiovascular;
+      const template = templates[i % templates.length];
+      specialtyCases.push({ specialty: 'trauma', system: 'cardiovascular', template });
+    }
+    // Add some neurological emergencies
+    for (let i = 0; i < 5; i++) {
+      const templates = caseTemplates.neurological;
+      const template = templates[i % templates.length];
+      specialtyCases.push({ specialty: 'trauma', system: 'neurological', template });
+    }
+    
+    // GI/Renal (15 cases)
+    for (let i = 0; i < 8; i++) {
+      const templates = caseTemplates.gastrointestinal;
+      const template = templates[i % templates.length];
+      specialtyCases.push({ specialty: 'gi_renal', system: 'gastrointestinal', template });
+    }
+    for (let i = 0; i < 7; i++) {
+      const templates = caseTemplates.renal;
+      const template = templates[i % templates.length];
+      specialtyCases.push({ specialty: 'gi_renal', system: 'renal', template });
+    }
+    
+    // Endocrine/Other (15 cases)
+    for (let i = 0; i < 15; i++) {
+      const templates = caseTemplates.endocrine;
+      const template = templates[i % templates.length];
+      specialtyCases.push({ specialty: 'endocrine_other', system: 'endocrine', template });
+    }
+    
+    // Shuffle to randomize order
+    for (let i = specialtyCases.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [specialtyCases[i], specialtyCases[j]] = [specialtyCases[j], specialtyCases[i]];
+    }
+    
+    // Generate cases
     for (let level = 1; level <= 100; level++) {
-      const system = systems[level % systems.length];
-      const templates = caseTemplates[system];
-      const template = templates[level % templates.length];
-      
-      const case_ = generateCase(caseId, difficulty, level, system, template);
+      const specialtyCase = specialtyCases[level - 1];
+      const case_ = generateCase(caseId, difficulty, level, specialtyCase.system, specialtyCase.template);
       allCases.push(case_);
       caseId++;
     }
