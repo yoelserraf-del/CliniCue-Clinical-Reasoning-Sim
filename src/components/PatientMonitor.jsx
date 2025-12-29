@@ -98,9 +98,9 @@ const PatientMonitor = ({ vitals, stability, difficulty, currentTime, timeLimit,
           </div>
 
           {/* Time Limit & Stability */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className={`grid gap-4 ${timeLimitEnabled && timeLimit ? 'grid-cols-2' : 'grid-cols-1'}`}>
             {/* Time Limit */}
-            {timeLimitEnabled && timeLimit && (
+            {timeLimitEnabled && timeLimit && currentTime !== undefined && (
               <div className="card rounded-xl p-6">
                 <div className="flex justify-between items-center mb-4">
                   <div className="flex items-center gap-3">
@@ -110,24 +110,24 @@ const PatientMonitor = ({ vitals, stability, difficulty, currentTime, timeLimit,
                     </span>
                   </div>
                   <span className={`text-2xl font-bold font-mono ${
-                    getTimeWarning(timeLimit, currentTime) === 'critical' ? 'text-red-400' :
-                    getTimeWarning(timeLimit, currentTime) === 'warning' ? 'text-yellow-400' :
+                    timeLimit && currentTime !== undefined && getTimeWarning(timeLimit, currentTime) === 'critical' ? 'text-red-400' :
+                    timeLimit && currentTime !== undefined && getTimeWarning(timeLimit, currentTime) === 'warning' ? 'text-yellow-400' :
                     'text-blue-400'
                   }`}>
-                    {getTimeRemaining(timeLimit, currentTime)}m
+                    {timeLimit && currentTime !== undefined ? getTimeRemaining(timeLimit, currentTime) : '--'}m
                   </span>
                 </div>
                 <div className="h-3 bg-slate-800 rounded-full overflow-hidden shadow-inner">
                   <div
                     className={`h-full transition-all duration-500 ${
-                      getTimeWarning(timeLimit, currentTime) === 'critical' ? 'bg-red-500' :
-                      getTimeWarning(timeLimit, currentTime) === 'warning' ? 'bg-yellow-500' :
+                      timeLimit && currentTime !== undefined && getTimeWarning(timeLimit, currentTime) === 'critical' ? 'bg-red-500' :
+                      timeLimit && currentTime !== undefined && getTimeWarning(timeLimit, currentTime) === 'warning' ? 'bg-yellow-500' :
                       'bg-blue-500'
                     } rounded-full`}
-                    style={{ width: `${(getTimeRemaining(timeLimit, currentTime) / timeLimit) * 100}%` }}
+                    style={{ width: timeLimit && currentTime !== undefined ? `${(getTimeRemaining(timeLimit, currentTime) / timeLimit) * 100}%` : '100%' }}
                   ></div>
                 </div>
-                {getTimeWarning(timeLimit, currentTime) === 'critical' && (
+                {timeLimit && currentTime !== undefined && getTimeWarning(timeLimit, currentTime) === 'critical' && (
                   <div className="mt-3 flex items-center gap-2 text-red-400 text-xs font-semibold">
                     <AlertTriangle className="w-4 h-4" />
                     <span>Critical: Patient condition deteriorating</span>

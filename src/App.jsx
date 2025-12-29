@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Clock } from 'lucide-react';
 import { CASE_STATES, getNextState, getStateDisplayName } from './utils/stateMachine';
 import { INITIAL_STABILITY, applyStabilityChange, calculateStabilityPenalty, calculateTimeDecay } from './utils/stabilityManager';
 import { getTimeLimit, getTimeRemaining, isTimeExpired, getTimeWarning } from './utils/timeManager';
@@ -38,6 +39,11 @@ function App() {
   const [showScoreScreen, setShowScoreScreen] = useState(false);
   const [debriefViewed, setDebriefViewed] = useState(false);
   const [caseSearchQuery, setCaseSearchQuery] = useState('');
+
+  // Get time limit for current case
+  const timeLimit = selectedCase && timeLimitEnabled 
+    ? getTimeLimit(selectedCase.difficulty, currentCaseLevel) 
+    : null;
 
   // Get cases filtered by difficulty
   const getFilteredCases = () => {
@@ -109,62 +115,79 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedDifficulty]);
 
-  // Simulate time passing and test completion
+  // Simulate time passing, test completion, and stability decay
   useEffect(() => {
-    if (currentState !== CASE_STATES.COMPLETED) {
+    if (currentState !== CASE_STATES.COMPLETED && selectedCase) {
       const interval = setInterval(() => {
-        setCurrentTime(prev => prev + 1);
-        
-        // Check for completed tests
-        orderedTests.forEach(test => {
-          if (!test.completedAt && currentTime >= test.orderedAt + test.timeCost) {
-            // Mark test as completed and add result
-            const testData = selectedCase?.investigations.find(inv => inv.id === test.id);
-            
-            setTestResults(prev => {
-              // Prevent duplicate results
-              if (prev.some(r => r.id === test.id)) return prev;
+        setCurrentTime(prev => {
+          const newTime = prev + 1;
+          
+          // Check for completed tests
+          orderedTests.forEach(test => {
+            if (!test.completedAt && newTime >= test.orderedAt + test.timeCost) {
+              const investigations = Array.isArray(selectedCase?.investigations) 
+                ? selectedCase.investigations 
+                : Object.values(selectedCase?.investigations || {});
+              const testData = investigations.find(inv => inv.id === test.id);
               
-              if (testData) {
-                // Test is in case investigations - use case-specific results
-                return [...prev, {
-                  id: test.id,
-                  name: testData.name,
-                  result: testData.result,
-                  interpretation: testData.interpretation,
-                  timeCost: testData.timeCost,
-                  type: test.id.includes('xray') || test.id.includes('ct') || test.id.includes('ctpa') ? 'image' : 'text'
-                }];
-              } else {
-                // Test not in case investigations - show generic "normal" result
-                // This represents ordering a test that isn't relevant to this case
-                return [...prev, {
-                  id: test.id,
-                  name: test.name || 'Test',
-                  result: "Results within normal limits. This test is not directly relevant to the current case presentation.",
-                  interpretation: "Consider focusing on tests more relevant to the patient's symptoms.",
-                  timeCost: test.timeCost,
-                  type: test.id.includes('xray') || test.id.includes('ct') || test.id.includes('ctpa') ? 'image' : 'text',
-                  isGeneric: true
-                }];
-              }
-            });
-              
-            setOrderedTests(prev => prev.map(t => 
-              t.id === test.id ? { ...t, completedAt: currentTime } : t
-            ));
-          }
-        });
+              setTestResults(prev => {
+                if (prev.some(r => r.id === test.id)) return prev;
+                
+                if (testData) {
+                  return [...prev, {
+                    id: test.id,
+                    name: testData.name,
+                    result: testData.result,
+                    interpretation: testData.interpretation,
+                    timeCost: testData.timeCost,
+                    type: test.id.includes('xray') || test.id.includes('ct') || test.id.includes('ctpa') ? 'image' : 'text'
+                  }];
+                } else {
+                  return [...prev, {
+                    id: test.id,
+                    name: test.name || 'Test',
+                    result: "Results within normal limits. This test is not directly relevant to the current case presentation.",
+                    interpretation: "Consider focusing on tests more relevant to the patient's symptoms.",
+                    timeCost: test.timeCost,
+                    type: test.id.includes('xray') || test.id.includes('ct') || test.id.includes('ctpa') ? 'image' : 'text',
+                    isGeneric: true
+                  }];
+                }
+              });
+                
+              setOrderedTests(prev => prev.map(t => 
+                t.id === test.id ? { ...t, completedAt: newTime } : t
+              ));
+            }
+          });
 
-        // Simulate stability decay over time (especially for attending level)
-        if (selectedCase?.difficulty === 'attending') {
-          setPatientStability(prev => Math.max(0, prev - 0.1));
-        }
+          // Stability decay based on time (if time limit enabled)
+          if (timeLimitEnabled && timeLimit) {
+            const decay = calculateTimeDecay(newTime, timeLimit, selectedCase.difficulty);
+            setPatientStability(prev => {
+              const newStability = Math.max(0, prev - decay);
+              
+              // Critical state if time expired
+              if (isTimeExpired(timeLimit, newTime) && newStability > 0) {
+                setTimeout(() => {
+                  setCurrentState(CASE_STATES.COMPLETED);
+                  // Calculate performance will be called when state changes
+                  setShowDebrief(true);
+                }, 100);
+                return 0;
+              }
+              
+              return newStability;
+            });
+          }
+          
+          return newTime;
+        });
       }, 1000); // 1 second = 1 minute in simulation
 
       return () => clearInterval(interval);
     }
-  }, [currentTime, orderedTests, selectedCase, currentState]);
+  }, [orderedTests, selectedCase, currentState, timeLimitEnabled, timeLimit]);
 
   // Handle test ordering
   const handleOrderTest = (test) => {
@@ -181,7 +204,10 @@ function App() {
     setOrderedTests(prev => [...prev, newOrderedTest]);
 
     // Check if test is recommended (first 2-3 tests are usually key)
-    const recommendedTests = selectedCase?.investigations.slice(0, 3).map(inv => inv.id) || [];
+    const investigations = Array.isArray(selectedCase?.investigations) 
+      ? selectedCase.investigations 
+      : Object.values(selectedCase?.investigations || {});
+    const recommendedTests = investigations.slice(0, 3).map(inv => inv.id) || [];
     if (!recommendedTests.includes(test.id)) {
       setWrongTestsOrdered(prev => prev + 1);
       setPatientStability(prev => Math.max(0, prev - 2));
@@ -634,8 +660,8 @@ function App() {
     };
 
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4">
-        <div className="bg-gray-800 rounded-lg border border-gray-700 p-8 max-w-2xl w-full">
+      <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4">
+        <div className="card rounded-xl p-8 max-w-2xl w-full">
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold text-white mb-2">Case Complete!</h1>
             <div className={`text-6xl font-bold mb-2 ${getScoreColor(caseScore.score)}`}>
@@ -647,7 +673,7 @@ function App() {
           </div>
 
           <div className="space-y-4 mb-8">
-            <div className="bg-gray-900 rounded-lg p-4 border border-gray-700">
+            <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
               <h3 className="text-lg font-semibold text-white mb-4">Performance Breakdown</h3>
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
@@ -737,10 +763,10 @@ function App() {
   // Show loading state if case is not yet loaded
   if (!selectedCase) {
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-slate-900 flex items-center justify-center">
         <div className="text-center">
           <div className="text-white text-xl mb-4">Loading case...</div>
-          <div className="text-gray-400">Please wait while we prepare your case.</div>
+          <div className="text-slate-400">Please wait while we prepare your case.</div>
         </div>
       </div>
     );
@@ -857,7 +883,7 @@ function App() {
           </div>
         ) : (
           <ExaminationRoom
-            investigations={selectedCase.investigations}
+            investigations={Array.isArray(selectedCase.investigations) ? selectedCase.investigations : Object.values(selectedCase.investigations || {})}
             testResults={testResults}
             orderedTests={orderedTests}
             currentTime={currentTime}
@@ -868,7 +894,7 @@ function App() {
 
         {/* Right Sidebar - Action Menu */}
         <ActionMenu
-          investigations={selectedCase.investigations}
+          investigations={Array.isArray(selectedCase.investigations) ? selectedCase.investigations : Object.values(selectedCase.investigations || {})}
           onOrderTest={handleOrderTest}
           onGiveMedication={handleGiveMedication}
           onConsultSpecialist={handleConsultSpecialist}
