@@ -71,18 +71,58 @@ const ActionMenu = ({
     <div className="w-96 bg-slate-900 border-l border-slate-700/50 overflow-y-auto">
       <div className="p-8">
         <div className="mb-6">
-          <h2 className="text-2xl font-bold text-white mb-2">Actions</h2>
-          <p className="text-sm text-slate-400">Order tests and manage treatment</p>
+          <h2 className="text-2xl font-bold text-white mb-2">Clinical Actions</h2>
+          <p className="text-sm text-slate-400">Perform exams, order tests, make diagnoses, and provide treatment</p>
         </div>
 
-        {/* Order Tests */}
+        {/* [Physical Exam] */}
+        <div className="card rounded-xl p-6 mb-6">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 bg-purple-500/20 rounded-xl flex items-center justify-center">
+              <Stethoscope className="w-5 h-5 text-purple-400" />
+            </div>
+            <h3 className="text-lg font-semibold text-white">[Physical Exam]</h3>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <button
+              onClick={() => onPhysicalExam && onPhysicalExam('auscultation')}
+              className="p-4 rounded-lg border border-slate-700 bg-slate-800 hover:border-purple-500 hover:bg-slate-800/80 transition-all text-white text-sm font-semibold flex items-center justify-center gap-2 card-hover"
+            >
+              <Stethoscope className="w-4 h-4" />
+              <span>Auscultation</span>
+            </button>
+            <button
+              onClick={() => onPhysicalExam && onPhysicalExam('palpation')}
+              className="p-4 rounded-lg border border-slate-700 bg-slate-800 hover:border-purple-500 hover:bg-slate-800/80 transition-all text-white text-sm font-semibold flex items-center justify-center gap-2 card-hover"
+            >
+              <Activity className="w-4 h-4" />
+              <span>Palpation</span>
+            </button>
+            <button
+              onClick={() => onPhysicalExam && onPhysicalExam('neurological')}
+              className="p-4 rounded-lg border border-slate-700 bg-slate-800 hover:border-purple-500 hover:bg-slate-800/80 transition-all text-white text-sm font-semibold flex items-center justify-center gap-2 card-hover"
+            >
+              <Brain className="w-4 h-4" />
+              <span>Neurological</span>
+            </button>
+            <button
+              onClick={() => onPhysicalExam && onPhysicalExam('cardiac')}
+              className="p-4 rounded-lg border border-slate-700 bg-slate-800 hover:border-purple-500 hover:bg-slate-800/80 transition-all text-white text-sm font-semibold flex items-center justify-center gap-2 card-hover"
+            >
+              <Heart className="w-4 h-4" />
+              <span>Cardiac</span>
+            </button>
+          </div>
+        </div>
+
+        {/* [Order Labs/Imaging] */}
         {(currentState === 'investigation' || currentState === 'triage') && (
           <div className="card rounded-xl p-6 mb-6">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 bg-blue-500/20 rounded-xl flex items-center justify-center">
                 <FlaskConical className="w-5 h-5 text-blue-400" />
               </div>
-              <h3 className="text-lg font-semibold text-white">Order Tests</h3>
+              <h3 className="text-lg font-semibold text-white">[Order Labs/Imaging]</h3>
             </div>
 
             {/* Search Bar */}
