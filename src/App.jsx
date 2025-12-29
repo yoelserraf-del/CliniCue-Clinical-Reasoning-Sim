@@ -974,17 +974,36 @@ function App() {
       />
 
       {/* Main Content Area */}
-      <div className="flex-1 flex overflow-hidden">
-        {/* Left Sidebar */}
-        <LeftSidebar
-          patientProfile={selectedCase.patientProfile}
-          nursingNotes={selectedCase.initialNursingNotes}
-          difficulty={selectedCase.difficulty}
-        />
+      <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
+        {/* Left Sidebar - Desktop */}
+        <div className="hidden lg:block">
+          <LeftSidebar
+            patientProfile={selectedCase.patientProfile}
+            nursingNotes={selectedCase.initialNursingNotes}
+            difficulty={selectedCase.difficulty}
+          />
+        </div>
+        
+        {/* Mobile: Patient Chart (Collapsible) */}
+        <div className="lg:hidden border-b border-slate-700/50 bg-slate-800/50">
+          <details className="group">
+            <summary className="px-4 py-3 cursor-pointer flex items-center justify-between text-white font-semibold">
+              <span>Patient Chart</span>
+              <span className="text-slate-400 group-open:rotate-180 transition-transform">▼</span>
+            </summary>
+            <div className="max-h-96 overflow-y-auto">
+              <LeftSidebar
+                patientProfile={selectedCase.patientProfile}
+                nursingNotes={selectedCase.initialNursingNotes}
+                difficulty={selectedCase.difficulty}
+              />
+            </div>
+          </details>
+        </div>
 
         {/* Center - Examination Room or Diagnosis Selection */}
         {currentState === CASE_STATES.DIAGNOSIS ? (
-          <div className="flex-1 overflow-y-auto p-6">
+          <div className="flex-1 overflow-y-auto p-4 sm:p-6" data-diagnosis-panel>
             <DiagnosisSelection
               possibleDiagnoses={selectedCase.possibleDiagnoses || []}
               correctDiagnosis={selectedCase.correctDiagnosis}
@@ -1005,19 +1024,45 @@ function App() {
           />
         )}
 
-        {/* Right Sidebar - Action Menu */}
-        <ActionMenu
-          investigations={Array.isArray(selectedCase.investigations) ? selectedCase.investigations : Object.values(selectedCase.investigations || {})}
-          onOrderTest={handleOrderTest}
-          onGiveMedication={handleGiveMedication}
-          onConsultSpecialist={handleConsultSpecialist}
-          onPhysicalExam={handlePhysicalExam}
-          orderedTests={orderedTests}
-          givenTreatments={givenTreatments}
-          currentState={currentState}
-          availableTreatments={selectedCase.availableTreatments || []}
-          difficulty={selectedCase.difficulty}
-        />
+        {/* Right Sidebar - Action Menu - Desktop */}
+        <div className="hidden lg:block">
+          <ActionMenu
+            investigations={Array.isArray(selectedCase.investigations) ? selectedCase.investigations : Object.values(selectedCase.investigations || {})}
+            onOrderTest={handleOrderTest}
+            onGiveMedication={handleGiveMedication}
+            onConsultSpecialist={handleConsultSpecialist}
+            onPhysicalExam={handlePhysicalExam}
+            orderedTests={orderedTests}
+            givenTreatments={givenTreatments}
+            currentState={currentState}
+            availableTreatments={selectedCase.availableTreatments || []}
+            difficulty={selectedCase.difficulty}
+          />
+        </div>
+        
+        {/* Mobile: Action Menu (Bottom Sheet) */}
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-slate-900 border-t border-slate-700/50 z-40">
+          <details className="group">
+            <summary className="px-4 py-3 cursor-pointer flex items-center justify-between text-white font-semibold bg-slate-800/50">
+              <span>Clinical Actions</span>
+              <span className="text-slate-400 group-open:rotate-180 transition-transform">▲</span>
+            </summary>
+            <div className="max-h-[70vh] overflow-y-auto">
+              <ActionMenu
+                investigations={Array.isArray(selectedCase.investigations) ? selectedCase.investigations : Object.values(selectedCase.investigations || {})}
+                onOrderTest={handleOrderTest}
+                onGiveMedication={handleGiveMedication}
+                onConsultSpecialist={handleConsultSpecialist}
+                onPhysicalExam={handlePhysicalExam}
+                orderedTests={orderedTests}
+                givenTreatments={givenTreatments}
+                currentState={currentState}
+                availableTreatments={selectedCase.availableTreatments || []}
+                difficulty={selectedCase.difficulty}
+              />
+            </div>
+          </details>
+        </div>
       </div>
 
       {/* Hint Modal */}
