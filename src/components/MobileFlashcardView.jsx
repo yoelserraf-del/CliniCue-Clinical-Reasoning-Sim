@@ -7,7 +7,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 
-const MobileFlashcardView = ({
+const FlashcardView = ({
   case: caseData,
   vitals,
   stability,
@@ -30,14 +30,19 @@ const MobileFlashcardView = ({
   investigations,
   availableTreatments,
   possibleDiagnoses,
-  correctDiagnosis
+  correctDiagnosis,
+  currentState,
+  timeLimit,
+  timeLimitEnabled,
+  realTimeElapsed,
+  currentTime
 }) => {
   const [isFlipped, setIsFlipped] = useState(false);
 
   if (!caseData) return null;
 
   return (
-    <div className="h-screen flex flex-col bg-slate-900 overflow-hidden pb-20">
+    <div className="h-screen flex flex-col bg-slate-900 overflow-hidden pb-20 lg:pb-0">
       {/* Compact Vitals Bar */}
       <CompactVitalsBar vitals={vitals} stability={stability} />
 
@@ -50,8 +55,8 @@ const MobileFlashcardView = ({
       </div>
 
       {/* Flashcard Content */}
-      <div className="flex-1 overflow-y-auto p-4">
-        <div className={`flip-card-container ${isFlipped ? 'flipped' : ''}`}>
+      <div className="flex-1 overflow-y-auto p-4 lg:p-8">
+        <div className={`flip-card-container max-w-4xl mx-auto ${isFlipped ? 'flipped' : ''}`}>
           <div className="flip-card-inner">
             {/* Front Side - Investigation */}
             <div className="flip-card-front">
@@ -164,8 +169,8 @@ const MobileFlashcardView = ({
                     <ClipboardList className="w-5 h-5 text-green-400" />
                     <h3 className="text-base font-semibold text-white">Order Tests</h3>
                   </div>
-                  <div className="grid grid-cols-2 gap-2">
-                    {investigations && investigations.slice(0, 6).map((test) => (
+                  <div className="grid grid-cols-2 lg:grid-cols-3 gap-2">
+                    {investigations && investigations.slice(0, 9).map((test) => (
                       <button
                         key={test.id}
                         onClick={() => onOrderTest(test)}
@@ -399,5 +404,5 @@ const MobileFlashcardView = ({
   );
 };
 
-export default MobileFlashcardView;
+export default FlashcardView;
 

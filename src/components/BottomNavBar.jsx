@@ -2,8 +2,8 @@ import { Home, Lightbulb, BookOpen, RotateCcw } from 'lucide-react';
 
 const BottomNavBar = ({ onHome, onHint, onWalkthrough, onFlip, isFlipped, showHint, showWalkthrough }) => {
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-slate-900 border-t border-slate-700 z-50 safe-area-bottom">
-      <div className="grid grid-cols-4 gap-1 px-2 py-2">
+    <div className="fixed bottom-0 left-0 right-0 bg-slate-900 border-t border-slate-700 z-50 safe-area-bottom lg:static lg:border-t-0 lg:border-r lg:border-slate-700 lg:w-20 lg:h-auto lg:bg-slate-800/50">
+      <div className="grid grid-cols-4 gap-1 px-2 py-2 lg:grid-cols-1 lg:gap-2 lg:p-4">
         {/* Home Button */}
         <button
           onClick={onHome}
