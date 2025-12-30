@@ -10,7 +10,9 @@ import ExaminationRoom from './components/ExaminationRoom';
 import ActionMenu from './components/ActionMenu';
 import ScienceDebrief from './components/ScienceDebrief';
 import DiagnosisSelection from './components/DiagnosisSelection';
-import MobileFlashcardView from './components/MobileFlashcardView';
+//import MobileFlashcardView from './components/MobileFlashcardView';
+// TESTING: Uncomment the line below and comment out MobileFlashcardView above to test the new flashcard UI
+import NewFlashcardView from './components/NewFlashcardView';
 import caseLibrary from './data/CaseLibrary.json';
 
 function App() {
@@ -161,8 +163,22 @@ function App() {
           if (timeLimit && newRealTime >= timeLimit * 60) {
             setPatientStability(0);
             setCurrentState(CASE_STATES.COMPLETED);
-            calculatePerformance();
-            setShowDebrief(true);
+            // Force failure when time expires
+            const performanceData = {
+              finalStability: 0,
+              timeToTreatment: currentTime,
+              correctDiagnosis: false,
+              score: 0,
+              hintsUsed,
+              explanationsViewed,
+              wrongTestsOrdered,
+              wrongTreatmentsGiven,
+              failed: true,
+              failureReason: 'Time limit expired'
+            };
+            setPerformance(performanceData);
+            setCaseScore(performanceData);
+            setShowScoreScreen(true);
             return newRealTime;
           }
           
@@ -236,11 +252,48 @@ function App() {
       id: test.id,
       name: test.name,
       orderedAt: currentTime,
-      timeCost: test.timeCost,
+      timeCost: test.timeCost || 0,
       completedAt: null
     };
 
     setOrderedTests(prev => [...prev, newOrderedTest]);
+
+    // If timeCost is 0, complete immediately
+    if ((test.timeCost || 0) === 0) {
+      const investigations = Array.isArray(selectedCase?.investigations) 
+        ? selectedCase.investigations 
+        : Object.values(selectedCase?.investigations || {});
+      const testData = investigations.find(inv => inv.id === test.id);
+      
+      setTestResults(prev => {
+        if (prev.some(r => r.id === test.id)) return prev;
+        
+        if (testData) {
+          return [...prev, {
+            id: test.id,
+            name: testData.name,
+            result: testData.result,
+            interpretation: testData.interpretation,
+            timeCost: testData.timeCost,
+            type: test.id.includes('xray') || test.id.includes('ct') || test.id.includes('ctpa') ? 'image' : 'text'
+          }];
+        } else {
+          return [...prev, {
+            id: test.id,
+            name: test.name || 'Test',
+            result: "Results within normal limits. This test is not directly relevant to the current case presentation.",
+            interpretation: "Consider focusing on tests more relevant to the patient's symptoms.",
+            timeCost: test.timeCost || 0,
+            type: test.id.includes('xray') || test.id.includes('ct') || test.id.includes('ctpa') ? 'image' : 'text',
+            isGeneric: true
+          }];
+        }
+      });
+      
+      setOrderedTests(prev => prev.map(t => 
+        t.id === test.id ? { ...t, completedAt: currentTime } : t
+      ));
+    }
 
     // Check if test is recommended (first 2-3 tests are usually key)
     const investigations = Array.isArray(selectedCase?.investigations) 
@@ -408,6 +461,30 @@ function App() {
   const calculatePerformance = () => {
     const timeToTreatment = currentTime;
     const correctDiagnosis = selectedDiagnosis === selectedCase?.correctDiagnosis;
+    
+    // Check if diagnosis and treatment are completed
+    const correctSequence = selectedCase?.correctTreatment?.sequence || [];
+    const expectedActions = correctSequence.map(s => s.action);
+    const allTreatmentsGiven = expectedActions.length > 0 && expectedActions.every(action => givenTreatments.includes(action));
+    
+    // If no diagnosis selected OR treatments not completed, fail with 0
+    if (!selectedDiagnosis || !allTreatmentsGiven) {
+      const performanceData = {
+        finalStability: patientStability,
+        timeToTreatment,
+        correctDiagnosis: false,
+        score: 0,
+        hintsUsed,
+        explanationsViewed,
+        wrongTestsOrdered,
+        wrongTreatmentsGiven,
+        failed: true,
+        failureReason: !selectedDiagnosis ? 'No diagnosis selected' : 'Treatment not completed'
+      };
+      setPerformance(performanceData);
+      setCaseScore(performanceData);
+      return performanceData;
+    }
     
     // Calculate score (0-100)
     let score = 100;
@@ -984,8 +1061,8 @@ function App() {
     );
   }
 
-  // Show loading state if case is not yet loaded
-  if (!selectedCase) {
+  // Show loading state if case is not yet loaded but difficulty is selected
+  if (selectedDifficulty && !selectedCase) {
     return (
       <div className="min-h-screen bg-slate-900 flex items-center justify-center">
         <div className="text-center">
@@ -997,10 +1074,10 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-900 flex flex-col">
-      {/* Mobile Flashcard View */}
-      {isMobile && selectedCase ? (
-        <MobileFlashcardView
+    <div className="min-h-screen flex flex-col">
+      {/* TESTING: NewFlashcardView - shows on all devices for testing */}
+      {selectedCase ? (
+        <NewFlashcardView
           case={selectedCase}
           vitals={vitals || selectedCase.initialVitals}
           stability={patientStability}
@@ -1014,6 +1091,126 @@ function App() {
           onPhysicalExam={handlePhysicalExam}
           onSelectDiagnosis={handleDiagnosisSelect}
           onHome={handleNewGame}
+          onNextCase={() => {
+            // Increment cases solved counter only if correct
+            if (selectedDiagnosis === selectedCase?.correctDiagnosis) {
+              const newCount = casesSolved + 1;
+              setCasesSolved(newCount);
+              localStorage.setItem('casesSolved', newCount.toString());
+            }
+            
+            // Get next case - try next level first, then random if none found
+            let nextLevel = currentCaseLevel + 1;
+            let nextCase = getNextCase(nextLevel, selectedDifficulty);
+            
+            // If no case at next level, try a random case
+            if (!nextCase) {
+              const filteredCases = getFilteredCases();
+              if (filteredCases.length > 0) {
+                const randomIndex = Math.floor(Math.random() * filteredCases.length);
+                nextCase = filteredCases[randomIndex];
+                nextLevel = nextCase.caseLevel || 1;
+              }
+            }
+            
+            if (nextCase) {
+              console.log('Loading next case:', nextCase.id, nextCase.title, 'at level', nextCase.caseLevel);
+              // Reset all state for new case
+              setOrderedTests([]);
+              setTestResults([]);
+              setGivenTreatments([]);
+              setPhysicalExamFindings([]);
+              setSelectedDiagnosis(null);
+              setCurrentTime(0);
+              setRealTimeElapsed(0);
+              setHintsUsed(0);
+              setExplanationsViewed(0);
+              setWrongTestsOrdered(0);
+              setWrongTreatmentsGiven(0);
+              setShowHint(false);
+              setShowWalkthrough(false);
+              setWalkthroughStep(0);
+              setShowScoreScreen(false);
+              setCaseScore(null);
+              setDebriefViewed(false);
+              setCurrentState(CASE_STATES.TRIAGE);
+              setPatientStability(INITIAL_STABILITY);
+              setCurrentCaseLevel(nextCase.caseLevel || nextLevel);
+              setVitals(nextCase.initialVitals);
+              // Set case last to trigger re-render
+              setSelectedCase(nextCase);
+            } else {
+              // No more cases, go back to difficulty selection
+              console.log('No more cases found, returning to difficulty selection');
+              handleNewGame();
+            }
+          }}
+          onReplay={() => {
+            // Reset current case
+            if (selectedCase) {
+              setVitals(selectedCase.initialVitals);
+              setCurrentState(CASE_STATES.TRIAGE);
+              setPatientStability(INITIAL_STABILITY);
+              setOrderedTests([]);
+              setTestResults([]);
+              setGivenTreatments([]);
+              setPhysicalExamFindings([]);
+              setSelectedDiagnosis(null);
+              setCurrentTime(0);
+              setRealTimeElapsed(0);
+              setHintsUsed(0);
+              setExplanationsViewed(0);
+              setWrongTestsOrdered(0);
+              setWrongTreatmentsGiven(0);
+            }
+          }}
+          onCompleteCase={() => {
+            // Calculate performance and show score
+            calculatePerformance();
+            setShowScoreScreen(true);
+          }}
+          onSkipCase={() => {
+            // Skip to next case without scoring
+            // Get next case - try next level first, then random if none found
+            let nextLevel = currentCaseLevel + 1;
+            let nextCase = getNextCase(nextLevel, selectedDifficulty);
+            
+            // If no case at next level, try a random case
+            if (!nextCase) {
+              const filteredCases = getFilteredCases();
+              if (filteredCases.length > 0) {
+                const randomIndex = Math.floor(Math.random() * filteredCases.length);
+                nextCase = filteredCases[randomIndex];
+                nextLevel = nextCase.caseLevel || 1;
+              }
+            }
+            
+            if (nextCase) {
+              // Reset all state for new case
+              setSelectedCase(nextCase);
+              setVitals(nextCase.initialVitals);
+              setCurrentCaseLevel(nextCase.caseLevel || nextLevel);
+              setCurrentState(CASE_STATES.TRIAGE);
+              setPatientStability(INITIAL_STABILITY);
+              setOrderedTests([]);
+              setTestResults([]);
+              setGivenTreatments([]);
+              setPhysicalExamFindings([]);
+              setSelectedDiagnosis(null);
+              setCurrentTime(0);
+              setRealTimeElapsed(0);
+              setHintsUsed(0);
+              setExplanationsViewed(0);
+              setWrongTestsOrdered(0);
+              setWrongTreatmentsGiven(0);
+              setShowHint(false);
+              setShowWalkthrough(false);
+              setWalkthroughStep(0);
+            } else {
+              // No more cases, go back to difficulty selection
+              handleNewGame();
+            }
+          }}
           onShowHint={(show) => {
             setShowHint(show);
             if (show) setHintsUsed(prev => prev + 1);
@@ -1042,6 +1239,7 @@ function App() {
           possibleDiagnoses={selectedCase.possibleDiagnoses || []}
           correctDiagnosis={selectedCase.correctDiagnosis}
           currentState={currentState}
+          difficulty={selectedCase.difficulty}
           timeLimit={timeLimit}
           timeLimitEnabled={timeLimitEnabled}
           realTimeElapsed={realTimeElapsed}

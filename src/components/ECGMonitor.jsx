@@ -235,7 +235,7 @@ const ECGMonitor = ({ heartRate = 70, height = 64 }) => {
         width={width || '100%'}
         height={height}
         className="w-full h-full"
-        style={{ display: 'block', background: '#000000', minWidth: '100%' }}
+        style={{ display: 'block', background: '#0f172a', minWidth: '100%' }}
       >
       <defs>
         <filter id="glow">

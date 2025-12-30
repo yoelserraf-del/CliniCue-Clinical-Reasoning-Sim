@@ -63,3 +63,4 @@ const CompactVitalsBar = ({ vitals, stability }) => {
 
 export default CompactVitalsBar;
 
+

@@ -93,18 +93,21 @@ function generateCase(id, difficulty, caseLevel, system, template) {
 }
 
 function generatePatientProfile(title, difficulty) {
-  const firstNames = [
-    'James', 'Mary', 'John', 'Patricia', 'Robert', 'Jennifer', 'Michael', 'Linda', 'William', 'Elizabeth',
-    'David', 'Barbara', 'Richard', 'Susan', 'Joseph', 'Jessica', 'Thomas', 'Sarah', 'Charles', 'Karen',
-    'Christopher', 'Nancy', 'Daniel', 'Lisa', 'Matthew', 'Betty', 'Anthony', 'Margaret', 'Mark', 'Sandra',
-    'Donald', 'Ashley', 'Steven', 'Kimberly', 'Paul', 'Emily', 'Andrew', 'Donna', 'Joshua', 'Michelle',
-    'Kenneth', 'Carol', 'Kevin', 'Amanda', 'Brian', 'Dorothy', 'George', 'Melissa', 'Timothy', 'Deborah',
-    'Ronald', 'Stephanie', 'Jason', 'Rebecca', 'Edward', 'Sharon', 'Jeffrey', 'Laura', 'Ryan', 'Cynthia',
-    'Jacob', 'Kathleen', 'Gary', 'Amy', 'Nicholas', 'Angela', 'Eric', 'Shirley', 'Jonathan', 'Anna',
-    'Stephen', 'Brenda', 'Larry', 'Pamela', 'Justin', 'Emma', 'Scott', 'Nicole', 'Brandon', 'Helen',
-    'Benjamin', 'Samantha', 'Samuel', 'Katherine', 'Frank', 'Christine', 'Gregory', 'Debra', 'Raymond', 'Rachel',
-    'Alexander', 'Carolyn', 'Patrick', 'Janet', 'Jack', 'Catherine', 'Dennis', 'Maria', 'Jerry', 'Frances',
-    'Tyler', 'Ann', 'Aaron', 'Joyce', 'Jose', 'Diane', 'Henry', 'Alice', 'Adam', 'Julie'
+  const maleNames = [
+    'James', 'John', 'Robert', 'Michael', 'William', 'David', 'Richard', 'Joseph', 'Thomas', 'Charles',
+    'Christopher', 'Daniel', 'Matthew', 'Anthony', 'Mark', 'Donald', 'Steven', 'Paul', 'Andrew', 'Joshua',
+    'Kenneth', 'Kevin', 'Brian', 'George', 'Timothy', 'Ronald', 'Jason', 'Edward', 'Jeffrey', 'Ryan',
+    'Jacob', 'Gary', 'Nicholas', 'Eric', 'Stephen', 'Jonathan', 'Larry', 'Justin', 'Scott', 'Brandon',
+    'Benjamin', 'Samuel', 'Frank', 'Gregory', 'Raymond', 'Alexander', 'Patrick', 'Jack', 'Dennis', 'Jerry',
+    'Tyler', 'Aaron', 'Jose', 'Henry', 'Adam', 'Douglas', 'Nathan', 'Zachary', 'Kyle', 'Noah'
+  ];
+  const femaleNames = [
+    'Mary', 'Patricia', 'Jennifer', 'Linda', 'Elizabeth', 'Barbara', 'Susan', 'Jessica', 'Sarah', 'Karen',
+    'Nancy', 'Lisa', 'Betty', 'Margaret', 'Sandra', 'Ashley', 'Kimberly', 'Emily', 'Donna', 'Michelle',
+    'Carol', 'Amanda', 'Dorothy', 'Melissa', 'Deborah', 'Stephanie', 'Rebecca', 'Sharon', 'Laura', 'Cynthia',
+    'Kathleen', 'Amy', 'Angela', 'Shirley', 'Anna', 'Brenda', 'Pamela', 'Emma', 'Nicole', 'Helen',
+    'Samantha', 'Katherine', 'Christine', 'Debra', 'Rachel', 'Carolyn', 'Janet', 'Catherine', 'Maria', 'Frances',
+    'Ann', 'Joyce', 'Diane', 'Alice', 'Julie', 'Victoria', 'Kelly', 'Christina', 'Joan', 'Evelyn'
   ];
   const lastNames = [
     'Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis', 'Rodriguez', 'Martinez',
@@ -119,14 +122,17 @@ function generatePatientProfile(title, difficulty) {
     'Castillo', 'Sanders', 'Patel', 'Myers', 'Long', 'Ross', 'Foster', 'Jimenez', 'Powell', 'Jenkins'
   ];
   
-  const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+  const isMale = Math.random() > 0.5;
+  const firstName = isMale 
+    ? maleNames[Math.floor(Math.random() * maleNames.length)]
+    : femaleNames[Math.floor(Math.random() * femaleNames.length)];
   const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
   const ages = difficulty === 'highschool' ? [18, 25] : difficulty === 'premed' ? [25, 45] : difficulty === 'student' ? [30, 65] : [40, 80];
   
   return {
     name: `${firstName} ${lastName}`,
     age: ages[0] + Math.floor(Math.random() * (ages[1] - ages[0])),
-    sex: Math.random() > 0.5 ? 'Male' : 'Female',
+    sex: isMale ? 'Male' : 'Female',
     pastMedicalHistory: generatePMH(difficulty),
     chiefComplaint: generateChiefComplaint(title),
     presentingSymptoms: generateSymptoms(title)
