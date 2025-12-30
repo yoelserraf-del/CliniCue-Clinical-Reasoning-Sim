@@ -847,6 +847,41 @@ function App() {
           </div>
         </div>
 
+        {/* View Mode Toggle - Top Right */}
+        <div className="absolute top-3 right-3 sm:top-4 sm:right-4">
+          <div className="card rounded-lg p-2 sm:p-3">
+            <div className="flex flex-col gap-2">
+              <div className="text-white text-xs font-semibold mb-1">View Mode:</div>
+              <div className="flex items-center gap-1 bg-slate-800 rounded-md p-1">
+                <button
+                  onClick={() => handleViewModeChange('mobile')}
+                  className={`px-2 py-1.5 rounded text-xs font-semibold transition-all flex items-center gap-1 ${
+                    viewMode === 'mobile'
+                      ? 'bg-blue-600 text-white shadow-lg'
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                  title="Mobile Flashcard View"
+                >
+                  <Smartphone className="w-3 h-3" />
+                  <span>Mobile</span>
+                </button>
+                <button
+                  onClick={() => handleViewModeChange('desktop')}
+                  className={`px-2 py-1.5 rounded text-xs font-semibold transition-all flex items-center gap-1 ${
+                    viewMode === 'desktop'
+                      ? 'bg-blue-600 text-white shadow-lg'
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                  title="Desktop View"
+                >
+                  <Monitor className="w-3 h-3" />
+                  <span>Desktop</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Time Limit Toggle - Bottom Right */}
         <div className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4">
           <div className="card rounded-lg p-2 sm:p-3 max-w-xs">
