@@ -34,6 +34,7 @@ function App() {
   const [caseScore, setCaseScore] = useState(null);
   const [showScoreScreen, setShowScoreScreen] = useState(false);
   const [debriefViewed, setDebriefViewed] = useState(false);
+  const [selectedDifficulty, setSelectedDifficulty] = useState(null);
   const [caseSearchQuery, setCaseSearchQuery] = useState('');
   const [showCaseSearch, setShowCaseSearch] = useState(false);
   const [casesSolved, setCasesSolved] = useState(() => {

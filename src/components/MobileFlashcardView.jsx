@@ -55,12 +55,12 @@ const FlashcardView = ({
       </div>
 
       {/* Flashcard Content */}
-      <div className="flex-1 overflow-y-auto p-4 lg:p-8">
-        <div className={`flip-card-container max-w-4xl mx-auto ${isFlipped ? 'flipped' : ''}`}>
-          <div className="flip-card-inner">
+      <div className="flex-1 p-4 lg:p-8 overflow-hidden">
+        <div className={`flip-card-container max-w-4xl mx-auto h-full ${isFlipped ? 'flipped' : ''}`}>
+          <div className="flip-card-inner h-full">
             {/* Front Side - Investigation */}
             <div className="flip-card-front">
-              <div className="space-y-4">
+              <div className="space-y-4 h-full overflow-y-auto p-1">
                 {/* Patient Info */}
                 <div className="card rounded-xl p-4">
                   <div className="flex items-center gap-3 mb-3">
@@ -252,7 +252,7 @@ const FlashcardView = ({
 
             {/* Back Side - Solution */}
             <div className="flip-card-back">
-              <div className="space-y-4">
+              <div className="space-y-4 h-full overflow-y-auto p-1">
                 {/* Diagnosis */}
                 <div className="card rounded-xl p-4">
                   <div className="flex items-center gap-2 mb-3">
