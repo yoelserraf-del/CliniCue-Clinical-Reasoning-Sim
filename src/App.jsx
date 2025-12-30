@@ -14,6 +14,7 @@ import MobileFlashcardView from './components/MobileFlashcardView';
 import caseLibrary from './data/CaseLibrary.json';
 
 function App() {
+  const isMobile = useIsMobile();
   const [selectedDifficulty, setSelectedDifficulty] = useState(null);
   const [selectedCase, setSelectedCase] = useState(null);
   const [currentState, setCurrentState] = useState(CASE_STATES.TRIAGE);
