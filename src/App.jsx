@@ -847,34 +847,34 @@ function App() {
           </div>
         </div>
 
-        {/* View Mode Toggle - Top Right */}
-        <div className="absolute top-3 right-3 sm:top-4 sm:right-4">
-          <div className="card rounded-lg p-2 sm:p-3">
+        {/* View Mode Toggle - Top Right - Always Visible */}
+        <div className="fixed top-4 right-4 z-50 sm:absolute sm:top-4 sm:right-4">
+          <div className="card rounded-lg p-3 shadow-2xl border-2 border-blue-500/30 bg-slate-800">
             <div className="flex flex-col gap-2">
-              <div className="text-white text-xs font-semibold mb-1">View Mode:</div>
-              <div className="flex items-center gap-1 bg-slate-800 rounded-md p-1">
+              <div className="text-white text-xs font-bold mb-1 text-center">View Mode</div>
+              <div className="flex items-center gap-1 bg-slate-900 rounded-md p-1">
                 <button
                   onClick={() => handleViewModeChange('mobile')}
-                  className={`px-2 py-1.5 rounded text-xs font-semibold transition-all flex items-center gap-1 ${
+                  className={`px-3 py-2 rounded-md text-xs font-bold transition-all flex items-center gap-1.5 min-w-[70px] justify-center ${
                     viewMode === 'mobile'
-                      ? 'bg-blue-600 text-white shadow-lg'
-                      : 'text-slate-400 hover:text-white'
+                      ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/50'
+                      : 'text-slate-300 hover:text-white hover:bg-slate-700'
                   }`}
                   title="Mobile Flashcard View"
                 >
-                  <Smartphone className="w-3 h-3" />
+                  <Smartphone className="w-4 h-4" />
                   <span>Mobile</span>
                 </button>
                 <button
                   onClick={() => handleViewModeChange('desktop')}
-                  className={`px-2 py-1.5 rounded text-xs font-semibold transition-all flex items-center gap-1 ${
+                  className={`px-3 py-2 rounded-md text-xs font-bold transition-all flex items-center gap-1.5 min-w-[70px] justify-center ${
                     viewMode === 'desktop'
-                      ? 'bg-blue-600 text-white shadow-lg'
-                      : 'text-slate-400 hover:text-white'
+                      ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/50'
+                      : 'text-slate-300 hover:text-white hover:bg-slate-700'
                   }`}
                   title="Desktop View"
                 >
-                  <Monitor className="w-3 h-3" />
+                  <Monitor className="w-4 h-4" />
                   <span>Desktop</span>
                 </button>
               </div>
