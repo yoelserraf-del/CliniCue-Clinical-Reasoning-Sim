@@ -3,11 +3,18 @@ import { Clock, Search, X, Home } from 'lucide-react';
 import { CASE_STATES, getNextState, getStateDisplayName } from './utils/stateMachine';
 import { INITIAL_STABILITY, applyStabilityChange, calculateStabilityPenalty, calculateTimeDecay } from './utils/stabilityManager';
 import { getTimeLimit, getTimeRemaining, isTimeExpired, getTimeWarning } from './utils/timeManager';
+import { useIsMobile } from './hooks/useIsMobile';
+import PatientMonitor from './components/PatientMonitor';
+import LeftSidebar from './components/LeftSidebar';
+import ExaminationRoom from './components/ExaminationRoom';
+import ActionMenu from './components/ActionMenu';
 import ScienceDebrief from './components/ScienceDebrief';
+import DiagnosisSelection from './components/DiagnosisSelection';
 import FlashcardView from './components/MobileFlashcardView';
 import caseLibrary from './data/CaseLibrary.json';
 
 function App() {
+  const isMobile = useIsMobile();
   const [selectedCase, setSelectedCase] = useState(null);
   const [currentState, setCurrentState] = useState(CASE_STATES.TRIAGE);
   const [patientStability, setPatientStability] = useState(INITIAL_STABILITY);
@@ -975,8 +982,8 @@ function App() {
 
   return (
     <div className="min-h-screen bg-slate-900 flex flex-col">
-      {/* Flashcard View - Always Used */}
-      {selectedCase && (
+      {/* Mobile Flashcard View */}
+      {isMobile && selectedCase ? (
         <FlashcardView
           case={selectedCase}
           vitals={vitals || selectedCase.initialVitals}
@@ -1024,20 +1031,402 @@ function App() {
           realTimeElapsed={realTimeElapsed}
           currentTime={currentTime}
         />
+      ) : !isMobile && selectedCase && (
+        <>
+          {/* Patient Monitor */}
+          <PatientMonitor 
+            vitals={vitals || selectedCase.initialVitals}
+            stability={patientStability}
+            difficulty={selectedCase.difficulty}
+            realTimeElapsed={realTimeElapsed}
+            timeLimit={timeLimit}
+            timeLimitEnabled={timeLimitEnabled}
+            currentTime={currentTime}
+          />
+
+          {/* Header with Case Info and State */}
+          <div className="bg-slate-800/50 border-b border-slate-700/50 backdrop-blur-sm">
+            <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+              <div className="flex items-center justify-between flex-wrap gap-2 sm:gap-4">
+                <div className="flex-1 min-w-0">
+                  <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-white truncate mb-1 sm:mb-2">{selectedCase?.title || 'Case Loading...'}</h1>
+                  <div className="flex items-center gap-2 sm:gap-4 flex-wrap">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-semibold text-slate-400 uppercase tracking-wide">Difficulty:</span>
+                      <span className="px-3 py-1 bg-slate-700/50 rounded-lg text-sm font-semibold text-white capitalize">
+                        {selectedCase.difficulty}
+                      </span>
+                    </div>
+                    <div className="w-1 h-1 rounded-full bg-slate-600"></div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-semibold text-slate-400 uppercase tracking-wide">Stage:</span>
+                      <span className="px-3 py-1 bg-blue-500/20 border border-blue-500/30 rounded-lg text-sm font-semibold text-blue-400">
+                        {getStateDisplayName(currentState)}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+                  <button
+                    onClick={handleNewGame}
+                    className="px-3 py-2 sm:px-4 sm:py-2.5 bg-slate-700 hover:bg-slate-600 text-white rounded-lg text-xs sm:text-sm font-semibold flex items-center gap-1 sm:gap-2 transition-all"
+                    title="Return to Home / Change Difficulty"
+                  >
+                    <Home className="w-4 h-4 sm:w-5 sm:h-5" />
+                    <span className="hidden sm:inline">Home</span>
+                  </button>
+                  {(currentState === CASE_STATES.INVESTIGATION || currentState === CASE_STATES.DIAGNOSIS) && (
+                    <button
+                      onClick={handleNextState}
+                      className="px-3 py-2 sm:px-4 sm:py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs sm:text-sm font-semibold flex items-center gap-1 sm:gap-2 transition-all shadow-lg shadow-blue-500/20"
+                    >
+                      <span className="hidden sm:inline">Next Stage</span>
+                      <span className="sm:hidden">Next</span>
+                      <span>→</span>
+                    </button>
+                  )}
+                  <button
+                    onClick={handleGetHint}
+                    className="px-3 py-2 sm:px-4 sm:py-2.5 bg-yellow-600/90 hover:bg-yellow-600 text-white rounded-lg text-xs sm:text-sm font-semibold flex items-center gap-1 sm:gap-2 transition-all shadow-lg shadow-yellow-500/20"
+                    title="Get a hint (affects score)"
+                  >
+                    <span>💡</span>
+                    <span className="hidden sm:inline">Hint {hintsUsed > 0 && `(${hintsUsed})`}</span>
+                    <span className="sm:hidden">{hintsUsed > 0 && hintsUsed}</span>
+                  </button>
+                  <button
+                    onClick={() => setShowWalkthrough(!showWalkthrough)}
+                    className={`px-4 py-2.5 rounded-lg text-sm font-semibold flex items-center gap-2 transition-all ${
+                      showWalkthrough 
+                        ? 'bg-blue-700 hover:bg-blue-800 text-white shadow-lg shadow-blue-500/20' 
+                        : 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-500/20'
+                    }`}
+                  >
+                    <span>{showWalkthrough ? 'Hide' : 'Show'} Walkthrough</span>
+                  </button>
+                  <button
+                    onClick={handleViewExplanation}
+                    className="px-4 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm font-semibold flex items-center gap-2 transition-all shadow-lg shadow-purple-500/20"
+                    title="View explanation (affects score)"
+                  >
+                    <span>📚</span>
+                    <span>Explain {explanationsViewed > 0 && `(${explanationsViewed})`}</span>
+                  </button>
+                  <button
+                    onClick={handleResetCase}
+                    className="px-4 py-2.5 bg-slate-700 hover:bg-slate-600 text-white rounded-lg text-sm font-semibold transition-all"
+                    title="Reset Case"
+                  >
+                    Reset
+                  </button>
+                  <button
+                    onClick={handleNewGame}
+                    className="px-4 py-2.5 bg-slate-700 hover:bg-slate-600 text-white rounded-lg text-sm font-semibold transition-all"
+                    title="Start New Game"
+                  >
+                    New Game
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Main Content Area */}
+          <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
+            {/* Left Sidebar - Desktop */}
+            <div className="hidden lg:block">
+              <LeftSidebar
+                patientProfile={selectedCase.patientProfile}
+                nursingNotes={selectedCase.initialNursingNotes}
+                difficulty={selectedCase.difficulty}
+              />
+            </div>
+            
+            {/* Mobile: Patient Chart (Collapsible) */}
+            <div className="lg:hidden border-b border-slate-700/50 bg-slate-800/50">
+              <details className="group">
+                <summary className="px-4 py-3 cursor-pointer flex items-center justify-between text-white font-semibold">
+                  <span>Patient Chart</span>
+                  <span className="text-slate-400 group-open:rotate-180 transition-transform">▼</span>
+                </summary>
+                <div className="max-h-96 overflow-y-auto">
+                  <LeftSidebar
+                    patientProfile={selectedCase.patientProfile}
+                    nursingNotes={selectedCase.initialNursingNotes}
+                    difficulty={selectedCase.difficulty}
+                  />
+                </div>
+              </details>
+            </div>
+
+            {/* Center - Examination Room or Diagnosis Selection */}
+            {currentState === CASE_STATES.DIAGNOSIS ? (
+              <div className="flex-1 overflow-y-auto p-4 sm:p-6" data-diagnosis-panel>
+                <DiagnosisSelection
+                  possibleDiagnoses={selectedCase.possibleDiagnoses || []}
+                  correctDiagnosis={selectedCase.correctDiagnosis}
+                  onSelect={handleDiagnosisSelect}
+                  selectedDiagnosis={selectedDiagnosis}
+                  difficulty={selectedCase.difficulty}
+                />
+              </div>
+            ) : (
+              <ExaminationRoom
+                investigations={Array.isArray(selectedCase.investigations) ? selectedCase.investigations : Object.values(selectedCase.investigations || {})}
+                testResults={testResults}
+                orderedTests={orderedTests}
+                currentTime={currentTime}
+                difficulty={selectedCase.difficulty}
+                onViewExplanation={handleViewExplanation}
+                physicalExamFindings={physicalExamFindings}
+              />
+            )}
+
+            {/* Right Sidebar - Action Menu - Desktop */}
+            <div className="hidden lg:block">
+              <ActionMenu
+                investigations={Array.isArray(selectedCase.investigations) ? selectedCase.investigations : Object.values(selectedCase.investigations || {})}
+                onOrderTest={handleOrderTest}
+                onGiveMedication={handleGiveMedication}
+                onConsultSpecialist={handleConsultSpecialist}
+                onPhysicalExam={handlePhysicalExam}
+                orderedTests={orderedTests}
+                givenTreatments={givenTreatments}
+                currentState={currentState}
+                availableTreatments={selectedCase.availableTreatments || []}
+                difficulty={selectedCase.difficulty}
+              />
+            </div>
+            
+            {/* Mobile: Action Menu (Bottom Sheet) */}
+            <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-slate-900 border-t border-slate-700/50 z-40">
+              <details className="group">
+                <summary className="px-4 py-3 cursor-pointer flex items-center justify-between text-white font-semibold bg-slate-800/50">
+                  <span>Clinical Actions</span>
+                  <span className="text-slate-400 group-open:rotate-180 transition-transform">▲</span>
+                </summary>
+                <div className="max-h-[70vh] overflow-y-auto">
+                  <ActionMenu
+                    investigations={Array.isArray(selectedCase.investigations) ? selectedCase.investigations : Object.values(selectedCase.investigations || {})}
+                    onOrderTest={handleOrderTest}
+                    onGiveMedication={handleGiveMedication}
+                    onConsultSpecialist={handleConsultSpecialist}
+                    onPhysicalExam={handlePhysicalExam}
+                    orderedTests={orderedTests}
+                    givenTreatments={givenTreatments}
+                    currentState={currentState}
+                    availableTreatments={selectedCase.availableTreatments || []}
+                    difficulty={selectedCase.difficulty}
+                  />
+                </div>
+              </details>
+            </div>
+          </div>
+
+          {/* Hint Modal */}
+          {showHint && selectedCase && (
+            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+              <div className="glass rounded-2xl p-8 max-w-2xl w-full shadow-2xl">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-2xl font-bold text-white">💡 Hint</h2>
+                  <button
+                    onClick={() => setShowHint(false)}
+                    className="text-gray-400 hover:text-white"
+                  >
+                    ✕
+                  </button>
+                </div>
+                <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4 mb-6">
+                  <p className="text-yellow-400 text-sm font-semibold flex items-center gap-2">
+                    <span>⚠️</span>
+                    <span>Using hints affects your score (-5 points per hint)</span>
+                  </p>
+                </div>
+                <div className="bg-slate-800/50 rounded-xl p-6">
+                  {currentState === CASE_STATES.TRIAGE && (
+                    <p className="text-white">
+                      <strong>Hint:</strong> Focus on the patient's chief complaint and vital signs. Look for patterns that suggest the underlying condition.
+                    </p>
+                  )}
+                  {currentState === CASE_STATES.INVESTIGATION && (
+                    <p className="text-white">
+                      <strong>Hint:</strong> Consider ordering tests that will help differentiate between the possible diagnoses. Start with the most specific tests for the suspected condition.
+                    </p>
+                  )}
+                  {currentState === CASE_STATES.DIAGNOSIS && (
+                    <p className="text-white">
+                      <strong>Hint:</strong> Review all the test results together. The correct diagnosis should explain all the findings - symptoms, vitals, and test results.
+                    </p>
+                  )}
+                  {currentState === CASE_STATES.TREATMENT && (
+                    <p className="text-white">
+                      <strong>Hint:</strong> Treatment should address the underlying cause. Consider what the patient needs immediately (supportive care) and what treats the root cause.
+                    </p>
+                  )}
+                </div>
+                <div className="mt-4 flex justify-end">
+                  <button
+                    onClick={() => setShowHint(false)}
+                    className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg"
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Explanation Modal */}
+          {showExplanation && selectedCase && (
+            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+              <div className="glass rounded-2xl p-8 max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-2xl font-bold text-white">📚 Explanation</h2>
+                  <button
+                    onClick={() => setShowExplanation(false)}
+                    className="text-gray-400 hover:text-white"
+                  >
+                    ✕
+                  </button>
+                </div>
+                <div className="bg-purple-500/10 border border-purple-500/30 rounded-xl p-4 mb-6">
+                  <p className="text-purple-400 text-sm font-semibold flex items-center gap-2">
+                    <span>⚠️</span>
+                    <span>Viewing explanations affects your score (-3 points per explanation)</span>
+                  </p>
+                </div>
+                <div className="bg-slate-800/50 rounded-xl p-6 space-y-4">
+                  <div>
+                    <h3 className="text-lg font-semibold text-white mb-2">Current Stage Explanation</h3>
+                    {currentState === CASE_STATES.TRIAGE && (
+                      <p className="text-gray-300">
+                        In triage, you're gathering initial information about the patient. Review the patient's history, symptoms, and vital signs. This information will guide your investigation strategy.
+                      </p>
+                    )}
+                    {currentState === CASE_STATES.INVESTIGATION && (
+                      <p className="text-gray-300">
+                        During investigation, you order diagnostic tests to confirm or rule out diagnoses. Choose tests that are most likely to provide definitive answers. Unnecessary tests waste time and resources.
+                      </p>
+                    )}
+                    {currentState === CASE_STATES.DIAGNOSIS && (
+                      <p className="text-gray-300">
+                        Diagnosis requires synthesizing all available information. The correct diagnosis should explain all findings - symptoms, physical exam, and test results. Consider what condition best fits the complete picture.
+                      </p>
+                    )}
+                    {currentState === CASE_STATES.TREATMENT && (
+                      <p className="text-gray-300">
+                        Treatment should address both immediate needs (supportive care) and the underlying cause. Follow evidence-based treatment protocols for the diagnosed condition.
+                      </p>
+                    )}
+                  </div>
+                  {selectedCase.scienceBridge && (
+                    <div className="border-t border-gray-700 pt-4">
+                      <h3 className="text-lg font-semibold text-white mb-2">Pathophysiology Overview</h3>
+                      <p className="text-gray-300 text-sm">
+                        {selectedCase.scienceBridge.pathophysiology.split('\n\n')[0]}
+                      </p>
+                    </div>
+                  )}
+                </div>
+                <div className="mt-4 flex justify-end">
+                  <button
+                    onClick={() => setShowExplanation(false)}
+                    className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg"
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Walkthrough Modal */}
+          {showWalkthrough && (
+            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+              <div className="glass rounded-2xl p-8 max-w-2xl w-full shadow-2xl">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-2xl font-bold text-white">Walkthrough Guide</h2>
+                  <button
+                    onClick={() => {
+                      setShowWalkthrough(false);
+                      setWalkthroughStep(0);
+                    }}
+                    className="text-gray-400 hover:text-white"
+                  >
+                    ✕
+                  </button>
+                </div>
+                
+                {(() => {
+                  const steps = getWalkthroughSteps();
+                  // Ensure walkthroughStep is within bounds
+                  const safeStep = Math.min(walkthroughStep, Math.max(0, steps.length - 1));
+                  const currentStep = steps[safeStep];
+                  
+                  // If step is out of bounds, reset to 0
+                  if (safeStep !== walkthroughStep) {
+                    setWalkthroughStep(0);
+                    return null;
+                  }
+                  
+                  return steps.length > 0 ? (
+                    <>
+                      <div className="mb-4">
+                        <div className="text-sm text-gray-400 mb-2">
+                          Step {walkthroughStep + 1} of {steps.length}
+                        </div>
+                        <div className="bg-gray-900 rounded p-4 mb-4">
+                          <h3 className="text-xl font-semibold text-white mb-2">
+                            {currentStep?.title}
+                          </h3>
+                          <p className="text-gray-300 whitespace-pre-line">
+                            {currentStep?.description}
+                          </p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex justify-between">
+                        <button
+                          onClick={handleWalkthroughPrev}
+                          disabled={walkthroughStep === 0}
+                          className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          ← Previous
+                        </button>
+                        <button
+                          onClick={handleWalkthroughNext}
+                          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium"
+                        >
+                          {walkthroughStep === steps.length - 1 ? 'Close' : 'Next →'}
+                        </button>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="text-gray-400">
+                      No walkthrough steps available for the current stage.
+                    </div>
+                  );
+                })()}
+              </div>
+            </div>
+          )}
+        </>
       )}
 
-      {/* Science Debrief Modal */}
-      <ScienceDebrief
-        caseData={selectedCase}
-        isOpen={showDebrief}
-        onClose={() => {
-          setShowDebrief(false);
-          if (caseScore) {
-            setShowScoreScreen(true);
-          }
-        }}
-        performance={performance}
-      />
+      {/* Science Debrief Modal - Desktop Only */}
+      {!isMobile && (
+        <ScienceDebrief
+          caseData={selectedCase}
+          isOpen={showDebrief}
+          onClose={() => {
+            setShowDebrief(false);
+            if (caseScore) {
+              setShowScoreScreen(true);
+            }
+          }}
+          performance={performance}
+        />
+      )}
     </div>
   );
 }
