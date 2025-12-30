@@ -1049,18 +1049,7 @@ function App() {
         />
       ) : !isMobile && selectedCase && (
         <>
-          {/* Patient Monitor */}
-          <PatientMonitor 
-            vitals={vitals || selectedCase.initialVitals}
-            stability={patientStability}
-            difficulty={selectedCase.difficulty}
-            realTimeElapsed={realTimeElapsed}
-            timeLimit={timeLimit}
-            timeLimitEnabled={timeLimitEnabled}
-            currentTime={currentTime}
-          />
-
-          {/* Header with Case Info and State */}
+          {/* Header with Case Info and State - TOP MENU */}
           <div className="bg-slate-800/50 border-b border-slate-700/50 backdrop-blur-sm">
             <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
               <div className="flex items-center justify-between flex-wrap gap-2 sm:gap-4">
@@ -1146,6 +1135,17 @@ function App() {
               </div>
             </div>
           </div>
+
+          {/* Patient Monitor - BELOW MENU */}
+          <PatientMonitor 
+            vitals={vitals || selectedCase.initialVitals}
+            stability={patientStability}
+            difficulty={selectedCase.difficulty}
+            realTimeElapsed={realTimeElapsed}
+            timeLimit={timeLimit}
+            timeLimitEnabled={timeLimitEnabled}
+            currentTime={currentTime}
+          />
 
           {/* Main Content Area */}
           <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
