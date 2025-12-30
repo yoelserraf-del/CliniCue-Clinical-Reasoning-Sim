@@ -3,12 +3,14 @@ import { Clock, Search, X, Home } from 'lucide-react';
 import { CASE_STATES, getNextState, getStateDisplayName } from './utils/stateMachine';
 import { INITIAL_STABILITY, applyStabilityChange, calculateStabilityPenalty, calculateTimeDecay } from './utils/stabilityManager';
 import { getTimeLimit, getTimeRemaining, isTimeExpired, getTimeWarning } from './utils/timeManager';
+import { useIsMobile } from './hooks/useIsMobile';
 import PatientMonitor from './components/PatientMonitor';
 import LeftSidebar from './components/LeftSidebar';
 import ExaminationRoom from './components/ExaminationRoom';
 import ActionMenu from './components/ActionMenu';
 import ScienceDebrief from './components/ScienceDebrief';
 import DiagnosisSelection from './components/DiagnosisSelection';
+import MobileFlashcardView from './components/MobileFlashcardView';
 import caseLibrary from './data/CaseLibrary.json';
 
 function App() {
@@ -1066,18 +1068,64 @@ function App() {
         </div>
       </div>
 
-      {/* Patient Monitor */}
-      <PatientMonitor 
-        vitals={vitals || selectedCase.initialVitals}
-        stability={patientStability}
-        difficulty={selectedCase.difficulty}
-        realTimeElapsed={realTimeElapsed}
-        timeLimit={timeLimit}
-        timeLimitEnabled={timeLimitEnabled}
-        currentTime={currentTime}
-      />
+      {/* Mobile Flashcard View */}
+      {isMobile && selectedCase ? (
+        <MobileFlashcardView
+          case={selectedCase}
+          vitals={vitals || selectedCase.initialVitals}
+          stability={patientStability}
+          orderedTests={orderedTests}
+          testResults={testResults}
+          givenTreatments={givenTreatments}
+          physicalExamFindings={physicalExamFindings}
+          selectedDiagnosis={selectedDiagnosis}
+          onOrderTest={handleOrderTest}
+          onGiveMedication={handleGiveMedication}
+          onPhysicalExam={handlePhysicalExam}
+          onSelectDiagnosis={handleDiagnosisSelect}
+          onHome={handleNewGame}
+          onShowHint={(show) => {
+            setShowHint(show);
+            if (show) setHintsUsed(prev => prev + 1);
+          }}
+          onShowWalkthrough={(show) => {
+            setShowWalkthrough(show);
+            if (show && walkthroughStep === 0) setHintsUsed(prev => prev + 1);
+          }}
+          showHint={showHint}
+          showWalkthrough={showWalkthrough}
+          hintContent={(() => {
+            if (currentState === CASE_STATES.TRIAGE) return "Focus on the patient's chief complaint and vital signs. Look for patterns that suggest the underlying condition.";
+            if (currentState === CASE_STATES.INVESTIGATION) return "Consider ordering tests that will help differentiate between the possible diagnoses. Start with the most specific tests for the suspected condition.";
+            if (currentState === CASE_STATES.DIAGNOSIS) return "Review all the test results together. The correct diagnosis should explain all the findings - symptoms, vitals, and test results.";
+            if (currentState === CASE_STATES.TREATMENT) return "Treatment should address the underlying cause. Consider what the patient needs immediately (supportive care) and what treats the root cause.";
+            return "Review the case information carefully.";
+          })()}
+          walkthroughContent={(() => {
+            const steps = getWalkthroughSteps();
+            if (steps.length === 0) return "No walkthrough available for this stage.";
+            const currentStep = steps[walkthroughStep] || steps[0];
+            return `${currentStep.title}\n\n${currentStep.description}`;
+          })()}
+          investigations={Array.isArray(selectedCase.investigations) ? selectedCase.investigations : Object.values(selectedCase.investigations || {})}
+          availableTreatments={selectedCase.availableTreatments || []}
+          possibleDiagnoses={selectedCase.possibleDiagnoses || []}
+          correctDiagnosis={selectedCase.correctDiagnosis}
+        />
+      ) : !isMobile && selectedCase && (
+        <>
+          {/* Patient Monitor */}
+          <PatientMonitor 
+            vitals={vitals || selectedCase.initialVitals}
+            stability={patientStability}
+            difficulty={selectedCase.difficulty}
+            realTimeElapsed={realTimeElapsed}
+            timeLimit={timeLimit}
+            timeLimitEnabled={timeLimitEnabled}
+            currentTime={currentTime}
+          />
 
-      {/* Main Content Area */}
+          {/* Main Content Area */}
       <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
         {/* Left Sidebar - Desktop */}
         <div className="hidden lg:block">
