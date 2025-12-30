@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Clock, Search, X, Home } from 'lucide-react';
+import { Clock, Search, X, Home, Smartphone, Monitor } from 'lucide-react';
 import { CASE_STATES, getNextState, getStateDisplayName } from './utils/stateMachine';
 import { INITIAL_STABILITY, applyStabilityChange, calculateStabilityPenalty, calculateTimeDecay } from './utils/stabilityManager';
 import { getTimeLimit, getTimeRemaining, isTimeExpired, getTimeWarning } from './utils/timeManager';
@@ -14,8 +14,23 @@ import MobileFlashcardView from './components/MobileFlashcardView';
 import caseLibrary from './data/CaseLibrary.json';
 
 function App() {
-  const isMobile = useIsMobile();
-  const [selectedDifficulty, setSelectedDifficulty] = useState(null);
+  const isMobileDevice = useIsMobile();
+  const [viewMode, setViewMode] = useState(() => {
+    // Load saved preference or default to device detection
+    const saved = localStorage.getItem('viewMode');
+    if (saved) return saved;
+    return isMobileDevice ? 'mobile' : 'desktop';
+  });
+  
+  // Update view mode when device changes (but respect manual selection)
+  useEffect(() => {
+    const saved = localStorage.getItem('viewMode');
+    if (!saved) {
+      setViewMode(isMobileDevice ? 'mobile' : 'desktop');
+    }
+  }, [isMobileDevice]);
+  
+  const isMobile = viewMode === 'mobile';
   const [selectedCase, setSelectedCase] = useState(null);
   const [currentState, setCurrentState] = useState(CASE_STATES.TRIAGE);
   const [patientStability, setPatientStability] = useState(INITIAL_STABILITY);
@@ -731,6 +746,11 @@ function App() {
 
   // Difficulty selection screen
   if (!selectedDifficulty) {
+    // View Mode Toggle for difficulty selection screen
+    const handleViewModeChange = (mode) => {
+      setViewMode(mode);
+      localStorage.setItem('viewMode', mode);
+    };
     // Filter cases by search query
     const filteredCases = caseSearchQuery ? caseLibrary.filter(caseItem => {
       const query = caseSearchQuery.toLowerCase();
