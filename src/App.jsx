@@ -1060,6 +1060,40 @@ function App() {
               </div>
             </div>
             <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+              {/* View Mode Toggle - In Header */}
+              <div className="flex items-center gap-1 bg-slate-800 rounded-lg p-1 border border-slate-700">
+                <button
+                  onClick={() => {
+                    setViewMode('mobile');
+                    localStorage.setItem('viewMode', 'mobile');
+                  }}
+                  className={`px-2 py-1.5 rounded text-xs font-semibold transition-all flex items-center gap-1 ${
+                    viewMode === 'mobile'
+                      ? 'bg-blue-600 text-white'
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                  title="Mobile View"
+                >
+                  <Smartphone className="w-3 h-3" />
+                  <span className="hidden sm:inline">Mobile</span>
+                </button>
+                <button
+                  onClick={() => {
+                    setViewMode('desktop');
+                    localStorage.setItem('viewMode', 'desktop');
+                  }}
+                  className={`px-2 py-1.5 rounded text-xs font-semibold transition-all flex items-center gap-1 ${
+                    viewMode === 'desktop'
+                      ? 'bg-blue-600 text-white'
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                  title="Desktop View"
+                >
+                  <Monitor className="w-3 h-3" />
+                  <span className="hidden sm:inline">Desktop</span>
+                </button>
+              </div>
+              
               <button
                 onClick={handleNewGame}
                 className="px-3 py-2 sm:px-4 sm:py-2.5 bg-slate-700 hover:bg-slate-600 text-white rounded-lg text-xs sm:text-sm font-semibold flex items-center gap-1 sm:gap-2 transition-all"
