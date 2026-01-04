@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useCallback } from 'react';
+import { useState, useMemo, useEffect, useCallback, memo } from 'react';
 import { 
   User, Calendar, AlertCircle, Stethoscope, ClipboardList, Pill, Heart, Droplets, 
   Wind, Thermometer, Activity, RotateCcw, FlipHorizontal2, Lightbulb, BookOpen, 
@@ -326,8 +326,8 @@ const NewFlashcardView = ({
     </div>
   );
 
-  // ECG Monitor Component (reusable)
-  const ECGSection = () => {
+  // ECG Monitor Component (reusable) - memoized to prevent unnecessary re-renders
+  const ECGSection = useMemo(() => {
     const heartRate = displayVitals?.hr || 70;
     return (
       <div className="h-24 bg-slate-900 border-y border-gray-300 relative">
@@ -337,7 +337,7 @@ const NewFlashcardView = ({
         <ECGMonitor heartRate={heartRate} height={96} />
       </div>
     );
-  };
+  }, [displayVitals?.hr]);
 
   // Patient Info Component
   const PatientInfoCard = () => (
@@ -844,7 +844,7 @@ const NewFlashcardView = ({
             <div className="flip-card-front bg-white rounded-2xl shadow-2xl overflow-hidden">
               <div className="h-full flex flex-col" style={FLEX_CONTAINER_STYLE}>
                 <VitalsHeader />
-                <ECGSection />
+                {ECGSection}
                 
                 {/* Scrollable Content */}
                 <div className="flex-1 overflow-y-scroll p-4 space-y-4 scrollbar-hide" style={SCROLL_STYLE}>
@@ -877,7 +877,7 @@ const NewFlashcardView = ({
             <div className="flip-card-back bg-white rounded-2xl shadow-2xl overflow-hidden">
               <div className="h-full flex flex-col" style={FLEX_CONTAINER_STYLE}>
                 <VitalsHeader />
-                <ECGSection />
+                {ECGSection}
                 
                 {/* Scrollable Content */}
                 <div className="flex-1 overflow-y-scroll p-4 space-y-4 scrollbar-hide" style={SCROLL_STYLE}>

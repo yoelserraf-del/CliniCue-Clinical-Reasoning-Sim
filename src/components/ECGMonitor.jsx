@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, memo } from 'react';
 
-const ECGMonitor = ({ heartRate = 70, height = 64 }) => {
+const ECGMonitor = memo(({ heartRate = 70, height = 64 }) => {
   const containerRef = useRef(null);
   const animationFrameRef = useRef(null);
   const tracePositionRef = useRef(0);
@@ -276,6 +276,8 @@ const ECGMonitor = ({ heartRate = 70, height = 64 }) => {
     </svg>
     </div>
   );
-};
+});
+
+ECGMonitor.displayName = 'ECGMonitor';
 
 export default ECGMonitor;
