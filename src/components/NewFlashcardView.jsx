@@ -327,14 +327,17 @@ const NewFlashcardView = ({
   );
 
   // ECG Monitor Component (reusable)
-  const ECGSection = () => (
-    <div className="h-24 bg-slate-900 border-y border-gray-300 relative">
-      <div className="absolute top-2 left-3 text-xs text-green-400 font-mono z-10">
-        HR: {displayVitals?.hr || 70} bpm
+  const ECGSection = () => {
+    const heartRate = displayVitals?.hr || 70;
+    return (
+      <div className="h-24 bg-slate-900 border-y border-gray-300 relative">
+        <div className="absolute top-2 left-3 text-xs text-green-400 font-mono z-10">
+          HR: {heartRate} bpm
+        </div>
+        <ECGMonitor heartRate={heartRate} height={96} />
       </div>
-      <ECGMonitor heartRate={displayVitals?.hr || 70} height={96} />
-    </div>
-  );
+    );
+  };
 
   // Patient Info Component
   const PatientInfoCard = () => (
