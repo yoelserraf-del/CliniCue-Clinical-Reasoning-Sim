@@ -232,7 +232,7 @@ const NewFlashcardView = ({
         </div>
 
       {/* White Flashcard Container */}
-      <div className={`w-full max-w-md h-[90vh] max-h-[800px] relative transition-all duration-500 ${
+      <div className={`w-full max-w-[375px] h-[90vh] max-h-[800px] relative transition-all duration-500 ${
         isAnimating && animationDirection === 'right' ? 'translate-x-[200%] opacity-0' :
         isAnimating && animationDirection === 'bottom' ? 'translate-y-[200%] opacity-0' :
         ''
@@ -240,8 +240,8 @@ const NewFlashcardView = ({
         <div className={`flip-card-container w-full h-full ${isFlipped ? 'flipped' : ''}`}>
           <div className="flip-card-inner w-full h-full">
             {/* Front Side - Testing & Investigation */}
-            <div className="flip-card-front bg-white rounded-2xl shadow-2xl">
-              <div className="h-full flex flex-col" style={{ touchAction: 'pan-y' }}>
+            <div className="flip-card-front bg-white rounded-2xl shadow-2xl overflow-hidden">
+              <div className="h-full flex flex-col overflow-hidden" style={{ touchAction: 'pan-y' }}>
                 {/* Header with Vitals */}
                 <div className="bg-gradient-to-r from-slate-100 to-slate-200 border-b border-gray-200 p-4">
                   {/* Compact Vitals Display */}
