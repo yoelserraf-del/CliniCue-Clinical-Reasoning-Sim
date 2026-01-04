@@ -240,8 +240,8 @@ const NewFlashcardView = ({
         <div className={`flip-card-container w-full h-full ${isFlipped ? 'flipped' : ''}`}>
           <div className="flip-card-inner w-full h-full">
             {/* Front Side - Testing & Investigation */}
-            <div className="flip-card-front bg-white rounded-2xl shadow-2xl overflow-hidden">
-              <div className="h-full flex flex-col overflow-hidden">
+            <div className="flip-card-front bg-white rounded-2xl shadow-2xl">
+              <div className="h-full flex flex-col" style={{ touchAction: 'pan-y' }}>
                 {/* Header with Vitals */}
                 <div className="bg-gradient-to-r from-slate-100 to-slate-200 border-b border-gray-200 p-4">
                   {/* Compact Vitals Display */}
@@ -327,7 +327,15 @@ const NewFlashcardView = ({
                 </div>
 
                 {/* Scrollable Content */}
-                <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-hide" style={{ WebkitOverflowScrolling: 'touch' }}>
+                <div 
+                  className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-hide" 
+                  style={{ 
+                    WebkitOverflowScrolling: 'touch',
+                    touchAction: 'pan-y',
+                    overscrollBehavior: 'contain',
+                    minHeight: 0
+                  }}
+                >
                   {/* Patient Info Card */}
                   <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
                     <div className="flex items-center gap-3 mb-3">
@@ -634,7 +642,15 @@ const NewFlashcardView = ({
                 </div>
 
                 {/* Scrollable Content */}
-                <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-hide" style={{ WebkitOverflowScrolling: 'touch' }}>
+                <div 
+                  className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-hide" 
+                  style={{ 
+                    WebkitOverflowScrolling: 'touch',
+                    touchAction: 'pan-y',
+                    overscrollBehavior: 'contain',
+                    minHeight: 0
+                  }}
+                >
                   {/* Diagnosis Selection */}
                   {possibleDiagnoses && possibleDiagnoses.length > 0 && (
                     <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">

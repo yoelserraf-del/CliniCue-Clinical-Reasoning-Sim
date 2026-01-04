@@ -68,9 +68,7 @@
            left: 0;
            backface-visibility: hidden;
            -webkit-backface-visibility: hidden;
-           overflow-y: auto;
-           -webkit-overflow-scrolling: touch;
-           touch-action: pan-y;
+           overflow: visible;
          }
          
          .flip-card-back {
