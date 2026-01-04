@@ -182,8 +182,7 @@ const NewFlashcardView = ({
         top: 0,
         left: 0,
         right: 0,
-        bottom: 0,
-        touchAction: 'pan-y pinch-zoom' /* Allow vertical panning and pinch zoom */
+        bottom: 0
       }}
     >
         {/* Home Button - Top Left */}
@@ -251,7 +250,7 @@ const NewFlashcardView = ({
           <div className="flip-card-inner w-full h-full">
             {/* Front Side - Testing & Investigation */}
             <div className="flip-card-front bg-white rounded-2xl shadow-2xl overflow-hidden">
-              <div className="h-full flex flex-col overflow-hidden" style={{ touchAction: 'pan-y' }}>
+              <div className="h-full flex flex-col" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
                 {/* Header with Vitals */}
                 <div className="bg-gradient-to-r from-slate-100 to-slate-200 border-b border-gray-200 p-4">
                   {/* Compact Vitals Display */}
@@ -338,16 +337,18 @@ const NewFlashcardView = ({
 
                 {/* Scrollable Content */}
                 <div 
-                  className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-hide" 
+                  className="flex-1 overflow-y-scroll p-4 space-y-4 scrollbar-hide" 
                   style={{ 
                     WebkitOverflowScrolling: 'touch',
                     touchAction: 'pan-y',
                     overscrollBehavior: 'contain',
                     minHeight: 0,
+                    flex: '1 1 auto',
                     position: 'relative',
-                    transform: 'translateZ(0)', // Force hardware acceleration
+                    transform: 'translateZ(0)',
                     willChange: 'scroll-position',
-                    overflowY: 'scroll' // Ensure scrolling is enabled
+                    overflowY: 'scroll',
+                    height: 0 // Force flex child to respect parent height
                   }}
                 >
                   {/* Patient Info Card */}
@@ -657,16 +658,18 @@ const NewFlashcardView = ({
 
                 {/* Scrollable Content */}
                 <div 
-                  className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-hide" 
+                  className="flex-1 overflow-y-scroll p-4 space-y-4 scrollbar-hide" 
                   style={{ 
                     WebkitOverflowScrolling: 'touch',
                     touchAction: 'pan-y',
                     overscrollBehavior: 'contain',
                     minHeight: 0,
+                    flex: '1 1 auto',
                     position: 'relative',
-                    transform: 'translateZ(0)', // Force hardware acceleration
+                    transform: 'translateZ(0)',
                     willChange: 'scroll-position',
-                    overflowY: 'scroll' // Ensure scrolling is enabled
+                    overflowY: 'scroll',
+                    height: 0 // Force flex child to respect parent height
                   }}
                 >
                   {/* Diagnosis Selection */}

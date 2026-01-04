@@ -10,7 +10,6 @@
     overflow: hidden; /* Prevent body scrolling on mobile */
     position: fixed; /* Lock body on mobile */
     -webkit-overflow-scrolling: touch;
-    touch-action: pan-y; /* Allow vertical scrolling */
   }
   
   body {
@@ -24,7 +23,6 @@
     width: 100%;
     overflow: hidden;
     position: fixed;
-    touch-action: pan-y; /* Allow vertical scrolling */
   }
 }
 
@@ -89,17 +87,17 @@
            -webkit-backface-visibility: hidden;
            overflow: hidden;
            border-radius: 1rem !important; /* rounded-2xl - force rounded corners */
-           touch-action: pan-y; /* Allow vertical scrolling */
          }
          
-         /* Ensure scrollable content areas capture touch events properly */
-         .flip-card-front > div > .overflow-y-auto,
-         .flip-card-back > div > .overflow-y-auto {
+         /* Ensure scrollable content areas work properly */
+         .flip-card-front .overflow-y-scroll,
+         .flip-card-back .overflow-y-scroll {
            -webkit-overflow-scrolling: touch !important;
            touch-action: pan-y !important;
            overscroll-behavior: contain !important;
-           will-change: scroll-position;
-           transform: translateZ(0); /* Force hardware acceleration */
+           will-change: scroll-position !important;
+           transform: translateZ(0) !important;
+           overflow-y: scroll !important;
          }
          
          .flip-card-back {
