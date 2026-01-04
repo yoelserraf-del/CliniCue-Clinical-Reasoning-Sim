@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
-import { User, Calendar, AlertCircle, Stethoscope, ClipboardList, Pill, Heart, Droplets, Wind, Thermometer, Activity, RotateCcw, FlipHorizontal2, Lightbulb, BookOpen, X, ChevronRight, CheckCircle2, Clock, SkipForward } from 'lucide-react';
+import { User, Calendar, AlertCircle, Stethoscope, ClipboardList, Pill, Heart, Droplets, Wind, Thermometer, Activity, RotateCcw, FlipHorizontal2, Lightbulb, BookOpen, X, ChevronRight, CheckCircle2, Clock, SkipForward, Home } from 'lucide-react';
 import ECGMonitor from './ECGMonitor';
 import testLibrary from '../data/TestLibrary.json';
 import { getTimeRemaining, getTimeWarning } from '../utils/timeManager';
@@ -176,6 +176,19 @@ const NewFlashcardView = ({
 
   return (
     <div className="h-screen w-screen bg-slate-900 flex items-center justify-center p-4 overflow-hidden relative">
+        {/* Home Button - Top Left */}
+        {onHome && (
+          <div className="absolute top-4 left-4 z-50">
+            <button
+              onClick={onHome}
+              className="p-3 rounded-full shadow-lg transition-all bg-slate-700 text-white hover:bg-slate-600"
+              title="Go home"
+            >
+              <Home className="w-5 h-5" />
+            </button>
+          </div>
+        )}
+        
         {/* Hint, Walkthrough, and Skip Buttons - Top Right */}
         <div className="absolute top-4 right-4 flex gap-2 z-50">
           <button
@@ -316,7 +329,7 @@ const NewFlashcardView = ({
                 </div>
 
                 {/* Scrollable Content */}
-                <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-hide" style={{ WebkitOverflowScrolling: 'touch' }}>
                   {/* Patient Info Card */}
                   <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
                     <div className="flex items-center gap-3 mb-3">
@@ -425,7 +438,7 @@ const NewFlashcardView = ({
                       <ClipboardList className="w-5 h-5 text-green-600" />
                       <h3 className="text-base font-semibold text-gray-900">Order Tests</h3>
                     </div>
-                    <div className="grid grid-cols-2 gap-2 max-h-64 overflow-y-auto">
+                    <div className="grid grid-cols-2 gap-2 max-h-64 overflow-y-auto scrollbar-hide" style={{ WebkitOverflowScrolling: 'touch' }}>
                       {allAvailableTests.map((test) => {
                         const isOrdered = orderedTests?.some(t => t.id === test.id);
                         const isCompleted = testResults?.some(r => r.id === test.id);
@@ -623,7 +636,7 @@ const NewFlashcardView = ({
                 </div>
 
                 {/* Scrollable Content */}
-                <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-hide" style={{ WebkitOverflowScrolling: 'touch' }}>
                   {/* Diagnosis Selection */}
                   {possibleDiagnoses && possibleDiagnoses.length > 0 && (
                     <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
