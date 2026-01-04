@@ -39,29 +39,6 @@
            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
          }
          
-         /* Mobile Flashcard Container - Responsive Sizing */
-         .flashcard-container {
-           width: 100%;
-         }
-         
-         @media (max-width: 640px) {
-           .flashcard-container {
-             max-width: 375px;
-           }
-         }
-         
-         @media (min-width: 641px) and (max-width: 768px) {
-           .flashcard-container {
-             max-width: 500px;
-           }
-         }
-         
-         @media (min-width: 769px) {
-           .flashcard-container {
-             max-width: 600px;
-           }
-         }
-         
          /* Mobile Flashcard Flip Animation */
          .flip-card-container {
            perspective: 1000px;
@@ -92,7 +69,7 @@
            backface-visibility: hidden;
            -webkit-backface-visibility: hidden;
            overflow: hidden;
-           border-radius: 1rem; /* rounded-2xl equivalent */
+           border-radius: 1rem !important; /* rounded-2xl - force rounded corners */
          }
          
          .flip-card-back {

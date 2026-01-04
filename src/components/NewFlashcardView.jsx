@@ -232,7 +232,7 @@ const NewFlashcardView = ({
         </div>
 
       {/* White Flashcard Container */}
-      <div className={`flashcard-container w-full h-[90vh] max-h-[800px] relative transition-all duration-500 ${
+      <div className={`w-full max-w-md h-[90vh] max-h-[800px] relative transition-all duration-500 ${
         isAnimating && animationDirection === 'right' ? 'translate-x-[200%] opacity-0' :
         isAnimating && animationDirection === 'bottom' ? 'translate-y-[200%] opacity-0' :
         ''
@@ -558,7 +558,7 @@ const NewFlashcardView = ({
             </div>
 
             {/* Back Side - Diagnosis */}
-            <div className="flip-card-back bg-white shadow-2xl" style={{ touchAction: 'pan-y' }}>
+            <div className="flip-card-back bg-white rounded-2xl shadow-2xl" style={{ touchAction: 'pan-y' }}>
               <div className="h-full flex flex-col overflow-hidden" style={{ touchAction: 'pan-y' }}>
                 {/* Header with Vitals (same as front) */}
                 <div className="bg-gradient-to-r from-slate-100 to-slate-200 border-b border-gray-200 p-4">
