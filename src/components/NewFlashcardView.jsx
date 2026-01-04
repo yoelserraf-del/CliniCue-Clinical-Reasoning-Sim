@@ -343,7 +343,20 @@ const NewFlashcardView = ({
                     WebkitOverflowScrolling: 'touch',
                     touchAction: 'pan-y',
                     overscrollBehavior: 'contain',
-                    minHeight: 0
+                    minHeight: 0,
+                    maxHeight: '100%',
+                    height: '100%',
+                    position: 'relative',
+                    transform: 'translateZ(0)', // Force hardware acceleration
+                    willChange: 'scroll-position'
+                  }}
+                  onTouchStart={(e) => {
+                    // Ensure touch events are captured
+                    e.stopPropagation();
+                  }}
+                  onTouchMove={(e) => {
+                    // Allow touch move for scrolling
+                    e.stopPropagation();
                   }}
                 >
                   {/* Patient Info Card */}
@@ -658,7 +671,20 @@ const NewFlashcardView = ({
                     WebkitOverflowScrolling: 'touch',
                     touchAction: 'pan-y',
                     overscrollBehavior: 'contain',
-                    minHeight: 0
+                    minHeight: 0,
+                    maxHeight: '100%',
+                    height: '100%',
+                    position: 'relative',
+                    transform: 'translateZ(0)', // Force hardware acceleration
+                    willChange: 'scroll-position'
+                  }}
+                  onTouchStart={(e) => {
+                    // Ensure touch events are captured
+                    e.stopPropagation();
+                  }}
+                  onTouchMove={(e) => {
+                    // Allow touch move for scrolling
+                    e.stopPropagation();
                   }}
                 >
                   {/* Diagnosis Selection */}
