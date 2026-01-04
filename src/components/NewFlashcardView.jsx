@@ -574,7 +574,7 @@ const NewFlashcardView = ({
 
             {/* Back Side - Diagnosis */}
             <div className="flip-card-back bg-white rounded-2xl shadow-2xl overflow-hidden">
-              <div className="h-full flex flex-col overflow-hidden">
+              <div className="h-full flex flex-col" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
                 {/* Header with Vitals (same as front) */}
                 <div className="bg-gradient-to-r from-slate-100 to-slate-200 border-b border-gray-200 p-4">
                   <div className="grid grid-cols-5 gap-2 mb-3">
