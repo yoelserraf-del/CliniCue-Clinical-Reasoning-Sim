@@ -177,17 +177,15 @@ const NewFlashcardView = ({
   return (
     <div className="h-screen w-screen bg-slate-900 flex items-center justify-center p-4 overflow-hidden relative">
         {/* Home Button - Top Left */}
-        {onHome && (
-          <div className="absolute top-4 left-4 z-50">
-            <button
-              onClick={onHome}
-              className="p-3 rounded-full shadow-lg transition-all bg-slate-700 text-white hover:bg-slate-600"
-              title="Go home"
-            >
-              <Home className="w-5 h-5" />
-            </button>
-          </div>
-        )}
+        <div className="absolute top-4 left-4 z-50">
+          <button
+            onClick={() => onHome && onHome()}
+            className="p-3 rounded-full shadow-lg transition-all bg-slate-700 text-white hover:bg-slate-600"
+            title="Go home"
+          >
+            <Home className="w-5 h-5" />
+          </button>
+        </div>
         
         {/* Hint, Walkthrough, and Skip Buttons - Top Right */}
         <div className="absolute top-4 right-4 flex gap-2 z-50">
@@ -552,8 +550,8 @@ const NewFlashcardView = ({
             </div>
 
             {/* Back Side - Diagnosis */}
-            <div className="flip-card-back bg-white rounded-2xl shadow-2xl overflow-hidden">
-              <div className="h-full flex flex-col overflow-hidden">
+            <div className="flip-card-back bg-white rounded-2xl shadow-2xl" style={{ touchAction: 'pan-y' }}>
+              <div className="h-full flex flex-col" style={{ touchAction: 'pan-y' }}>
                 {/* Header with Vitals (same as front) */}
                 <div className="bg-gradient-to-r from-slate-100 to-slate-200 border-b border-gray-200 p-4">
                   <div className="grid grid-cols-5 gap-2 mb-3">

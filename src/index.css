@@ -69,6 +69,8 @@
            backface-visibility: hidden;
            -webkit-backface-visibility: hidden;
            overflow-y: auto;
+           -webkit-overflow-scrolling: touch;
+           touch-action: pan-y;
          }
          
          .flip-card-back {
