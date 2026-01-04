@@ -10,6 +10,7 @@
     overflow: hidden; /* Prevent body scrolling on mobile */
     position: fixed; /* Lock body on mobile */
     -webkit-overflow-scrolling: touch;
+    touch-action: pan-y; /* Allow vertical scrolling */
   }
   
   body {
@@ -23,6 +24,7 @@
     width: 100%;
     overflow: hidden;
     position: fixed;
+    touch-action: pan-y; /* Allow vertical scrolling */
   }
 }
 
