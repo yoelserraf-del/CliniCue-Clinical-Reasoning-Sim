@@ -109,11 +109,20 @@ const ECGMonitor = memo(({ heartRate = 70, height = 64 }) => {
     return value + (random - 0.5) * 0.5;
   };
 
+  // Use refs for width and height to avoid restarting animation on size changes
+  const widthRef = useRef(width);
+  const heightRef = useRef(height);
+  
   useEffect(() => {
-    const centerY = height / 2;
+    widthRef.current = width;
+    heightRef.current = height;
+  }, [width, height]);
+
+  useEffect(() => {
+    const centerY = heightRef.current / 2;
     const heartbeatIntervalMs = getHeartbeatIntervalMs(heartRate);
 
-    // Reset when heart rate changes
+    // Reset when heart rate changes (but not when width/height changes)
     if (lastHeartbeatTimeRef.current === null || lastHeartRateRef.current !== heartRate) {
       const now = performance.now();
       lastHeartbeatTimeRef.current = now - heartbeatIntervalMs;
@@ -127,6 +136,9 @@ const ECGMonitor = memo(({ heartRate = 70, height = 64 }) => {
     const animate = () => {
       const currentX = tracePositionRef.current;
       const now = performance.now();
+      const currentWidth = widthRef.current;
+      const currentHeight = heightRef.current;
+      const currentCenterY = currentHeight / 2;
 
       // Check if it's time for a new heartbeat
       const timeSinceLastHeartbeat = now - lastHeartbeatTimeRef.current;
@@ -140,7 +152,7 @@ const ECGMonitor = memo(({ heartRate = 70, height = 64 }) => {
 
         // Clean up old heartbeats
         heartbeatPositionsRef.current = heartbeatPositionsRef.current.filter(
-          hb => hb.x >= -WAVEFORM_LENGTH_PX && hb.x <= width + WAVEFORM_LENGTH_PX
+          hb => hb.x >= -WAVEFORM_LENGTH_PX && hb.x <= currentWidth + WAVEFORM_LENGTH_PX
         );
       }
 
@@ -148,8 +160,8 @@ const ECGMonitor = memo(({ heartRate = 70, height = 64 }) => {
       const pathPoints = [];
       let pathStarted = false;
 
-      for (let x = 0; x < width; x++) {
-        let baseY = centerY;
+      for (let x = 0; x < currentWidth; x++) {
+        let baseY = currentCenterY;
 
         // Check if within any heartbeat waveform
         let bestOffset = null;
@@ -163,7 +175,7 @@ const ECGMonitor = memo(({ heartRate = 70, height = 64 }) => {
         }
         
         if (bestOffset !== null) {
-          baseY = getHeartbeatY(bestOffset, centerY);
+          baseY = getHeartbeatY(bestOffset, currentCenterY);
         }
 
         const y = addNoise(baseY, x);
@@ -183,12 +195,12 @@ const ECGMonitor = memo(({ heartRate = 70, height = 64 }) => {
       tracePositionRef.current += speed;
 
       // Reset if too far
-      if (tracePositionRef.current > width) {
+      if (tracePositionRef.current > currentWidth) {
         tracePositionRef.current = 0;
         setTraceLineX(0);
         heartbeatPositionsRef.current = heartbeatPositionsRef.current.map(hb => ({
           ...hb,
-          x: hb.x - width
+          x: hb.x - currentWidth
         })).filter(hb => hb.x >= -WAVEFORM_LENGTH_PX);
       }
 
@@ -202,7 +214,7 @@ const ECGMonitor = memo(({ heartRate = 70, height = 64 }) => {
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [heartRate, width, height]);
+  }, [heartRate]); // Only depend on heartRate, not width/height
 
   // Generate grid lines based on current width
   const gridLines = [];
