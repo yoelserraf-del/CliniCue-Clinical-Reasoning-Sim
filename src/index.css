@@ -2,10 +2,27 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 @layer base {
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    overflow: hidden; /* Prevent body scrolling on mobile */
+    position: fixed; /* Lock body on mobile */
+    -webkit-overflow-scrolling: touch;
+  }
+  
   body {
     background-color: #0f172a; /* bg-slate-900 */
     color: #f1f5f9; /* text-slate-100 */
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+  }
+  
+  #root {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    position: fixed;
   }
 }
 
@@ -70,6 +87,17 @@
            -webkit-backface-visibility: hidden;
            overflow: hidden;
            border-radius: 1rem !important; /* rounded-2xl - force rounded corners */
+           touch-action: pan-y; /* Allow vertical scrolling */
+         }
+         
+         /* Ensure scrollable content areas capture touch events properly */
+         .flip-card-front > div > .overflow-y-auto,
+         .flip-card-back > div > .overflow-y-auto {
+           -webkit-overflow-scrolling: touch !important;
+           touch-action: pan-y !important;
+           overscroll-behavior: contain !important;
+           will-change: scroll-position;
+           transform: translateZ(0); /* Force hardware acceleration */
          }
          
          .flip-card-back {

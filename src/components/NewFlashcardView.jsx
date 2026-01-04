@@ -175,7 +175,17 @@ const NewFlashcardView = ({
     : null;
 
   return (
-    <div className="h-screen w-screen bg-slate-900 flex items-center justify-center p-4 overflow-hidden relative">
+    <div 
+      className="h-screen w-screen bg-slate-900 flex items-center justify-center p-4 overflow-hidden relative"
+      style={{ 
+        touchAction: 'none', /* Prevent outer container from scrolling */
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0
+      }}
+    >
         {/* Home Button - Top Left */}
         <div className="absolute top-4 left-4 z-50">
           <button
@@ -558,8 +568,8 @@ const NewFlashcardView = ({
             </div>
 
             {/* Back Side - Diagnosis */}
-            <div className="flip-card-back bg-white rounded-2xl shadow-2xl" style={{ touchAction: 'pan-y' }}>
-              <div className="h-full flex flex-col overflow-hidden" style={{ touchAction: 'pan-y' }}>
+            <div className="flip-card-back bg-white rounded-2xl shadow-2xl overflow-hidden" style={{ touchAction: 'pan-y' }}>
+              <div className="h-full flex flex-col overflow-hidden" style={{ touchAction: 'pan-y', height: '100%' }}>
                 {/* Header with Vitals (same as front) */}
                 <div className="bg-gradient-to-r from-slate-100 to-slate-200 border-b border-gray-200 p-4">
                   <div className="grid grid-cols-5 gap-2 mb-3">
