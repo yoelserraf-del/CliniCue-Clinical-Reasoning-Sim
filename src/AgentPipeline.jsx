@@ -78,6 +78,67 @@ async function callClaude(prompt, apiKey, maxTokens = 1200) {
   return text;
 }
 
+async function callClaudeWithImage(imageBase64, mimeType, textPrompt, apiKey, maxTokens = 2000) {
+  if (!apiKey?.trim()) throw new Error("No Claude API key — add it in ⚙ Settings.");
+  let res;
+  try {
+    res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": apiKey.trim(),
+        "anthropic-version": "2023-06-01",
+        "anthropic-dangerous-direct-browser-access": "true",
+      },
+      body: JSON.stringify({
+        model: "claude-haiku-4-5-20251001",
+        max_tokens: maxTokens,
+        messages: [{
+          role: "user",
+          content: [
+            { type: "image", source: { type: "base64", media_type: mimeType, data: imageBase64 } },
+            { type: "text", text: textPrompt },
+          ],
+        }],
+      }),
+    });
+  } catch (netErr) {
+    throw new Error("Network error: " + netErr.message);
+  }
+  const data = await res.json();
+  if (!res.ok) throw new Error("API error: " + (data?.error?.message || `HTTP ${res.status}`));
+  const text = data.content?.find((b) => b.type === "text")?.text || "";
+  if (!text) throw new Error("API returned empty response.");
+  return text;
+}
+
+async function extractMenuFromImage(imageBase64, mimeType, apiKey) {
+  return callClaudeWithImage(
+    imageBase64, mimeType,
+    `Extract all menu content from this image. Include section headers (e.g. Appetizers, Mains, Drinks), item names, short descriptions if visible, and prices. Format as clean readable text. Skip anything illegible.`,
+    apiKey, 2000
+  );
+}
+
+async function generateTextPitch(lead, settings) {
+  return callClaude(
+    `Write a short friendly text message pitching a website to this business owner. Aim for under 160 characters.
+
+Business: ${lead.businessName}, ${lead.businessType}
+Price: starting at $${lead.proposedPrice}
+Your name: ${settings.yourName || "[YOUR NAME]"}
+
+Rules:
+- Sound like a real person texting, not a marketing message
+- Mention you have a free preview site ready to show them
+- End with a simple question like "Interested?"
+- Sign off as ${settings.yourName || "[YOUR NAME]"}
+
+Output ONLY the text message body.`,
+    settings.claudeKey, 150
+  );
+}
+
 async function generatePitchEmail(lead, settings) {
   const payment = settings.venmo
     ? `Venmo: @${settings.venmo}`
@@ -202,6 +263,9 @@ async function generateWebsite(lead, settings, withFeedback = false) {
     withFeedback && lead.feedback
       ? `\n\nCRITICAL — Apply this client feedback:\n"${lead.feedback}"\n`
       : "";
+  const menuSection = lead.menuText
+    ? `\n\nMENU DATA (add a real Menu section using EXACTLY this content — do not invent items):\n${lead.menuText}`
+    : "";
   const html = await callClaude(
     `You are an expert web designer. Build a complete beautiful single-page website as raw HTML.
 
@@ -210,24 +274,28 @@ Business:
 - Type: ${lead.businessType}
 - Location: ${lead.location || ""}
 - Phone: ${lead.phone || ""}
-- Email: ${lead.email || ""}
 - Description: ${lead.description || `A ${lead.businessType}`}
-- Services: ${lead.services || ""}${feedbackLine}
+- Services: ${lead.services || ""}${menuSection}${feedbackLine}
+
+CONTENT RULES — follow these exactly:
+- ONLY list the services provided above — do not invent or add any services not listed
+- Use the exact business name, location, and phone number throughout
+- If menu data is provided above, display it accurately in a dedicated Menu section
+- Do not make up prices, hours, or staff names
 
 REQUIREMENTS:
 1. Return ONLY a full HTML document. No markdown, no backticks.
 2. All CSS in a <style> tag.
-3. Design that fits this business type perfectly.
+3. Design that perfectly fits this business type.
 4. Google Fonts via @import.
-5. Sections: Hero, About, Services, Contact/Footer.
+5. Sections: Hero, About, Services${lead.menuText ? ", Menu" : ""}, Contact/Footer.
 6. Fully responsive.
-7. Realistic placeholder content.
-8. CSS animations on load.
-9. Pure HTML+CSS only — no JS required.
+7. CSS animations on load.
+8. Pure HTML+CSS only — no JS required.
 
 Start with <!DOCTYPE html>`,
     settings.claudeKey,
-    8000  // websites need more tokens
+    8000
   );
   return html.replace(/^```html\s*/i, "").replace(/```\s*$/, "").trim();
 }
@@ -270,6 +338,8 @@ function makeLead(input) {
     draftHTML: "",
     finalHTML: "",
     pitchEmail: "",
+    textPitch: "",
+    menuText: "",
     feedback: "",
     history: [{ ts: now(), action: "Created" }],
   };
@@ -872,10 +942,54 @@ function LeadDetail({ lead, onUpdate, onDelete, onBack, settings }) {
   const [showPreview, setShowPreview] = useState(null);
   const [showClient, setShowClient] = useState(false);
   const [feedback, setFeedback] = useState(lead.feedback || "");
+  const [menuUploading, setMenuUploading] = useState(false);
   const meta = stageMeta(lead.stage);
 
   const log = (action) => ({ ...lead, history: [...lead.history, { ts: now(), action }] });
   const moveTo = (stage, action) => onUpdate({ ...log(action), stage });
+
+  const doGenerateTextPitch = async () => {
+    setBusy("Writing text pitch..."); setError("");
+    try {
+      const text = await generateTextPitch(lead, settings);
+      onUpdate({ ...log("Drafted text pitch"), textPitch: text });
+    } catch (e) {
+      setError("Text pitch failed: " + e.message);
+    }
+    setBusy("");
+  };
+
+  const openCall = () => {
+    if (!lead.phone) { setError("No phone number for this lead."); return; }
+    window.open(`tel:${lead.phone.replace(/\s/g, "")}`, "_blank");
+  };
+
+  const openInMessages = () => {
+    if (!lead.phone) { setError("No phone number for this lead."); return; }
+    if (!lead.textPitch) { setError("Generate a text pitch first."); return; }
+    const body = encodeURIComponent(lead.textPitch);
+    window.open(`sms:${lead.phone.replace(/\s/g, "")}?body=${body}`, "_blank");
+    setTimeout(() => onUpdate({ ...log("Opened text pitch in Messages"), stage: "pitched" }), 800);
+  };
+
+  const handleMenuUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setMenuUploading(true); setError("");
+    try {
+      const base64 = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result.split(",")[1]);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+      const menuText = await extractMenuFromImage(base64, file.type, settings.claudeKey);
+      onUpdate({ ...log("Uploaded and extracted menu"), menuText });
+    } catch (e) {
+      setError("Menu extraction failed: " + e.message);
+    }
+    setMenuUploading(false);
+  };
 
   const doGenerateDraft = async () => {
     setBusy("Generating draft website..."); setError("");
@@ -982,7 +1096,7 @@ function LeadDetail({ lead, onUpdate, onDelete, onBack, settings }) {
         <>
           <Section title="① Generate Draft Website">
             <p style={{ color: C.muted, fontSize: "13px", margin: "0 0 14px" }}>
-              Build a quick draft to show as a preview link in your cold email.
+              Build a quick draft to include as a preview link when you reach out.
             </p>
             <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "12px" }}>
               <Btn variant="primary" onClick={doGenerateDraft} disabled={!!busy}>
@@ -999,12 +1113,45 @@ function LeadDetail({ lead, onUpdate, onDelete, onBack, settings }) {
               <div style={{ background: C.bg, border: `1px solid ${C.border}`, borderRadius: "8px", padding: "12px", fontSize: "12px", color: C.mutedLight, lineHeight: 1.7 }}>
                 <strong style={{ color: C.accent }}>To get a shareable link:</strong> Download the HTML → drag to{" "}
                 <a href="https://app.netlify.com/drop" target="_blank" rel="noopener" style={{ color: C.cyan }}>netlify.com/drop</a>{" "}
-                → copy the URL → paste as [DRAFT_LINK] in your email.
+                → copy the URL → replace [DRAFT_LINK] in your pitch.
               </div>
             )}
           </Section>
 
-          <Section title="② Pitch Email">
+          <Section title="② Text / Call (primary)" accent={C.success}>
+            <p style={{ color: C.muted, fontSize: "13px", margin: "0 0 14px" }}>
+              Use their real phone number — more reliable than guessed emails.
+            </p>
+            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "12px" }}>
+              <Btn variant="primary" onClick={doGenerateTextPitch} disabled={!!busy}>
+                {lead.textPitch ? "↺ Redraft" : "💬 Write Text Pitch"}
+              </Btn>
+              {lead.phone && <Btn variant="info" onClick={openCall}>📞 Call</Btn>}
+              {lead.textPitch && lead.phone && (
+                <Btn variant="success" onClick={openInMessages}>💬 Open in Messages</Btn>
+              )}
+            </div>
+            {lead.textPitch && (
+              <div style={{ background: C.bg, border: `1px solid ${C.border}`, borderRadius: "8px", padding: "14px", fontSize: "13px", lineHeight: 1.7, marginBottom: "6px" }}>
+                {lead.textPitch}
+              </div>
+            )}
+            {lead.textPitch && (
+              <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "4px" }}>
+                <span style={{ fontSize: "11px", color: lead.textPitch.length > 160 ? C.warning : C.muted }}>
+                  {lead.textPitch.length} chars {lead.textPitch.length > 160 ? "(long — will split into 2 texts)" : ""}
+                </span>
+                <Btn variant="ghost" size="sm" onClick={() => moveTo("pitched", "Called / texted business")}>
+                  ✓ Reached out → move to Pitched
+                </Btn>
+              </div>
+            )}
+          </Section>
+
+          <Section title="③ Email Pitch (optional)">
+            <p style={{ color: C.muted, fontSize: "13px", margin: "0 0 14px" }}>
+              Note: guessed emails may not be accurate — phone is more reliable.
+            </p>
             <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "12px" }}>
               <Btn variant="primary" onClick={doGeneratePitch} disabled={!!busy}>
                 {lead.pitchEmail ? "↺ Redraft" : "✉ Draft Email"}
@@ -1013,7 +1160,7 @@ function LeadDetail({ lead, onUpdate, onDelete, onBack, settings }) {
                 <>
                   <Btn size="sm" onClick={copyEmail}>📋 Copy</Btn>
                   <Btn variant="success" size="sm" onClick={openInMail} disabled={!lead.email}>
-                    📨 Open in Mail
+                    📨 Open in Gmail
                   </Btn>
                 </>
               )}
@@ -1024,8 +1171,8 @@ function LeadDetail({ lead, onUpdate, onDelete, onBack, settings }) {
               </div>
             )}
             {lead.pitchEmail && (
-              <Btn variant="ghost" size="sm" onClick={() => moveTo("pitched", "Manually marked email as sent")}>
-                ✓ Already sent → move to Pitched
+              <Btn variant="ghost" size="sm" onClick={() => moveTo("pitched", "Emailed business")}>
+                ✓ Sent email → move to Pitched
               </Btn>
             )}
           </Section>
@@ -1052,6 +1199,38 @@ function LeadDetail({ lead, onUpdate, onDelete, onBack, settings }) {
           <div style={{ marginBottom: "12px" }}>
             <Label>Notes from their reply (optional)</Label>
             <Textarea value={feedback} onChange={setFeedback} placeholder="Anything they mentioned..." rows={2} />
+          </div>
+          <div style={{ marginBottom: "14px" }}>
+            <Label>Menu Photo (optional — AI reads and includes in the site)</Label>
+            <div style={{ display: "flex", gap: "8px", alignItems: "center", flexWrap: "wrap", marginBottom: "6px" }}>
+              <label style={{
+                display: "inline-block", padding: "8px 14px", fontSize: "13px",
+                background: "transparent", border: `1px solid ${C.border}`, borderRadius: "6px",
+                cursor: menuUploading ? "not-allowed" : "pointer", color: C.text,
+                opacity: menuUploading ? 0.4 : 1, fontFamily: "inherit",
+              }}>
+                {menuUploading ? "⏳ Extracting menu..." : lead.menuText ? "↺ Replace Menu Photo" : "📷 Upload Menu Photo"}
+                <input
+                  type="file"
+                  accept="image/*,application/pdf"
+                  onChange={handleMenuUpload}
+                  disabled={menuUploading || !!busy}
+                  style={{ display: "none" }}
+                />
+              </label>
+              {lead.menuText && !menuUploading && (
+                <span style={{ fontSize: "12px", color: C.success }}>✓ Menu extracted</span>
+              )}
+            </div>
+            {lead.menuText && (
+              <div style={{
+                background: C.bg, border: `1px solid ${C.border}`, borderRadius: "8px",
+                padding: "10px 12px", fontSize: "12px", color: C.mutedLight,
+                lineHeight: 1.6, maxHeight: "80px", overflow: "auto",
+              }}>
+                {lead.menuText}
+              </div>
+            )}
           </div>
           <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "14px" }}>
             <Btn variant="primary" onClick={doGenerateFinal} disabled={!!busy}>
