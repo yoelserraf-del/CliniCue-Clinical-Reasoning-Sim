@@ -108,56 +108,61 @@ Output ONLY the email body.`,
   );
 }
 
+async function placesSearch(query, googleKey) {
+  const res = await fetch("https://places.googleapis.com/v1/places:searchText", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Goog-Api-Key": googleKey.trim(),
+      "X-Goog-FieldMask": "places.displayName,places.websiteUri,places.nationalPhoneNumber,places.formattedAddress",
+    },
+    body: JSON.stringify({ textQuery: query, maxResultCount: 20, languageCode: "en" }),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error("Google Places error: " + (data.error?.message || `HTTP ${res.status}`));
+  return data.places || [];
+}
+
 async function researchLeads(city, type, count, claudeKey, googleKey) {
   if (!googleKey || !googleKey.trim()) {
     throw new Error("Google Places API key required to find real businesses. Add it in ⚙ Settings.");
   }
 
-  // Step 1: Fetch REAL businesses from Google Places API
-  let placesRes;
+  // Two searches to maximise our pool of no-website businesses
+  let allPlaces = [];
   try {
-    placesRes = await fetch("https://places.googleapis.com/v1/places:searchText", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Goog-Api-Key": googleKey.trim(),
-        "X-Goog-FieldMask": "places.displayName,places.websiteUri,places.nationalPhoneNumber,places.formattedAddress",
-      },
-      body: JSON.stringify({
-        textQuery: `${type} in ${city}`,
-        maxResultCount: 20,
-        languageCode: "en",
-      }),
-    });
+    const r1 = await placesSearch(`${type} in ${city}`, googleKey);
+    allPlaces.push(...r1);
+    // Second pass with "local" to surface smaller, less web-savvy spots
+    const r2 = await placesSearch(`local small ${type} ${city}`, googleKey);
+    const seen = new Set(allPlaces.map((p) => p.displayName?.text?.toLowerCase()));
+    allPlaces.push(...r2.filter((p) => !seen.has(p.displayName?.text?.toLowerCase())));
   } catch (netErr) {
+    if (netErr.message.startsWith("Google Places")) throw netErr;
     throw new Error("Network error reaching Google Places: " + netErr.message);
   }
 
-  const placesData = await placesRes.json();
-  if (!placesRes.ok) {
-    throw new Error("Google Places error: " + (placesData.error?.message || `HTTP ${placesRes.status}`));
+  // Only businesses with NO website listed on Google
+  const noSite = allPlaces.filter((p) => !p.websiteUri);
+
+  if (noSite.length === 0) {
+    throw new Error(
+      `All ${type}s found in ${city} already have websites listed on Google. ` +
+      `Try a smaller neighbourhood name, or a different business type.`
+    );
   }
 
-  const places = placesData.places || [];
-  if (places.length === 0) {
-    throw new Error(`No ${type}s found in ${city}. Try a broader city name.`);
-  }
-
-  // Prioritise no-website businesses, then ones with a site (marked outdated)
-  const noSite = places.filter((p) => !p.websiteUri);
-  const hasSite = places.filter((p) => p.websiteUri);
-  const pool = [...noSite, ...hasSite].slice(0, count + 5);
+  const pool = noSite.slice(0, count + 5);
 
   const businessList = pool.map((p) => ({
     name: p.displayName?.text || "",
     address: p.formattedAddress || city,
     phone: p.nationalPhoneNumber || "",
-    website: p.websiteUri || "",
   }));
 
-  // Step 2: Use Claude to enrich with email guess, description, services, pitch note
+  // Use Claude to enrich with email guess, description, services, pitch note
   const raw = await callClaude(
-    `You are helping pitch website-building services to real local businesses.
+    `You are helping pitch website-building services to real local businesses that have NO website.
 
 For each business below, generate a short pitch profile. Return ONLY a JSON array — no markdown, no backticks.
 
@@ -170,11 +175,11 @@ For each business return an object with EXACTLY these fields:
   "businessType": "${type}",
   "location": string (use the address given),
   "phone": string (use phone given, or "" if none),
-  "email": string (educated guess e.g. info@name.com based on the business name),
-  "websiteStatus": "none" if no website field, "outdated" if website field is present,
-  "description": string (one sentence about what they do),
-  "services": string (3-5 services, comma-separated),
-  "notes": string (one compelling reason they'd benefit from a new website)
+  "email": string (educated guess e.g. info@businessname.com based on the business name),
+  "websiteStatus": "none",
+  "description": string (one sentence about what they likely do),
+  "services": string (3-5 likely services, comma-separated),
+  "notes": string (one compelling reason they need a website)
 }`,
     claudeKey,
     3000
@@ -910,9 +915,11 @@ function LeadDetail({ lead, onUpdate, onDelete, onBack, settings }) {
     if (!lead.pitchEmail) { setError("Generate a pitch email first."); return; }
     const subject = encodeURIComponent(`Quick question about ${lead.businessName}'s website`);
     const body = encodeURIComponent(lead.pitchEmail);
-    window.location.href = `mailto:${lead.email}?subject=${subject}&body=${body}`;
-    // Small delay so the mail app opens before we update state
-    setTimeout(() => onUpdate({ ...log("Opened pitch email in Mail app"), stage: "pitched" }), 800);
+    window.open(
+      `https://mail.google.com/mail/?view=cm&to=${encodeURIComponent(lead.email)}&su=${subject}&body=${body}`,
+      "_blank"
+    );
+    setTimeout(() => onUpdate({ ...log("Opened pitch email in Gmail"), stage: "pitched" }), 800);
   };
 
   const downloadHTML = (html, suffix) => {
