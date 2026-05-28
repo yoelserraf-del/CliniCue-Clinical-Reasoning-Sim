@@ -108,36 +108,87 @@ Output ONLY the email body.`,
   );
 }
 
-async function researchLeads(city, type, count, apiKey) {
-  const raw = await callClaude(
-    `Generate ${count} realistic small business leads in ${city} that are: ${type}.
-These should likely have NO website or a very outdated one (pre-2018 design).
+async function researchLeads(city, type, count, claudeKey, googleKey) {
+  if (!googleKey || !googleKey.trim()) {
+    throw new Error("Google Places API key required to find real businesses. Add it in ⚙ Settings.");
+  }
 
-Return ONLY a JSON array. No markdown, no backticks, no explanation.
-Each object must have exactly these fields:
+  // Step 1: Fetch REAL businesses from Google Places API
+  let placesRes;
+  try {
+    placesRes = await fetch("https://places.googleapis.com/v1/places:searchText", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Goog-Api-Key": googleKey.trim(),
+        "X-Goog-FieldMask": "places.displayName,places.websiteUri,places.nationalPhoneNumber,places.formattedAddress",
+      },
+      body: JSON.stringify({
+        textQuery: `${type} in ${city}`,
+        maxResultCount: 20,
+        languageCode: "en",
+      }),
+    });
+  } catch (netErr) {
+    throw new Error("Network error reaching Google Places: " + netErr.message);
+  }
+
+  const placesData = await placesRes.json();
+  if (!placesRes.ok) {
+    throw new Error("Google Places error: " + (placesData.error?.message || `HTTP ${placesRes.status}`));
+  }
+
+  const places = placesData.places || [];
+  if (places.length === 0) {
+    throw new Error(`No ${type}s found in ${city}. Try a broader city name.`);
+  }
+
+  // Prioritise no-website businesses, then ones with a site (marked outdated)
+  const noSite = places.filter((p) => !p.websiteUri);
+  const hasSite = places.filter((p) => p.websiteUri);
+  const pool = [...noSite, ...hasSite].slice(0, count + 5);
+
+  const businessList = pool.map((p) => ({
+    name: p.displayName?.text || "",
+    address: p.formattedAddress || city,
+    phone: p.nationalPhoneNumber || "",
+    website: p.websiteUri || "",
+  }));
+
+  // Step 2: Use Claude to enrich with email guess, description, services, pitch note
+  const raw = await callClaude(
+    `You are helping pitch website-building services to real local businesses.
+
+For each business below, generate a short pitch profile. Return ONLY a JSON array — no markdown, no backticks.
+
+Businesses:
+${JSON.stringify(businessList, null, 2)}
+
+For each business return an object with EXACTLY these fields:
 {
-  "businessName": string,
+  "businessName": string (exact name as given),
   "businessType": "${type}",
-  "location": "${city}",
-  "phone": string,
-  "email": string,
-  "websiteStatus": "none" | "outdated",
-  "description": string,
-  "services": string,
-  "notes": string
+  "location": string (use the address given),
+  "phone": string (use phone given, or "" if none),
+  "email": string (educated guess e.g. info@name.com based on the business name),
+  "websiteStatus": "none" if no website field, "outdated" if website field is present,
+  "description": string (one sentence about what they do),
+  "services": string (3-5 services, comma-separated),
+  "notes": string (one compelling reason they'd benefit from a new website)
 }`,
-    apiKey,
-    2000
+    claudeKey,
+    3000
   );
+
   try {
     const clean = raw
       .replace(/^```json\s*/i, "")
       .replace(/^```\s*/i, "")
       .replace(/```\s*$/, "")
       .trim();
-    return JSON.parse(clean);
+    return JSON.parse(clean).slice(0, count);
   } catch {
-    throw new Error("Could not parse lead suggestions. Try again.");
+    throw new Error("Could not parse enriched business data. Try again.");
   }
 }
 
@@ -451,13 +502,19 @@ function SettingsPanel({ settings, onSave, onClose }) {
           <div><Label>Your Email (send from)</Label><Input value={s.fromEmail || ""} onChange={(v) => u("fromEmail", v)} placeholder="hello@yourdomain.com" /></div>
 
           <div style={{ borderTop: `1px solid ${C.border}`, paddingTop: "14px" }}>
-            <div style={{ fontSize: "12px", fontWeight: 600, color: C.info, marginBottom: "10px" }}>📧 Resend Integration</div>
-            <div style={{ fontSize: "12px", color: C.muted, marginBottom: "10px", lineHeight: 1.6 }}>
-              Get your API key at{" "}
-              <a href="https://resend.com" target="_blank" rel="noopener" style={{ color: C.cyan }}>resend.com</a>{" "}
-              (free — 100 emails/day)
+            <div style={{ fontSize: "12px", fontWeight: 700, color: C.info, marginBottom: "8px" }}>
+              🗺 Google Places API Key (required for real business research)
             </div>
-            <div><Label>Resend API Key</Label><Input value={s.resendKey || ""} onChange={(v) => u("resendKey", v)} placeholder="re_xxxxxxxxxxxxxxxx" /></div>
+            <div style={{ fontSize: "11px", color: C.muted, marginBottom: "10px", lineHeight: 1.6 }}>
+              1. Go to{" "}
+              <a href="https://console.cloud.google.com/apis/library/places-backend.googleapis.com" target="_blank" rel="noopener" style={{ color: C.cyan }}>
+                Google Cloud Console
+              </a>
+              {" "}→ enable <strong style={{ color: C.text }}>Places API (New)</strong><br />
+              2. Create an API key under Credentials<br />
+              3. Paste it here — $200/month free credit, no charge for light use
+            </div>
+            <Input value={s.googleKey || ""} onChange={(v) => u("googleKey", v)} placeholder="AIzaSy..." type="password" />
           </div>
 
           <div style={{ borderTop: `1px solid ${C.border}`, paddingTop: "14px" }}>
@@ -510,7 +567,7 @@ function ResearchModal({ onClose, onAdd, settings }) {
     if (!city.trim()) return;
     setBusy(true); setError(""); setResults([]); setSelected(new Set());
     try {
-      const leads = await researchLeads(city, type, count, settings.claudeKey);
+      const leads = await researchLeads(city, type, count, settings.claudeKey, settings.googleKey);
       setResults(leads);
       setSelected(new Set(leads.map((_, i) => i)));
     } catch (e) {
@@ -581,10 +638,10 @@ function ResearchModal({ onClose, onAdd, settings }) {
         <Btn
           variant="primary"
           onClick={research}
-          disabled={!city.trim() || busy || !settings.claudeKey}
+          disabled={!city.trim() || busy || !settings.claudeKey || !settings.googleKey}
           style={{ width: "100%", padding: "11px", marginBottom: "16px" }}
         >
-          {busy ? "Researching..." : !settings.claudeKey ? "Add API key in Settings first" : "Find Leads"}
+          {busy ? "Researching..." : !settings.googleKey ? "Add Google Places key in Settings" : !settings.claudeKey ? "Add Claude API key in Settings" : "Find Real Businesses"}
         </Btn>
 
         {busy && <BusyBar msg={`Finding ${type}s in ${city}...`} />}
@@ -810,7 +867,6 @@ function LeadDetail({ lead, onUpdate, onDelete, onBack, settings }) {
   const [showPreview, setShowPreview] = useState(null);
   const [showClient, setShowClient] = useState(false);
   const [feedback, setFeedback] = useState(lead.feedback || "");
-  const [emailSending, setEmailSending] = useState(false);
   const meta = stageMeta(lead.stage);
 
   const log = (action) => ({ ...lead, history: [...lead.history, { ts: now(), action }] });
@@ -849,23 +905,14 @@ function LeadDetail({ lead, onUpdate, onDelete, onBack, settings }) {
     setBusy("");
   };
 
-  const doSendEmail = async () => {
-    setError("");
-    if (!settings.resendKey) { setError("Add your Resend API key in Settings first."); return; }
+  const openInMail = () => {
     if (!lead.email) { setError("This lead has no email address."); return; }
     if (!lead.pitchEmail) { setError("Generate a pitch email first."); return; }
-    setEmailSending(true);
-    try {
-      const subject = `Quick question about ${lead.businessName}'s website`;
-      const from = settings.yourName
-        ? `${settings.yourName} <${settings.fromEmail}>`
-        : settings.fromEmail;
-      await sendViaResend(settings.resendKey, from, lead.email, subject, lead.pitchEmail);
-      onUpdate({ ...log("Pitch email sent via Resend"), stage: "pitched" });
-    } catch (e) {
-      setError("Send failed: " + e.message);
-    }
-    setEmailSending(false);
+    const subject = encodeURIComponent(`Quick question about ${lead.businessName}'s website`);
+    const body = encodeURIComponent(lead.pitchEmail);
+    window.location.href = `mailto:${lead.email}?subject=${subject}&body=${body}`;
+    // Small delay so the mail app opens before we update state
+    setTimeout(() => onUpdate({ ...log("Opened pitch email in Mail app"), stage: "pitched" }), 800);
   };
 
   const downloadHTML = (html, suffix) => {
@@ -958,13 +1005,9 @@ function LeadDetail({ lead, onUpdate, onDelete, onBack, settings }) {
               {lead.pitchEmail && (
                 <>
                   <Btn size="sm" onClick={copyEmail}>📋 Copy</Btn>
-                  {settings.resendKey ? (
-                    <Btn variant="success" size="sm" onClick={doSendEmail} disabled={emailSending}>
-                      {emailSending ? "Sending..." : "📤 Send via Resend"}
-                    </Btn>
-                  ) : (
-                    <Btn variant="info" size="sm" onClick={() => alert("Add your Resend key in Settings to send directly.")}>⚙ Setup Resend</Btn>
-                  )}
+                  <Btn variant="success" size="sm" onClick={openInMail} disabled={!lead.email}>
+                    📨 Open in Mail
+                  </Btn>
                 </>
               )}
             </div>
@@ -973,9 +1016,9 @@ function LeadDetail({ lead, onUpdate, onDelete, onBack, settings }) {
                 {lead.pitchEmail}
               </div>
             )}
-            {lead.pitchEmail && !settings.resendKey && (
-              <Btn variant="success" size="sm" onClick={() => moveTo("pitched", "Manually marked email as sent")}>
-                ✓ I sent it manually → move to Pitched
+            {lead.pitchEmail && (
+              <Btn variant="ghost" size="sm" onClick={() => moveTo("pitched", "Manually marked email as sent")}>
+                ✓ Already sent → move to Pitched
               </Btn>
             )}
           </Section>
